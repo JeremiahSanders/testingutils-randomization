@@ -46,4 +46,11 @@ This collection of randomization test utilities supports creating test arrangeme
   * Selects a pseudo-random item from provided `items`.
   * Example: `Jds.TestingUtils.Randomization.Randomizer.Shared.RandomListItem(System.Linq.Enumerable.Range(1, 20).ToArray())`
 
+### Generate a Random String
+
+* `IRandomizationSource.RandomString(int length, IReadOnlyList<char> chars)`
+  * Generates a random `string` of `length` characters, using provided `chars`. Random selections from `chars` are concatenated until reaching `length` characters.
+* `IRandomizationSource.RandomString(int length, IReadOnlyList<string> strings)`
+  * Generates a random `string` of `length` characters, using provided `strings`. Random selections from `strings` are concatenated until reaching `length` characters. The result is truncated to `length` characters.
+
 [cryptographically strong random number generator]: https://docs.microsoft.com/en-us/dotnet/api/system.security.cryptography.randomnumbergenerator.getint32?view=net-6.0#system-security-cryptography-randomnumbergenerator-getint32(system-int32-system-int32)
