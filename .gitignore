@@ -457,3 +457,5 @@ $RECYCLE.BIN/
 build/
 # Track changes in CI bin scripts.
 !/ci/bin/
+# Ignore local environment
+ci/env.local.sh

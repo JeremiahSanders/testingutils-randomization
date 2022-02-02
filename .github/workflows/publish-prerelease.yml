@@ -19,4 +19,6 @@ jobs:
       - name: Execute publish script - Publish project artifacts
         run: cicee exec -c ci/bin/publish.sh
         env:
+          NUGET_API_KEY: ${{secrets.NUGET_API_KEY}}
+          NUGET_SOURCE: ${{secrets.NUGET_SOURCE}}
           RELEASE_ENVIRONMENT: false

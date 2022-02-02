@@ -16,8 +16,12 @@ jobs:
       - name: Execute verification script - Validate source
         run: cicee exec -c ci/bin/validate.sh
         env:
+          NUGET_API_KEY: ${{secrets.NUGET_API_KEY}}
+          NUGET_SOURCE: ${{secrets.NUGET_SOURCE}}
           RELEASE_ENVIRONMENT: false
       - name: Execute compose script - Perform dry-run composition
         run: cicee exec -c ci/bin/compose.sh
         env:
+          NUGET_API_KEY: ${{secrets.NUGET_API_KEY}}
+          NUGET_SOURCE: ${{secrets.NUGET_SOURCE}}
           RELEASE_ENVIRONMENT: false
