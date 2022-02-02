@@ -17,6 +17,7 @@
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/JeremiahSanders/testingutils-randomization</PackageProjectUrl>
     <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageTags>testing randomization generation lorem ipsum</PackageTags>
     <PackAsTool>false</PackAsTool>
     <Product>TestingUtils: Randomization</Product>
     <RepositoryType>git</RepositoryType>

@@ -70,18 +70,7 @@ ci-compose() {
 # Publish the project's artifact composition.
 #--
 ci-publish() {
-  # How to use:
-  #   Uncomment the example publishing workflow line(s) below which apply to the project, or execute publishing commands.
-
-  printf "...\nTODO: Implement ci-publish  in %s ...\n\n" "${WORKFLOWS_SCRIPT_LOCATION}"
-  # Push Docker image to AWS ECR ______
-  # ci-aws-ecr-docker-login && ci-docker-push
-
-  # Push .NET NuGet package ___________
-  # ci-dotnet-nuget-push
-
-  # Deploy AWS CDK Cloud Assembly _____
-  # ci-aws-cdk-deploy
+  ci-dotnet-nuget-push
 }
 
 export -f ci-compose
