@@ -66,4 +66,34 @@ public static class ReadOnlyListExtensions
   {
     return randomizationSource.RandomString(length, chars);
   }
+
+  /// <inheritdoc
+  ///   cref="SelectionRandomizationSourceExtensions.WeightedRandomListItem{T}(Jds.TestingUtils.Randomization.IRandomizationSource,System.Collections.Generic.IReadOnlyList{(T item, double weight)})" />
+  public static T GetWeightedRandomItem<T>(this IReadOnlyList<(T Key, double Weight)> weightedItems,
+    IRandomizationSource randomizationSource)
+  {
+    return randomizationSource.WeightedRandomListItem(weightedItems);
+  }
+
+  /// <inheritdoc
+  ///   cref="SelectionRandomizationSourceExtensions.WeightedRandomListItem{T}(Jds.TestingUtils.Randomization.IRandomizationSource,System.Collections.Generic.IReadOnlyList{(T item, double weight)})" />
+  public static T GetWeightedRandomItem<T>(this IReadOnlyList<(T Key, double Weight)> weightedItems)
+  {
+    return Randomizer.Shared.WeightedRandomListItem(weightedItems);
+  }
+
+  /// <inheritdoc
+  ///   cref="SelectionRandomizationSourceExtensions.WeightedRandomListItem{T}(Jds.TestingUtils.Randomization.IRandomizationSource,System.Collections.Generic.IReadOnlyList{(T item, int weight)})" />
+  public static T GetWeightedRandomItem<T>(this IReadOnlyList<(T Key, int Weight)> weightedItems,
+    IRandomizationSource randomizationSource)
+  {
+    return randomizationSource.WeightedRandomListItem(weightedItems);
+  }
+
+  /// <inheritdoc
+  ///   cref="SelectionRandomizationSourceExtensions.WeightedRandomListItem{T}(Jds.TestingUtils.Randomization.IRandomizationSource,System.Collections.Generic.IReadOnlyList{(T item, int weight)})" />
+  public static T GetWeightedRandomItem<T>(this IReadOnlyList<(T Key, int Weight)> weightedItems)
+  {
+    return Randomizer.Shared.WeightedRandomListItem(weightedItems);
+  }
 }
