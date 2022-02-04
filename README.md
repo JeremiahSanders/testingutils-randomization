@@ -1,5 +1,9 @@
 # Testing Utils: Randomization
 
+[![NuGet](https://badgen.net/nuget/v/Jds.TestingUtils.Randomization/)](https://www.nuget.org/packages/Jds.TestingUtils.Randomization/)
+[![Publish Prerelease](https://github.com/JeremiahSanders/testingutils-randomization/actions/workflows/publish-prerelease.yml/badge.svg?branch=dev)](https://github.com/JeremiahSanders/testingutils-randomization/actions/workflows/publish-prerelease.yml)
+[![Publish Release](https://github.com/JeremiahSanders/testingutils-randomization/actions/workflows/publish-release.yml/badge.svg?branch=main)](https://github.com/JeremiahSanders/testingutils-randomization/actions/workflows/publish-release.yml)
+
 This collection of randomization test utilities supports creating test arrangements.
 
 ## How to Use
