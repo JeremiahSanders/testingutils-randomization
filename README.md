@@ -34,6 +34,8 @@ using System.Linq;
 
 ### Generate Pseudo-random Numbers
 
+* `IRandomizationSource.Boolean()`
+  * Gets a pseudo-random `bool`.
 * `IRandomizationSource.Byte()`
   * Gets a pseudo-random `byte`, greater than or equal to `byte.MinValue`, and less than `byte.MaxValue`.
 * `IRandomizationSource.ByteInRange(byte minInclusive, byte maxExclusive)`
