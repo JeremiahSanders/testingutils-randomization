@@ -122,6 +122,12 @@ Randomizer.Shared.WeightedRandomKey(new Dictionary<string, double>
 * `IRandomizationSource.DomainName(IReadOnlyList<int> domainLabelLengths)`
     * Generates a pseudo-random `string` according to `domain` (see [RFC-1035 section 2.3.1][domain-names]).
 
+### Generate a URL
+
+* `IRandomizationSource.RandomUrl(int hostLength, int pathLength = 0, int queryLength = 0, int fragmentLength = 0, string scheme = "https", int? port = null)`
+    * Generates a pseudo-random `string` URL according to [RFC-3986 URI syntax][]. The `host` segment is generated using `IRandomizationSource.DomainName(int length)`.
+
 [addr-spec]: https://datatracker.ietf.org/doc/html/rfc2822#section-3.4.1
 [cryptographically strong random number generator]: https://docs.microsoft.com/en-us/dotnet/api/system.security.cryptography.randomnumbergenerator.getint32?view=net-6.0#system-security-cryptography-randomnumbergenerator-getint32(system-int32-system-int32)
 [domain-names]: https://datatracker.ietf.org/doc/html/rfc1035#section-2.3.1
+[RFC-3986 URI syntax]: https://datatracker.ietf.org/doc/html/rfc3986#section-3
