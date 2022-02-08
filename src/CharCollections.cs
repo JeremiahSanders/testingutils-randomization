@@ -1,3 +1,5 @@
+using System.Collections.Immutable;
+
 namespace Jds.TestingUtils.Randomization;
 
 /// <summary>
@@ -14,17 +16,28 @@ internal static class CharCollections
   {
     LatinLowercase = Enumerable.Range(LowercaseA, 26)
       .Select(Convert.ToChar)
-      .ToArray();
+      .ToImmutableArray();
     LatinUppercase = Enumerable.Range(UppercaseA, 26)
       .Select(Convert.ToChar)
-      .ToArray();
+      .ToImmutableArray();
     Integers = Enumerable.Range(Zero, 10)
       .Select(Convert.ToChar)
-      .ToArray();
+      .ToImmutableArray();
 
-    LatinAlphanumericLowercase = LatinLowercase.Concat(Integers).ToArray();
-    LatinAlphanumericUppercase = LatinUppercase.Concat(Integers).ToArray();
+    LatinAlpha = LatinLowercase.Concat(LatinUppercase).ToImmutableArray();
+
+    LatinAlphanumericLowercase = LatinLowercase.Concat(Integers).ToImmutableArray();
+    LatinAlphanumericUppercase = LatinUppercase.Concat(Integers).ToImmutableArray();
+
+    LettersDigits = LatinAlpha
+      .Concat(Integers)
+      .ToImmutableArray();
   }
+
+  /// <summary>
+  ///   <see cref="char" /> values between `a` and `z` and values between `A` and `Z`.
+  /// </summary>
+  public static IReadOnlyList<char> LatinAlpha { get; }
 
   /// <summary>
   ///   <see cref="char" /> values between `0` and `9`.
@@ -50,4 +63,9 @@ internal static class CharCollections
   ///   <see cref="char" /> values between `0` and `9`.
   /// </summary>
   public static IReadOnlyList<char> LatinUppercase { get; }
+  
+  /// <summary>
+  ///   <see cref="char" /> values between `a` and `z`, values between `A` and `Z`, and values between `0` and `9`.
+  /// </summary>
+  public static IReadOnlyList<char> LettersDigits { get; }
 }

@@ -3,6 +3,18 @@ namespace Jds.TestingUtils.Randomization;
 public static class NumericRandomizationSourceExtensions
 {
   /// <summary>
+  ///   Gets a pseudo-random <see cref="bool" />.
+  /// </summary>
+  /// <param name="randomizationSource">A <see cref="IRandomizationSource" /> providing values.</param>
+  /// <returns>
+  ///   A <see cref="bool" />.
+  /// </returns>
+  public static bool Boolean(this IRandomizationSource randomizationSource)
+  {
+    return randomizationSource.NextIntInRange(1, 3) % 2 == 0;
+  }
+
+  /// <summary>
   ///   Gets a pseudo-random <see cref="byte" />, greater than or equal to <see cref="byte.MinValue" />, and less than
   ///   <see cref="byte.MaxValue" />.
   /// </summary>

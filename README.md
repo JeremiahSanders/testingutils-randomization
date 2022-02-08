@@ -34,6 +34,8 @@ using System.Linq;
 
 ### Generate Pseudo-random Numbers
 
+* `IRandomizationSource.Boolean()`
+  * Gets a pseudo-random `bool`.
 * `IRandomizationSource.Byte()`
   * Gets a pseudo-random `byte`, greater than or equal to `byte.MinValue`, and less than `byte.MaxValue`.
 * `IRandomizationSource.ByteInRange(byte minInclusive, byte maxExclusive)`
@@ -99,10 +101,33 @@ Randomizer.Shared.WeightedRandomKey(new Dictionary<string, double>
 ### Generate a Random String
 
 * `IRandomizationSource.RandomString(int length, IReadOnlyList<char> chars)`
-  * Generates a random `string` of `length` characters, using provided `chars`. Random selections from `chars` are concatenated until reaching `length` characters.
+  * Generates a pseudo-random `string` of `length` characters, using provided `chars`. Random selections from `chars` are concatenated until reaching `length` characters.
 * `IRandomizationSource.RandomString(int length, IReadOnlyList<string> strings)`
-  * Generates a random `string` of `length` characters, using provided `strings`. Random selections from `strings` are concatenated until reaching `length` characters. The result is truncated to `length` characters.
+  * Generates a pseudo-random `string` of `length` characters, using provided `strings`. Random selections from `strings` are concatenated until reaching `length` characters. The result is truncated to `length` characters.
 * `IRandomizationSource.RandomStringLatin(int length, bool uppercase = false, bool alphanumeric = false)`
-  * Generates a random `string` of `length` characters using ASCII Latin characters. Uses `a` - `z` by default. If `uppercase`, uses `A` - `Z`. If `alphanumeric`, also includes `0` - `9` with either casing.
+  * Generates a pseudo-random `string` of `length` characters using ASCII Latin characters. Uses `a` - `z` by default. If `uppercase`, uses `A` - `Z`. If `alphanumeric`, also includes `0` - `9` with either casing.
 
+### Generate a Mail Address
+
+* `IRandomizationSource.MailAddress()`
+* `IRandomizationSource.MailAddress(int length)`
+  * Generates a pseudo-random `System.Net.Mail.MailAddress`. The generated `System.Net.Mail.MailAddress.User` will be a `dot-atom` form of `local-part` (see [RFC-2822 section 3.4.1][addr-spec]). The generated `System.Net.Mail.MailAddress.Host` will be a `domain` (see [RFC-1035 section 2.3.1][domain-names]).
+* `IRandomizationSource.MailAddressAddrSpec(int length)`
+* `IRandomizationSource.MailAddressAddrSpec((int LocalPartLength, int DomainLength) componentLengths)`
+  * Generates a pseudo-random `string` according to `addr-spec` (see [RFC-2822 section 3.4.1][addr-spec]). The generated `local-part` will be of `dot-atom` form (see [RFC-2822 section 3.4.1][addr-spec]). The generated `domain` will be of `dot-atom` form (see [RFC-2822 section 3.4.1][addr-spec]), and its value will be generated as a [RFC-1035 section 2.3.1 `domain`][domain-names].
+
+### Generate a Domain
+
+* `IRandomizationSource.DomainName(int length)`
+* `IRandomizationSource.DomainName(IReadOnlyList<int> domainLabelLengths)`
+    * Generates a pseudo-random `string` according to `domain` (see [RFC-1035 section 2.3.1][domain-names]).
+
+### Generate a URL
+
+* `IRandomizationSource.RandomUrl(int hostLength, int pathLength = 0, int queryLength = 0, int fragmentLength = 0, string scheme = "https", int? port = null)`
+    * Generates a pseudo-random `string` URL according to [RFC-3986 URI syntax][]. The `host` segment is generated using `IRandomizationSource.DomainName(int length)`.
+
+[addr-spec]: https://datatracker.ietf.org/doc/html/rfc2822#section-3.4.1
 [cryptographically strong random number generator]: https://docs.microsoft.com/en-us/dotnet/api/system.security.cryptography.randomnumbergenerator.getint32?view=net-6.0#system-security-cryptography-randomnumbergenerator-getint32(system-int32-system-int32)
+[domain-names]: https://datatracker.ietf.org/doc/html/rfc1035#section-2.3.1
+[RFC-3986 URI syntax]: https://datatracker.ietf.org/doc/html/rfc3986#section-3
