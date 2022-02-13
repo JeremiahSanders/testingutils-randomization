@@ -127,7 +127,62 @@ Randomizer.Shared.WeightedRandomKey(new Dictionary<string, double>
 * `IRandomizationSource.RandomUrl(int hostLength, int pathLength = 0, int queryLength = 0, int fragmentLength = 0, string scheme = "https", int? port = null)`
     * Generates a pseudo-random `string` URL according to [RFC-3986 URI syntax][]. The `host` segment is generated using `IRandomizationSource.DomainName(int length)`.
 
+### Generate a Sequence of Items from a [Markov Chain][] Model
+
+* `IRandomizationSource.CreateMarkovGenerator(IReadOnlyCollection<IReadOnlyList<T>> sources, int chainLength = 1) where T : notnull, IEquatable<T>`
+    * Generates a `Func<int, IReadOnlyList<T>>` which accepts an `int maxLength` and uses a [Markov Chain][] model, derived from `sources`, to generate sequences of `T` of up to length `maxLength`.
+        * The `chainLength` determines how many `T` are grouped to determine [Markov Chain][] probability.
+* `IRandomizationSource.CreateMarkovGenerator(IEnumerable<string> sources, int chainLength = 1)`
+    * Generates a `Func<int, string>` which accepts an `int maxLength` and uses a [Markov Chain][] model, derived from `sources`, to generate strings of up to length `maxLength`.
+        * The `chainLength` determines how many characters in each input `string` are grouped to determine [Markov Chain][] probability.
+    * Example uses: create a random word or name generator using a list of example words or names.
+    * Example:
+```c#
+var exampleFruitNames = new[]
+  {
+    "apple", "apricot", "avocado", "banana", "blackberry", "blackcurrant", "blueberry", "boysenberry", "cantaloupe",
+    "caper", "cherry", "cranberry", "elderberry", "fig", "gooseberry", "grape", "grapefruit", "guava", "jujube",
+    "kiwi", "kumquat", "lemon", "lime", "lychee", "mango", "mulberry", "olive", "orange", "papaya", "pear",
+    "persimmon", "pineapple", "plantain", "plum", "pomegranate", "raspberry", "starfruit", "strawberry", "tangerine",
+    "watermelon"
+  };
+
+Func<int, string> fruitGenerator = Randomizer.Shared.CreateMarkovGenerator(sources: exampleFruitNames, chainLength: 2);
+
+string generatedFruit = fruitGenerator(maxLength: 12);
+string possiblyLongerGeneratedFruit = fruitGenerator(maxLength: 20);
+string likelyShorterGeneratedFruit = fruitGenerator(maxLength: 6);
+```
+
+* `IRandomizationSource.GenerateRandomMarkov<T>(IReadOnlyCollection<IReadOnlyList<T>> sources, int? maxLength = null, int chainLength = 1)`
+    * Generates a `IReadOnlyList<T>` based upon a [Markov Chain][] model, derived from `sources`..
+        * The `chainLength` determines how many items in each input `IReadOnlyList<T>` are grouped to determine [Markov Chain][] probability.
+    * Use `IRandomizationSource.CreateMarkovGenerator()` (above), instead of this function, unless only a **single** value is needed.
+        * The resources needed to generate the [Markov Chain][] model are non-trivial. This function creates a new model each time it is executed, consuming both computational and memory resources.
+* `IRandomizationSource.GenerateRandomMarkov(IEnumerable<string> sources, int? maxLength = null, int chainLength = 1)`
+    * Generates a `string` based upon a [Markov Chain][] model, derived from `sources`..
+        * The `chainLength` determines how many characters in each input `string` are grouped to determine [Markov Chain][] probability.
+    * Use `IRandomizationSource.CreateMarkovGenerator()` (above), instead of this function, unless only a **single** value is needed.
+        * The resources needed to generate the [Markov Chain][] model are non-trivial. This function creates a new model each time it is executed, consuming both computational and memory resources.
+    * Example uses: create a random word or name generator using a list of example words or names.
+    * Example:
+```c#
+var exampleFruitNames = new[]
+  {
+    "apple", "apricot", "avocado", "banana", "blackberry", "blackcurrant", "blueberry", "boysenberry", "cantaloupe",
+    "caper", "cherry", "cranberry", "elderberry", "fig", "gooseberry", "grape", "grapefruit", "guava", "jujube",
+    "kiwi", "kumquat", "lemon", "lime", "lychee", "mango", "mulberry", "olive", "orange", "papaya", "pear",
+    "persimmon", "pineapple", "plantain", "plum", "pomegranate", "raspberry", "starfruit", "strawberry", "tangerine",
+    "watermelon"
+  };
+
+string similarGeneratedFruit = Randomizer.Shared.GenerateRandomMarkov(sources: exampleFruitNames, maxLength: 12, chainLength: 2);
+string slightlySimilarGeneratedFruit = Randomizer.Shared.GenerateRandomMarkov(sources: exampleFruitNames, maxLength: 20, chainLength: 1);
+string verySimilarGeneratedFruit = Randomizer.Shared.GenerateRandomMarkov(sources: exampleFruitNames, maxLength: 15, chainLength: 3);
+```
+
 [addr-spec]: https://datatracker.ietf.org/doc/html/rfc2822#section-3.4.1
 [cryptographically strong random number generator]: https://docs.microsoft.com/en-us/dotnet/api/system.security.cryptography.randomnumbergenerator.getint32?view=net-6.0#system-security-cryptography-randomnumbergenerator-getint32(system-int32-system-int32)
 [domain-names]: https://datatracker.ietf.org/doc/html/rfc1035#section-2.3.1
+[Markov Chain]: https://en.wikipedia.org/wiki/Markov_chain
 [RFC-3986 URI syntax]: https://datatracker.ietf.org/doc/html/rfc3986#section-3
