@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
@@ -103,5 +104,41 @@ public class CreateMarkovGeneratorTests
     TestOutputHelper.WriteLine(message: $"Generated words: {JsonSerializer.Serialize(words)}");
 
     Assert.All(words, word => Assert.True(condition: word.Count <= maxLength));
+  }
+
+  [Theory]
+  [InlineData(0)]
+  [InlineData(-1)]
+  [InlineData(int.MinValue)]
+  public void GivenChainLengthBelow1_ThrowsArgumentOutOfRangeException(int chainLength)
+  {
+    Assert.Throws<ArgumentOutOfRangeException>(() =>
+      Randomizer.Shared.CreateMarkovGenerator(_sourceComplexObjects, chainLength)
+    );
+  }
+
+  [Fact]
+  public void GivenEmptySources_ThrowsArgumentException()
+  {
+    Assert.Throws<ArgumentException>(() =>
+      Randomizer.Shared.CreateMarkovGenerator(sources: Array.Empty<string>())
+    );
+  }
+
+  [Fact]
+  public void GivenEmptySourceLists_ThrowsArgumentException()
+  {
+    Assert.Throws<ArgumentException>(() =>
+      Randomizer.Shared.CreateMarkovGenerator(sources: new[] { string.Empty })
+    );
+  }
+
+  [Fact]
+  public void GivenChainLengthOverSourceLengths_ThrowsArgumentException()
+  {
+    const int exceptionalLength = 5; // A length greater than any source.
+    Assert.Throws<ArgumentException>(() =>
+      Randomizer.Shared.CreateMarkovGenerator(sources: new[] { new[] { 1, 2, 3 } }, exceptionalLength)
+    );
   }
 }
