@@ -1,5 +1,3 @@
-using System.Text.RegularExpressions;
-
 namespace Jds.TestingUtils.Randomization;
 
 internal static class LoremIpsumSources
@@ -726,25 +724,17 @@ particulares saepe erroribus esse obnoxiam et naturae nostrae
 infirmitas est agnoscenda.
 ";
 
-  private static readonly Regex LowerAndWhitespaceOnly = new(pattern: "(([a-z])|(\\ ))*", RegexOptions.Compiled);
-
   public static IEnumerable<string> ParseIntoWords(LoremIpsumSource source)
   {
     return source switch
     {
-      LoremIpsumSource.CiceroDeFinibusBonorumEtMalorum => LowerAndWhitespaceOnly
-        .Matches(input: CiceroDeFinibusBonorumEtMalorum.ToLowerInvariant())
-        .SelectMany(item => item.Value.Trim().Split(' '))
-        .Where(word => !string.IsNullOrWhiteSpace(word)),
-      LoremIpsumSource.MeditatioIvDeVeroEtFalso => LowerAndWhitespaceOnly
-        .Matches(input: MeditatioIvDeVeroEtFalso.ToLowerInvariant())
-        .SelectMany(item => item.Value.Trim().Split(' '))
-        .Where(word => !string.IsNullOrWhiteSpace(word)),
+      LoremIpsumSource.CiceroDeFinibusBonorumEtMalorum => MarkovSourceHelpers.ParseIntoWords(
+        source: CiceroDeFinibusBonorumEtMalorum.ToLowerInvariant()),
+      LoremIpsumSource.MeditatioIvDeVeroEtFalso => MarkovSourceHelpers.ParseIntoWords(
+        source: MeditatioIvDeVeroEtFalso.ToLowerInvariant()),
       LoremIpsumSource.MeditatioViDeRerumMaterialiumExistentiaEtRealiMentisACorporeDistinctione =>
-        LowerAndWhitespaceOnly
-          .Matches(input: MeditatioViDeRerumMaterialiumExistentiaEtRealiMentisACorporeDistinctione.ToLowerInvariant())
-          .SelectMany(item => item.Value.Trim().Split(' '))
-          .Where(word => !string.IsNullOrWhiteSpace(word)),
+        MarkovSourceHelpers.ParseIntoWords(
+          source: MeditatioViDeRerumMaterialiumExistentiaEtRealiMentisACorporeDistinctione.ToLowerInvariant()),
       _ => throw new ArgumentOutOfRangeException(paramName: nameof(source), source, null)
     };
   }
