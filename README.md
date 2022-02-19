@@ -186,11 +186,11 @@ string verySimilarGeneratedFruit = Randomizer.Shared.GenerateRandomMarkov(source
 > The [Lorem Ipsum][] random generators create Latin-like words, sentences, and paragraphs. They use [Markov Chain][] models trained on multiple Latin sources: the traditional [Lorem Ipsum][] excerpts of Cicero's De Finibus Bonorum et Malorum, and excerpts of René Descartes's Meditationes de Prima Philosophia.
 
 * `IRandomizationSource.LoremIpsumParagraph((int WordCount, int MaxWordLength) paragraphParameters)`
-    * Generates a paragraph `string` of `paragraphParameters.WordCount` words, broken into a random number of sentences, each word no more than `paragraphParameters.MaxWordLength` characters.
+    * Generates a paragraph `string` of `paragraphParameters.WordCount` words, broken into a random number of sentences. Each word in the paragraph is no more than `paragraphParameters.MaxWordLength` characters.
 * `IRandomizationSource.LoremIpsumSentence((int WordCount, int MaxWordLength) sentenceParameters)`
     * Generates a sentence `string` of `sentenceParameters.WordCount` words, each word no more than `sentenceParameters.MaxWordLength` characters. Sentences always begin with a capital letter and end with a period (`.`).
 * `IRandomizationSource.LoremIpsumWord(int maxLength)`
-    * Generates a word `string` of `paragraphParameters.WordCount` of no more than `maxLength` characters.
+    * Generates a word `string` of no more than `maxLength` characters.
 
 [addr-spec]: https://datatracker.ietf.org/doc/html/rfc2822#section-3.4.1
 [cryptographically strong random number generator]: https://docs.microsoft.com/en-us/dotnet/api/system.security.cryptography.randomnumbergenerator.getint32?view=net-6.0#system-security-cryptography-randomnumbergenerator-getint32(system-int32-system-int32)
