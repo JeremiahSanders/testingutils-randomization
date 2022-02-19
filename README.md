@@ -192,6 +192,15 @@ string verySimilarGeneratedFruit = Randomizer.Shared.GenerateRandomMarkov(source
 * `IRandomizationSource.LoremIpsumWord(int maxLength)`
     * Generates a word `string` of no more than `maxLength` characters.
 
+### Generate User Demographics
+
+> The name generators use [Markov Chain][] models trained on public census and government data.
+
+* `IRandomizationSource.DemographicsForenameUsa(int maxLength)`
+    * Generates a forename `string` of no more than `maxLength` characters. Generated names have an initial capital letter and all subsequent characters are lowercase.
+* `IRandomizationSource.DemographicsSurnameUsa(int maxLength)`
+    * Generates a surname `string` of no more than `maxLength` characters. Generated names have an initial capital letter and all subsequent characters are lowercase.
+
 [addr-spec]: https://datatracker.ietf.org/doc/html/rfc2822#section-3.4.1
 [cryptographically strong random number generator]: https://docs.microsoft.com/en-us/dotnet/api/system.security.cryptography.randomnumbergenerator.getint32?view=net-6.0#system-security-cryptography-randomnumbergenerator-getint32(system-int32-system-int32)
 [domain-names]: https://datatracker.ietf.org/doc/html/rfc1035#section-2.3.1
