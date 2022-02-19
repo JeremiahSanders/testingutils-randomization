@@ -155,7 +155,7 @@ string likelyShorterGeneratedFruit = fruitGenerator(maxLength: 6);
 ```
 
 * `IRandomizationSource.GenerateRandomMarkov<T>(IReadOnlyCollection<IReadOnlyList<T>> sources, int? maxLength = null, int chainLength = 1)`
-    * Generates a `IReadOnlyList<T>` based upon a [Markov Chain][] model, derived from `sources`..
+    * Generates a `IReadOnlyList<T>` based upon a [Markov Chain][] model, derived from `sources`.
         * The `chainLength` determines how many items in each input `IReadOnlyList<T>` are grouped to determine [Markov Chain][] probability.
     * Use `IRandomizationSource.CreateMarkovGenerator()` (above), instead of this function, unless only a **single** value is needed.
         * The resources needed to generate the [Markov Chain][] model are non-trivial. This function creates a new model each time it is executed, consuming both computational and memory resources.
@@ -181,8 +181,20 @@ string slightlySimilarGeneratedFruit = Randomizer.Shared.GenerateRandomMarkov(so
 string verySimilarGeneratedFruit = Randomizer.Shared.GenerateRandomMarkov(sources: exampleFruitNames, maxLength: 15, chainLength: 3);
 ```
 
+### Generate a Word, Sentence, or Paragraph ([Lorem Ipsum][])
+
+> The [Lorem Ipsum][] random generators create Latin-like words, sentences, and paragraphs. They use [Markov Chain][] models trained on multiple Latin sources: the traditional [Lorem Ipsum][] excerpts of Cicero's De Finibus Bonorum et Malorum, and excerpts of René Descartes's Meditationes de Prima Philosophia.
+
+* `IRandomizationSource.LoremIpsumParagraph((int WordCount, int MaxWordLength) paragraphParameters)`
+    * Generates a paragraph `string` of `paragraphParameters.WordCount` words, broken into a random number of sentences, each word no more than `paragraphParameters.MaxWordLength` characters.
+* `IRandomizationSource.LoremIpsumSentence((int WordCount, int MaxWordLength) sentenceParameters)`
+    * Generates a sentence `string` of `sentenceParameters.WordCount` words, each word no more than `sentenceParameters.MaxWordLength` characters. Sentences always begin with a capital letter and end with a period (`.`).
+* `IRandomizationSource.LoremIpsumWord(int maxLength)`
+    * Generates a word `string` of `paragraphParameters.WordCount` of no more than `maxLength` characters.
+
 [addr-spec]: https://datatracker.ietf.org/doc/html/rfc2822#section-3.4.1
 [cryptographically strong random number generator]: https://docs.microsoft.com/en-us/dotnet/api/system.security.cryptography.randomnumbergenerator.getint32?view=net-6.0#system-security-cryptography-randomnumbergenerator-getint32(system-int32-system-int32)
 [domain-names]: https://datatracker.ietf.org/doc/html/rfc1035#section-2.3.1
+[Lorem Ipsum]: https://en.wikipedia.org/wiki/Lorem_ipsum
 [Markov Chain]: https://en.wikipedia.org/wiki/Markov_chain
 [RFC-3986 URI syntax]: https://datatracker.ietf.org/doc/html/rfc3986#section-3
