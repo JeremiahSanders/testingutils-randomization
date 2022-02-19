@@ -196,6 +196,9 @@ string verySimilarGeneratedFruit = Randomizer.Shared.GenerateRandomMarkov(source
 
 > The name generators use [Markov Chain][] models trained on public census and government data.
 
+* `IRandomizationSource.DemographicsBirthDateTime(DateTime? relativeTo = null)`
+* `IRandomizationSource.DemographicsBirthDateTime((int MinAgeInYears, int MaxAgeInYearsExclusive) ageRange, DateTime? relativeTo = null)`
+    * Generates a date of birth `DateTime` within the `ageRange` specified, relative to `relativeTo`. If not provided, `ageRange` defaults to `(MinAgeInYears: 18, MaxAgeInYearsExclusive: 96)`. If not provided, `relativeTo` defaults to `DateTime.UtcNow`.
 * `IRandomizationSource.DemographicsForenameUsa(int maxLength)`
     * Generates a forename `string` of no more than `maxLength` characters. Generated names have an initial capital letter and all subsequent characters are lowercase.
 * `IRandomizationSource.DemographicsSurnameUsa(int maxLength)`
