@@ -19,8 +19,22 @@ set -o pipefail # Fail pipelines if any command errors, not just the last one.
 function ci-compose() {
   printf "Composing build artifacts...\n\n"
   
-  ci-dotnet-publish &&
-    ci-dotnet-pack
+  function createDocs() {
+    cd "${PROJECT_ROOT}"
+    dotnet tool restore
+    local sourcePath="${BUILD_UNPACKAGED_DIST}/TestingUtils.Randomization.dll"
+    local outputPath="${BUILD_DOCS}/md"
+    dotnet xmldocmd "${sourcePath}" "${outputPath}" \
+      --namespace "Jds.TestingUtils.Randomization" \
+      --source "https://github.com/JeremiahSanders/testingutils-randomization/tree/main/src" \
+      --newline lf \
+      --visibility public
+  }
+  ci-dotnet-publish \
+    -p:GenerateDocumentationFile=true &&
+    ci-dotnet-pack \
+      -p:GenerateDocumentationFile=true &&
+    createDocs
   
   printf "Composition complete.\n"
 }
