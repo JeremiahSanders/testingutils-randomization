@@ -6,6 +6,10 @@
 
 This collection of randomization test utilities supports creating test arrangements.
 
+## [API Documentation][]
+
+See [API Documentation][].
+
 ## How to Use
 
 > All examples below use the thread-safe, static `Jds.TestingUtils.Randomization.Randomizer.Shared` instance of `IRandomizationSource`, which generates random values using `System.Random.Shared`. This `IRandomizationSource` is advised for most tests.
@@ -205,6 +209,7 @@ string verySimilarGeneratedFruit = Randomizer.Shared.GenerateRandomMarkov(source
     * Generates a surname `string` of no more than `maxLength` characters. Generated names have an initial capital letter and all subsequent characters are lowercase.
 
 [addr-spec]: https://datatracker.ietf.org/doc/html/rfc2822#section-3.4.1
+[API Documentation]: ./docs/api/TestingUtils.Randomization.md
 [cryptographically strong random number generator]: https://docs.microsoft.com/en-us/dotnet/api/system.security.cryptography.randomnumbergenerator.getint32?view=net-6.0#system-security-cryptography-randomnumbergenerator-getint32(system-int32-system-int32)
 [domain-names]: https://datatracker.ietf.org/doc/html/rfc1035#section-2.3.1
 [Lorem Ipsum]: https://en.wikipedia.org/wiki/Lorem_ipsum

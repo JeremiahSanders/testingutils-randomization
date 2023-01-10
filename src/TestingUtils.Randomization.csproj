@@ -10,7 +10,7 @@
   <PropertyGroup>
     <Authors>jds</Authors>
     <Company />
-    <Copyright>Copyright (c) 2022 Jeremiah Sanders</Copyright>
+    <Copyright>Copyright (c) 2023 Jeremiah Sanders</Copyright>
     <Description>TestingUtils: Randomization</Description>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <PackageId>Jds.TestingUtils.Randomization</PackageId>

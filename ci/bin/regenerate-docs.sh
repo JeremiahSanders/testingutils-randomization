@@ -2,10 +2,10 @@
 # shellcheck disable=SC2155
 
 ###
-# Build and publish the project's artifact composition.
+# Build and validate the project's source.
 #
 # How to use:
-#   Customize the "ci-compose" and "ci-publish" workflows (functions) defined in ci/libexec/workflows/.
+#   Customize the "ci-validate" and "ci-compose" workflows (functions) defined in ci/libexec/workflows/.
 ###
 
 set -o errexit  # Fail or exit immediately if there is an error.
@@ -28,8 +28,8 @@ else
 fi
 
 #--
-# Use 'dotnet cicee lib exec' to run our output composition and publish workflows.
+# Use 'cicee lib exec' to run our validation workflow and perform a dry-run output composition.
 #   All .sh scripts in ci/libexec/workflows/ are sourced by CICEE's library.
-#   Below we only need to execute the workflow Bash shell functions (in ci/libexec/workflows/).
+#   Below we only need to execute the workflow Bash shell functions.
 #--
-dotnet cicee lib exec --project-root "${PROJECT_ROOT}" --command "ci-compose \&\& ci-publish"
+dotnet cicee lib exec --project-root "${PROJECT_ROOT}" --command "ci-regenerate-docs"
