@@ -30,7 +30,46 @@ public static class SelectionRandomizationSourceExtensions
   public static TEnum RandomEnumValue<TEnum>(this IRandomizationSource randomizationSource)
     where TEnum : struct, Enum
   {
-    return randomizationSource.RandomListItem(Enum.GetValues<TEnum>());
+    var enumValues = Enum.GetValues<TEnum>();
+
+    if (!enumValues.Any())
+    {
+      throw new ArgumentException($"Enum {typeof(TEnum).Name} has no values.");
+    }
+
+    return randomizationSource.RandomListItem(enumValues);
+  }
+
+  /// <summary>
+  ///   Retrieves a random value (excluding <paramref name="except" />) from <typeparamref name="TEnum" />.
+  /// </summary>
+  /// <param name="randomizationSource">A <see cref="IRandomizationSource" /> providing values.</param>
+  /// <param name="except"><typeparamref name="TEnum" /> value(s) to exclude.</param>
+  /// <typeparam name="TEnum">An enumeration.</typeparam>
+  /// <returns>A randomly-selected value from <typeparamref name="TEnum" />.</returns>
+  /// <exception cref="ArgumentException">Thrown if <typeparamref name="TEnum" /> is empty.</exception>
+  /// <exception cref="InvalidOperationException">
+  ///   Thrown if no values of <typeparamref name="TEnum" /> remain after
+  ///   <paramref name="except" /> are excluded.
+  /// </exception>
+  public static TEnum RandomEnumValue<TEnum>(this IRandomizationSource randomizationSource, params TEnum[] except)
+    where TEnum : struct, Enum
+  {
+    var enumValues = Enum.GetValues<TEnum>();
+
+    if (!enumValues.Any())
+    {
+      throw new ArgumentException($"Enum {typeof(TEnum).Name} has no values.");
+    }
+
+    var values = enumValues.Where(element => !except.Contains(element)).ToList();
+
+    if (!values.Any())
+    {
+      throw new InvalidOperationException("Cannot select random enum value. No enum values remain after filtering.");
+    }
+
+    return randomizationSource.RandomListItem(values);
   }
 
   /// <summary>

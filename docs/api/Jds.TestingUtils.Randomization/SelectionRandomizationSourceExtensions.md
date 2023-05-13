@@ -8,7 +8,7 @@ public static class SelectionRandomizationSourceExtensions
 
 | name | description |
 | --- | --- |
-| static [RandomEnumValue&lt;TEnum&gt;](SelectionRandomizationSourceExtensions/RandomEnumValue.md)(…) | Retrieves a random value from *TEnum*, assumed to be non-empty. |
+| static [RandomEnumValue&lt;TEnum&gt;](SelectionRandomizationSourceExtensions/RandomEnumValue.md)(…) | Retrieves a random value from *TEnum*, assumed to be non-empty. (2 methods) |
 | static [RandomListItem&lt;T&gt;](SelectionRandomizationSourceExtensions/RandomListItem.md)(…) | Retrieves a random item from *items*, assumed to be non-empty. |
 | static [WeightedRandomKey&lt;T&gt;](SelectionRandomizationSourceExtensions/WeightedRandomKey.md)(…) | Retrieves a weighted random key from *weightedKeys*, assumed to be non-empty. (2 methods) |
 | static [WeightedRandomListItem&lt;T&gt;](SelectionRandomizationSourceExtensions/WeightedRandomListItem.md)(…) | Retrieves a weighted random item from *weightedItems*, assumed to be non-empty. (2 methods) |
