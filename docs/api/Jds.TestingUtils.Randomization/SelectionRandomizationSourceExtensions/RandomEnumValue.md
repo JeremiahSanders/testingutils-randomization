@@ -1,4 +1,4 @@
-# SelectionRandomizationSourceExtensions.RandomEnumValue&lt;TEnum&gt; method
+# SelectionRandomizationSourceExtensions.RandomEnumValue&lt;TEnum&gt; method (1 of 2)
 
 Retrieves a random value from *TEnum*, assumed to be non-empty.
 
@@ -21,6 +21,41 @@ A randomly-selected value from *TEnum*.
 | exception | condition |
 | --- | --- |
 | ArgumentException | Thrown if *TEnum* is empty. |
+
+## See Also
+
+* interface [IRandomizationSource](../IRandomizationSource.md)
+* class [SelectionRandomizationSourceExtensions](../SelectionRandomizationSourceExtensions.md)
+* namespace [Jds.TestingUtils.Randomization](../../TestingUtils.Randomization.md)
+
+---
+
+# SelectionRandomizationSourceExtensions.RandomEnumValue&lt;TEnum&gt; method (2 of 2)
+
+Retrieves a random value (excluding *except*) from *TEnum*.
+
+```csharp
+public static TEnum RandomEnumValue<TEnum>(this IRandomizationSource randomizationSource, 
+    params TEnum[] except)
+    where TEnum : struct, Enum
+```
+
+| parameter | description |
+| --- | --- |
+| TEnum | An enumeration. |
+| randomizationSource | A [`IRandomizationSource`](../IRandomizationSource.md) providing values. |
+| except | *TEnum* value(s) to exclude. |
+
+## Return Value
+
+A randomly-selected value from *TEnum*.
+
+## Exceptions
+
+| exception | condition |
+| --- | --- |
+| ArgumentException | Thrown if *TEnum* is empty. |
+| InvalidOperationException | Thrown if no values of *TEnum* remain after *except* are excluded. |
 
 ## See Also
 
