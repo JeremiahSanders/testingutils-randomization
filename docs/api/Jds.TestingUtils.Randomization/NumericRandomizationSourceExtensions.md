@@ -11,6 +11,10 @@ public static class NumericRandomizationSourceExtensions
 | static [Boolean](NumericRandomizationSourceExtensions/Boolean.md)(…) | Gets a pseudo-random Boolean. |
 | static [Byte](NumericRandomizationSourceExtensions/Byte.md)(…) | Gets a pseudo-random Byte, greater than or equal to MinValue, and less than MaxValue. |
 | static [ByteInRange](NumericRandomizationSourceExtensions/ByteInRange.md)(…) | Gets a pseudo-random Byte, greater than or equal to *minInclusive*, and less than *maxExclusive*. |
+| static [Decimal](NumericRandomizationSourceExtensions/Decimal.md)(…) | Gets a pseudo-random Decimal between MinValue and MaxValue. |
+| static [DecimalInRange](NumericRandomizationSourceExtensions/DecimalInRange.md)(…) | Gets a pseudo-random Decimal between *minInclusive* and *maxExclusive*. |
+| static [DecimalNegative](NumericRandomizationSourceExtensions/DecimalNegative.md)(…) | Gets a pseudo-random Decimal between MinValue and Zero. |
+| static [DecimalPositive](NumericRandomizationSourceExtensions/DecimalPositive.md)(…) | Gets a pseudo-random Decimal between Zero and MaxValue. |
 | static [Double](NumericRandomizationSourceExtensions/Double.md)(…) | Gets a pseudo-random Double, using [`NextDouble`](./IRandomizationSource/NextDouble.md). The value should be greater than or equal to 0.0, and less than 1.0. |
 | static [Float](NumericRandomizationSourceExtensions/Float.md)(…) | Gets a pseudo-random Single, using [`NextFloat`](./IRandomizationSource/NextFloat.md). The value should be greater than or equal to 0.0, and less than 1.0. |
 | static [Int](NumericRandomizationSourceExtensions/Int.md)(…) | Gets a pseudo-random Int32, using [`NextIntInRange`](./IRandomizationSource/NextIntInRange.md). The value should be greater than or equal to MinValue, and less than MaxValue. |
