@@ -45,6 +45,79 @@ public static class NumericRandomizationSourceExtensions
   }
 
   /// <summary>
+  ///   Gets a pseudo-random <see cref="decimal" /> between <see cref="decimal.MinValue" /> and
+  ///   <see cref="decimal.MaxValue" />.
+  /// </summary>
+  /// <param name="randomizationSource">A <see cref="IRandomizationSource" /> providing values.</param>
+  /// <returns>
+  ///   A <see cref="decimal" /> between <see cref="decimal.MinValue" /> and
+  ///   <see cref="decimal.MaxValue" />.
+  /// </returns>
+  public static decimal Decimal(this IRandomizationSource randomizationSource)
+  {
+    return decimal.MaxValue * Convert.ToDecimal(randomizationSource.NextDouble() - 1d / 2d);
+  }
+
+  /// <summary>
+  ///   Gets a pseudo-random <see cref="decimal" /> between <paramref name="minInclusive" /> and
+  ///   <paramref name="maxExclusive" />.
+  /// </summary>
+  /// <param name="randomizationSource">A <see cref="IRandomizationSource" /> providing values.</param>
+  /// <param name="minInclusive">A minimum limit.</param>
+  /// <param name="maxExclusive">An exclusive upper limit.</param>
+  /// <returns>
+  ///   A <see cref="decimal" /> between <paramref name="minInclusive" /> and
+  ///   <paramref name="maxExclusive" />.
+  /// </returns>
+  public static decimal DecimalInRange(this IRandomizationSource randomizationSource,
+    decimal minInclusive,
+    decimal maxExclusive
+  )
+  {
+    if (maxExclusive <= minInclusive)
+    {
+      throw new ArgumentOutOfRangeException(nameof(maxExclusive), "Max must be greater than min.");
+    }
+
+    if (minInclusive < decimal.Zero && maxExclusive > decimal.Zero)
+    {
+      // Since the range could exceed Decimal, create the below-zero and above-zero portion of the range independently and sum. 
+      return Convert.ToDecimal(randomizationSource.NextDouble()) * minInclusive +
+             Convert.ToDecimal(randomizationSource.NextDouble()) * maxExclusive;
+    }
+
+    return minInclusive + (maxExclusive - minInclusive) * Convert.ToDecimal(randomizationSource.NextDouble());
+  }
+
+  /// <summary>
+  ///   Gets a pseudo-random <see cref="decimal" /> between <see cref="decimal.Zero" /> and
+  ///   <see cref="decimal.MaxValue" />.
+  /// </summary>
+  /// <param name="randomizationSource">A <see cref="IRandomizationSource" /> providing values.</param>
+  /// <returns>
+  ///   A <see cref="decimal" /> between <see cref="decimal.MinValue" /> and
+  ///   <see cref="decimal.MaxValue" />.
+  /// </returns>
+  public static decimal DecimalPositive(this IRandomizationSource randomizationSource)
+  {
+    return Convert.ToDecimal(randomizationSource.NextDouble()) * decimal.MaxValue;
+  }
+
+  /// <summary>
+  ///   Gets a pseudo-random <see cref="decimal" /> between <see cref="decimal.MinValue" /> and
+  ///   <see cref="decimal.Zero" />.
+  /// </summary>
+  /// <param name="randomizationSource">A <see cref="IRandomizationSource" /> providing values.</param>
+  /// <returns>
+  ///   A <see cref="decimal" /> between <see cref="decimal.MinValue" /> and
+  ///   <see cref="decimal.MaxValue" />.
+  /// </returns>
+  public static decimal DecimalNegative(this IRandomizationSource randomizationSource)
+  {
+    return Convert.ToDecimal(randomizationSource.NextDouble()) * decimal.MinValue;
+  }
+
+  /// <summary>
   ///   Gets a pseudo-random <see cref="double" />, using <see cref="IRandomizationSource.NextDouble" />.
   ///   The value should be greater than or equal to 0.0, and less than 1.0.
   /// </summary>
