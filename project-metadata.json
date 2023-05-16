@@ -2,7 +2,7 @@
   "name": "testingutils-randomization",
   "description": "Randomization utilities supporting test arrangements",
   "title": "Testing Utils: Randomization",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "ciEnvironment": {
     "variables": [
       {
