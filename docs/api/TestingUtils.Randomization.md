@@ -8,6 +8,7 @@
 | static class [DemographicsRandomizationSourceExtensions](./Jds.TestingUtils.Randomization/DemographicsRandomizationSourceExtensions.md) |  |
 | class [DeterministicRandomizationSource](./Jds.TestingUtils.Randomization/DeterministicRandomizationSource.md) | A [`IRandomizationSource`](./Jds.TestingUtils.Randomization/IRandomizationSource.md) which returns sequential values from IEnumerable sources. |
 | static class [DomainRandomizationSourceExtensions](./Jds.TestingUtils.Randomization/DomainRandomizationSourceExtensions.md) |  |
+| static class [EnumerableExtensions](./Jds.TestingUtils.Randomization/EnumerableExtensions.md) |  |
 | interface [IRandomizationSource](./Jds.TestingUtils.Randomization/IRandomizationSource.md) | A random value provider. |
 | static class [LoremIpsumRandomizationSourceExtensions](./Jds.TestingUtils.Randomization/LoremIpsumRandomizationSourceExtensions.md) |  |
 | static class [MailAddressRandomizationSourceExtensions](./Jds.TestingUtils.Randomization/MailAddressRandomizationSourceExtensions.md) |  |
