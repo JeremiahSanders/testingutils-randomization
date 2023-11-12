@@ -65,6 +65,13 @@ using System.Linq;
 * `IRandomizationSource.LongPositive()`
   * Gets a pseudo-random `long`, using `IRandomizationSource.NextLongInRange`. The value should be greater than or equal to `0`, and less than `long.MaxValue`.
 
+### Generate a Random Number of Generated Items
+
+* `IRandomizationSource.Enumerable<T>(Func<T> factory, int inclusiveMinCount, int exclusiveMaxCount)`
+* `IRandomizationSource.Enumerable<T>(Func<int, T> factory, int inclusiveMinCount, int exclusiveMaxCount)`
+  * Creates an `IEnumerable<T>` of a randomly-generated length using values provided by a factory method.
+  * Example: `Randomizer.Shared.Enumerable(Guid.NewGuid, 3, 7)` - which would generate a sequence of `3` to `6` `Guid` values.
+
 ### Select a Random Item or Enumeration Value
 
 * `IRandomizationSource.RandomEnumValue<TEnum>()`
