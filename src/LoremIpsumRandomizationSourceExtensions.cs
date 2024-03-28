@@ -6,17 +6,19 @@ public static class LoremIpsumRandomizationSourceExtensions
 
   private static
     Lazy<IReadOnlyDictionary<IReadOnlyList<char>, MarkovStringRandomizationSourceExtensions.MarkovResult<char>>>
-    LipsumWordGenerator { get; } = new(() =>
-    MarkovStringRandomizationSourceExtensions.GetMarkovProbability(
-      sources: LoremIpsumSources.ParseIntoWords(LoremIpsumSources.LoremIpsumSource.MeditatioIvDeVeroEtFalso)
-        .Concat(second: LoremIpsumSources.ParseIntoWords(LoremIpsumSources.LoremIpsumSource
-          .MeditatioViDeRerumMaterialiumExistentiaEtRealiMentisACorporeDistinctione))
-        .Concat(second: LoremIpsumSources.ParseIntoWords(LoremIpsumSources.LoremIpsumSource
-          .CiceroDeFinibusBonorumEtMalorum))
-        .Select(source => source.ToCharArray())
-        .ToArray(),
-      LoremIpsumCharacterChainLength
-    ));
+    LipsumWordGenerator { get; } = new(LipsumWordGeneratorDictionaryFactory);
+
+  private static IReadOnlyDictionary<IReadOnlyList<char>, MarkovStringRandomizationSourceExtensions.MarkovResult<char>>
+    LipsumWordGeneratorDictionaryFactory()
+  {
+    return MarkovStringRandomizationSourceExtensions.GetMarkovProbability(LoremIpsumSources
+      .ParseIntoWords(LoremIpsumSources.LoremIpsumSource.MeditatioIvDeVeroEtFalso)
+      .Concat(LoremIpsumSources.ParseIntoWords(LoremIpsumSources.LoremIpsumSource
+        .MeditatioViDeRerumMaterialiumExistentiaEtRealiMentisACorporeDistinctione))
+      .Concat(LoremIpsumSources.ParseIntoWords(LoremIpsumSources.LoremIpsumSource.CiceroDeFinibusBonorumEtMalorum))
+      .Select(source => source.ToCharArray())
+      .ToList(), LoremIpsumCharacterChainLength);
+  }
 
   /// <summary>
   ///   Generate a pseudo-random Latin-derived word of up to <paramref name="maxLength" /> characters.
@@ -29,10 +31,10 @@ public static class LoremIpsumRandomizationSourceExtensions
   {
     if (maxLength <= 0)
     {
-      throw new ArgumentOutOfRangeException(paramName: nameof(maxLength));
+      throw new ArgumentOutOfRangeException(nameof(maxLength));
     }
 
-    return string.Concat(values: randomizationSource.GenerateRandomMarkov(LipsumWordGenerator.Value, maxLength)
+    return string.Concat(randomizationSource.GenerateRandomMarkov(LipsumWordGenerator.Value, maxLength)
       .Take(maxLength));
   }
 
@@ -53,17 +55,22 @@ public static class LoremIpsumRandomizationSourceExtensions
     var (wordCount, maxWordLength) = sentenceParameters;
     if (wordCount <= 0 || maxWordLength <= 0)
     {
-      throw new ArgumentOutOfRangeException(paramName: nameof(sentenceParameters));
+      throw new ArgumentOutOfRangeException(nameof(sentenceParameters));
     }
 
-    return string.Concat(values: string
+    return string.Concat(string
       .Join(' ',
-        values: Enumerable.Range(1, wordCount)
+        Enumerable.Range(1, wordCount)
           .Select(_ => LoremIpsumWord(randomizationSource, maxWordLength))
       )
       .ToCharArray()
-      .Select((character, index) => index == 0 ? char.ToUpperInvariant(character) : character)
+      .Select(UpperCaseFirstCharacter)
       .Append('.'));
+
+    static char UpperCaseFirstCharacter(char character, int index)
+    {
+      return index == 0 ? char.ToUpperInvariant(character) : character;
+    }
   }
 
   /// <summary>
@@ -85,20 +92,20 @@ public static class LoremIpsumRandomizationSourceExtensions
     var (wordCount, maxWordLength) = paragraphParameters;
     if (wordCount <= 0 || maxWordLength <= 0)
     {
-      throw new ArgumentOutOfRangeException(paramName: nameof(paragraphParameters));
+      throw new ArgumentOutOfRangeException(nameof(paragraphParameters));
     }
 
     var state = (WordsCreated: 0, Sentences: (IEnumerable<string>)Array.Empty<string>());
     while (state.WordsCreated < wordCount)
     {
       var sentenceWordCount = Math.Min(
-        val1: wordCount - state.WordsCreated,
-        val2: randomizationSource.IntInRange(minPlannedWordsPerSentence, exclusiveMaxPlannedWordsPerSentence)
+        wordCount - state.WordsCreated,
+        randomizationSource.IntInRange(minPlannedWordsPerSentence, exclusiveMaxPlannedWordsPerSentence)
       );
       state = (state.WordsCreated + sentenceWordCount,
           state.Sentences.Append(
-            element: LoremIpsumSentence(randomizationSource,
-              sentenceParameters: (sentenceWordCount, maxWordLength))
+            LoremIpsumSentence(randomizationSource,
+              (sentenceWordCount, maxWordLength))
           )
         );
     }

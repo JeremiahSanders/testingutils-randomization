@@ -4,11 +4,12 @@ namespace Jds.TestingUtils.Randomization;
 ///   Simple wrapper type to safely deal with nullable values.
 /// </summary>
 /// <typeparam name="T">A wrapped type.</typeparam>
-internal record OptionalValue<T>
+internal readonly record struct OptionalValue<T>
 {
-  public T? Value { get; init; }
+  private static OptionalValue<T> StaticNone { get; } = new();
+  public T? Value { get; private init; }
 
-  public bool IsSome => Value != null && !Value.Equals(obj: default(T?));
+  public bool IsSome => Value != null && !Value.Equals(default(T?));
 
   /// <summary>
   ///   Static constructor of nullable values.
@@ -18,8 +19,8 @@ internal record OptionalValue<T>
   public static OptionalValue<T> Of(T? possibleValue)
   {
     return possibleValue == null
-      ? new OptionalValue<T>()
-      : new OptionalValue<T> { Value = possibleValue };
+      ? StaticNone
+      : new OptionalValue<T> {Value = possibleValue};
   }
 
   /// <summary>
@@ -28,6 +29,6 @@ internal record OptionalValue<T>
   /// <returns>An <see cref="OptionalValue{T}" /> with a <see cref="Value" /> of null.</returns>
   public static OptionalValue<T> None()
   {
-    return new OptionalValue<T>();
+    return StaticNone;
   }
 }
