@@ -1,3 +1,5 @@
+using System.Text;
+
 namespace Jds.TestingUtils.Randomization;
 
 public static class LoremIpsumRandomizationSourceExtensions
@@ -34,6 +36,13 @@ public static class LoremIpsumRandomizationSourceExtensions
       throw new ArgumentOutOfRangeException(nameof(maxLength));
     }
 
+    var stringBuilder = new StringBuilder();
+
+    return randomizationSource.GenerateRandomMarkov(LipsumWordGenerator.Value, maxLength)
+      .Take(maxLength)
+      .Aggregate(stringBuilder, static (builder, c) => builder.Append(c))
+      .ToString();
+    
     return string.Concat(randomizationSource.GenerateRandomMarkov(LipsumWordGenerator.Value, maxLength)
       .Take(maxLength));
   }
@@ -109,6 +118,9 @@ public static class LoremIpsumRandomizationSourceExtensions
           )
         );
     }
+    
+    
+    
 
     return string.Join(' ',
       state.Sentences

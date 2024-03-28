@@ -27,8 +27,8 @@ public static class MarkovStringRandomizationSourceExtensions
     IEnumerable<string> sources, int? maxLength = null, int chainLength = 1)
   {
     return string.Concat(
-      values: randomizationSource.GenerateRandomMarkov(
-        sources: sources.Select(source => source.ToCharArray()).ToArray(), maxLength, chainLength)
+      randomizationSource.GenerateRandomMarkov(
+        sources.Select(source => source.ToCharArray()).ToArray(), maxLength, chainLength)
     );
   }
 
@@ -60,24 +60,24 @@ public static class MarkovStringRandomizationSourceExtensions
   {
     if (chainLength < 1)
     {
-      throw new ArgumentOutOfRangeException(paramName: nameof(chainLength),
-        message: $"{nameof(chainLength)} must be > 0.");
+      throw new ArgumentOutOfRangeException(nameof(chainLength),
+        $"{nameof(chainLength)} must be > 0.");
     }
 
     if (!sources.Any() || sources.Any(source => !source.Any()))
     {
-      throw new ArgumentException(message: $"Items in {nameof(sources)} cannot be empty.", paramName: nameof(sources));
+      throw new ArgumentException($"Items in {nameof(sources)} cannot be empty.", nameof(sources));
     }
 
     var actualMaxLength = maxLength ?? sources.Max(list => list.Count);
 
     if (chainLength > actualMaxLength)
     {
-      throw new ArgumentException(message: $"{nameof(chainLength)} may not exceed {nameof(maxLength)}.");
+      throw new ArgumentException($"{nameof(chainLength)} may not exceed {nameof(maxLength)}.");
     }
 
     return randomizationSource.GenerateRandomMarkov(
-      markovProbability: GetMarkovProbability(sources, chainLength),
+      GetMarkovProbability(sources, chainLength),
       actualMaxLength
     );
   }
@@ -107,16 +107,16 @@ public static class MarkovStringRandomizationSourceExtensions
     IEnumerable<string> sources, int chainLength = 1)
   {
     var charListGenerator = randomizationSource.CreateMarkovGenerator(
-      sources: sources.Select(source => source.ToCharArray()).ToArray(),
+      sources.Select(source => source.ToCharArray()).ToList(),
       chainLength
     );
 
+    return Generator;
+
     string Generator(int maxLength)
     {
-      return string.Concat(values: charListGenerator(maxLength));
+      return string.Concat(charListGenerator(maxLength));
     }
-
-    return Generator;
   }
 
   /// <summary>
@@ -144,20 +144,20 @@ public static class MarkovStringRandomizationSourceExtensions
   {
     if (chainLength < 1)
     {
-      throw new ArgumentOutOfRangeException(paramName: nameof(chainLength),
-        message: $"{nameof(chainLength)} must be > 0.");
+      throw new ArgumentOutOfRangeException(nameof(chainLength),
+        $"{nameof(chainLength)} must be > 0.");
     }
 
     if (!sources.Any() || sources.Any(source => !source.Any()))
     {
-      throw new ArgumentException(message: $"Items in {nameof(sources)} cannot be empty.", paramName: nameof(sources));
+      throw new ArgumentException($"Items in {nameof(sources)} cannot be empty.", nameof(sources));
     }
 
     var largestSourceCount = sources.Max(list => list.Count);
 
     if (chainLength > largestSourceCount)
     {
-      throw new ArgumentException(message: $"{nameof(chainLength)} may not exceed largest item in {nameof(sources)}.");
+      throw new ArgumentException($"{nameof(chainLength)} may not exceed largest item in {nameof(sources)}.");
     }
 
     var markovProbability = GetMarkovProbability(sources, chainLength);
@@ -180,7 +180,7 @@ public static class MarkovStringRandomizationSourceExtensions
     var nextItemLookup = markovProbability.Select(keyValuePair =>
         new KeyValuePair<IReadOnlyList<T>, Dictionary<OptionalValue<T>, int>>(
           keyValuePair.Key,
-          value: keyValuePair.Value.GetNextItems()
+          keyValuePair.Value.GetNextItems()
         )
       )
       .ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
@@ -195,8 +195,9 @@ public static class MarkovStringRandomizationSourceExtensions
     var defaultKvp = new KeyValuePair<IReadOnlyList<T>, Dictionary<OptionalValue<T>, int>>();
     while (!finished)
     {
+      var loopPreviousItem = previousItem; // Addresses 'captured variable is modified in outer scope
       var possiblePreviousItemResults =
-        nextItemLookup.FirstOrDefault(kvp => kvp.Key.SequenceEqual(previousItem), defaultKvp);
+        nextItemLookup.FirstOrDefault(kvp => kvp.Key.SequenceEqual(loopPreviousItem), defaultKvp);
 
       var possibleNext = !Equals(possiblePreviousItemResults, defaultKvp) && results.Count < maxLength
         ? possiblePreviousItemResults.Value.GetWeightedRandomKey(randomizationSource)
@@ -204,7 +205,7 @@ public static class MarkovStringRandomizationSourceExtensions
 
       if (possibleNext.IsSome)
       {
-        results.Add(item: possibleNext.Value!);
+        results.Add(possibleNext.Value!);
         previousItem = previousItem.Skip(1).Append(possibleNext.Value).ToList()!;
       }
       else
@@ -258,71 +259,6 @@ public static class MarkovStringRandomizationSourceExtensions
     int itemsPerGroup
   ) where T : notnull, IEquatable<T>
   {
-    static Dictionary<IReadOnlyList<T>, MarkovResult<T>> GetMarkovProbabilities(IReadOnlyList<T> items, int order)
-    {
-      OptionalValue<T> TryGetNextItem(int index)
-      {
-        return index + order < items.Count
-          ? OptionalValue<T>.Of(possibleValue: items[index: index + order])
-          : OptionalValue<T>.None();
-      }
-
-      var groupedItemCount = GetGroupedItemIteratorCount(items, order);
-
-      var state = new Dictionary<IReadOnlyList<T>, MarkovResult<T>>();
-
-      foreach (var (item, index) in IterateGroupedItems(items, order))
-      {
-        if (!state.ContainsKey(item))
-        {
-          state[item] = new MarkovResult<T>();
-        }
-
-        state[item] = state[item] with { Occurrences = state[item].Occurrences + 1 };
-
-        if (index == 0)
-        {
-          state[item] = state[item] with { FirstItemCount = state[item].FirstItemCount + 1 };
-        }
-
-        if (index + 1 == groupedItemCount)
-        {
-          state[item] = state[item] with { LastItemCount = state[item].LastItemCount + 1 };
-        }
-
-        var getNextItem = TryGetNextItem(index);
-        if (getNextItem.IsSome)
-        {
-          var nextItem = getNextItem.Value!;
-          var itemState = state[item];
-          if (!itemState.NextItemCounts.ContainsKey(nextItem))
-          {
-            itemState.NextItemCounts[nextItem] = 0;
-          }
-
-          itemState.NextItemCounts[nextItem] += 1;
-        }
-      }
-
-      return state;
-    }
-
-    static Dictionary<T, int> MergeDictionaries(IDictionary<T, int> a, IDictionary<T, int> b)
-    {
-      var dictionary = new Dictionary<T, int>(a);
-      foreach (var keyValuePair in b)
-      {
-        if (!dictionary.ContainsKey(keyValuePair.Key))
-        {
-          dictionary[keyValuePair.Key] = 0;
-        }
-
-        dictionary[keyValuePair.Key] += keyValuePair.Value;
-      }
-
-      return dictionary;
-    }
-
     var state = new Dictionary<IReadOnlyList<T>, MarkovResult<T>>();
     var defaultKvp = default(KeyValuePair<IReadOnlyList<T>, MarkovResult<T>>);
     var finalState = sources.Select(source => GetMarkovProbabilities(source, itemsPerGroup))
@@ -351,6 +287,65 @@ public static class MarkovStringRandomizationSourceExtensions
       });
 
     return finalState;
+
+    static Dictionary<IReadOnlyList<T>, MarkovResult<T>> GetMarkovProbabilities(IReadOnlyList<T> items, int order)
+    {
+      var groupedItemCount = GetGroupedItemIteratorCount(items, order);
+
+      var state = new Dictionary<IReadOnlyList<T>, MarkovResult<T>>();
+
+      foreach (var (item, index) in IterateGroupedItems(items, order))
+      {
+        if (!state.ContainsKey(item))
+        {
+          state[item] = new MarkovResult<T>();
+        }
+
+        state[item] = state[item] with {Occurrences = state[item].Occurrences + 1};
+
+        if (index == 0)
+        {
+          state[item] = state[item] with {FirstItemCount = state[item].FirstItemCount + 1};
+        }
+
+        if (index + 1 == groupedItemCount)
+        {
+          state[item] = state[item] with {LastItemCount = state[item].LastItemCount + 1};
+        }
+
+        var getNextItem = TryGetNextItem(index);
+        if (getNextItem.IsSome)
+        {
+          var nextItem = getNextItem.Value!;
+          var itemState = state[item];
+          itemState.NextItemCounts.TryAdd(nextItem, 0); // Ensure exists
+
+          itemState.NextItemCounts[nextItem] += 1;
+        }
+      }
+
+      return state;
+
+      OptionalValue<T> TryGetNextItem(int index)
+      {
+        return index + order < items.Count
+          ? OptionalValue<T>.Of(items[index + order])
+          : OptionalValue<T>.None();
+      }
+    }
+
+    static Dictionary<T, int> MergeDictionaries(IDictionary<T, int> a, IDictionary<T, int> b)
+    {
+      var dictionary = new Dictionary<T, int>(a);
+      foreach (var keyValuePair in b)
+      {
+        dictionary.TryAdd(keyValuePair.Key, 0); // Ensure exists
+
+        dictionary[keyValuePair.Key] += keyValuePair.Value;
+      }
+
+      return dictionary;
+    }
   }
 
   /// <summary>
@@ -388,8 +383,8 @@ public static class MarkovStringRandomizationSourceExtensions
     public Dictionary<OptionalValue<T>, int> GetNextItems()
     {
       return NextItemCounts
-        .Select(kvp => new KeyValuePair<OptionalValue<T>, int>(key: OptionalValue<T>.Of(kvp.Key), kvp.Value))
-        .Append(element: new KeyValuePair<OptionalValue<T>, int>(key: OptionalValue<T>.None(), LastItemCount))
+        .Select(kvp => new KeyValuePair<OptionalValue<T>, int>(OptionalValue<T>.Of(kvp.Key), kvp.Value))
+        .Append(new KeyValuePair<OptionalValue<T>, int>(OptionalValue<T>.None(), LastItemCount))
         .Where(kvp => kvp.Value > 0)
         .ToDictionary(innerKvp => innerKvp.Key, innerKvp => innerKvp.Value);
     }
