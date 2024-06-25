@@ -20,7 +20,7 @@ public static class Randomizer
   /// <param name="state">An initial <see cref="IStatefulRandomizationSource{TState}.State" />.</param>
   /// <typeparam name="TState"></typeparam>
   /// <returns></returns>
-  public static IStatefulRandomizationSource<TState> OfState<TState>(IRandomizationSource randomizationSource,
+  public static IStatefulRandomizationSource<TState> WithState<TState>(IRandomizationSource randomizationSource,
     TState state) where TState : notnull
   {
     return new StatefulSource<TState>(randomizationSource, state);
@@ -33,8 +33,8 @@ public static class Randomizer
   /// <param name="state">An initial <see cref="IStatefulRandomizationSource{TState}.State" />.</param>
   /// <typeparam name="TState"></typeparam>
   /// <returns></returns>
-  public static IStatefulRandomizationSource<TState> OfState<TState>(TState state) where TState : notnull
+  public static IStatefulRandomizationSource<TState> WithState<TState>(TState state) where TState : notnull
   {
-    return new StatefulSource<TState>(Shared, state);
+    return WithState(Shared, state);
   }
 }

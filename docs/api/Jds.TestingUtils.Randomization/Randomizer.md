@@ -11,7 +11,7 @@ public static class Randomizer
 | name | description |
 | --- | --- |
 | static [Shared](Randomizer/Shared.md) { get; } | Gets a thread-safe, shared randomization source, which uses Shared to provide values. |
-| static [OfState&lt;TState&gt;](Randomizer/OfState.md)(…) | Creates a [`IStatefulRandomizationSource`](./IStatefulRandomizationSource-1.md) using *randomizationSource*. (2 methods) |
+| static [WithState&lt;TState&gt;](Randomizer/WithState.md)(…) | Creates a [`IStatefulRandomizationSource`](./IStatefulRandomizationSource-1.md) using *randomizationSource*. (2 methods) |
 
 ## See Also
 

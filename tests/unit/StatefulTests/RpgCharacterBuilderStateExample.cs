@@ -83,7 +83,7 @@ public static class RpgCharacterBuilderStateExample
     [Fact]
     public void GivenDefaultOptions_GeneratesCharactersWithAllPropertiesPopulated()
     {
-      var randomizer = Randomizer.OfState(new RpgCharacterOptions());
+      var randomizer = Randomizer.WithState(new RpgCharacterOptions());
 
       var character = randomizer.GenerateRpgCharacterOverview();
 
@@ -96,7 +96,7 @@ public static class RpgCharacterBuilderStateExample
     public void GivenConstrainedNameChoices_GeneratesExpectedName()
     {
       const string onlyNameOption = "Bob";
-      var randomizer = Randomizer.OfState(new RpgCharacterOptions { CommonNameComponents = new[] { onlyNameOption } });
+      var randomizer = Randomizer.WithState(new RpgCharacterOptions { CommonNameComponents = new[] { onlyNameOption } });
 
       var character = randomizer.GenerateRpgCharacterOverview();
 
@@ -107,7 +107,7 @@ public static class RpgCharacterBuilderStateExample
     public void GivenConstrainedNameChoicesAndCount_GeneratesExpectedName()
     {
       const string onlyNameOption = "Bob";
-      var randomizer = Randomizer.OfState(new RpgCharacterOptions { CommonNameComponents = new[] { onlyNameOption } });
+      var randomizer = Randomizer.WithState(new RpgCharacterOptions { CommonNameComponents = new[] { onlyNameOption } });
 
       var character = randomizer.GenerateRpgCharacterOverview(1);
 

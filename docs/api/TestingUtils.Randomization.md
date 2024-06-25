@@ -15,12 +15,12 @@
 | static class [MailAddressRandomizationSourceExtensions](./Jds.TestingUtils.Randomization/MailAddressRandomizationSourceExtensions.md) |  |
 | static class [MarkovStringRandomizationSourceExtensions](./Jds.TestingUtils.Randomization/MarkovStringRandomizationSourceExtensions.md) |  |
 | static class [NumericRandomizationSourceExtensions](./Jds.TestingUtils.Randomization/NumericRandomizationSourceExtensions.md) |  |
+| static class [RandomizationSourceStatefulExtensions](./Jds.TestingUtils.Randomization/RandomizationSourceStatefulExtensions.md) | Methods extending [`IRandomizationSource`](./Jds.TestingUtils.Randomization/IRandomizationSource.md) to support [`IStatefulRandomizationSource`](./Jds.TestingUtils.Randomization/IStatefulRandomizationSource-1.md). |
 | static class [Randomizer](./Jds.TestingUtils.Randomization/Randomizer.md) | Facade for using Randomization and accessing pseudo random providers. |
 | class [RandomRandomizationSource](./Jds.TestingUtils.Randomization/RandomRandomizationSource.md) | A [`IRandomizationSource`](./Jds.TestingUtils.Randomization/IRandomizationSource.md) supported by a Random. |
 | static class [ReadOnlyDictionaryExtensions](./Jds.TestingUtils.Randomization/ReadOnlyDictionaryExtensions.md) |  |
 | static class [ReadOnlyListExtensions](./Jds.TestingUtils.Randomization/ReadOnlyListExtensions.md) |  |
 | static class [SelectionRandomizationSourceExtensions](./Jds.TestingUtils.Randomization/SelectionRandomizationSourceExtensions.md) |  |
-| static class [StatefulRandomizationSourceMonadExtensions](./Jds.TestingUtils.Randomization/StatefulRandomizationSourceMonadExtensions.md) | Methods extending [`IStatefulRandomizationSource`](./Jds.TestingUtils.Randomization/IStatefulRandomizationSource-1.md) to provide monadic operations. |
 | static class [StringRandomizationSourceExtensions](./Jds.TestingUtils.Randomization/StringRandomizationSourceExtensions.md) |  |
 | static class [UrlRandomizationSourceExtensions](./Jds.TestingUtils.Randomization/UrlRandomizationSourceExtensions.md) |  |
 

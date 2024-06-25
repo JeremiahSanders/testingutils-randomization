@@ -232,7 +232,7 @@ The `IStatefulRandomizationSource<TState>` extends `IRandomizationSource` with a
 
 #### Construction
 
-Use `Randomizer.OfState()` static methods to create a new stateful randomizer based upon an initial state value.
+Use `Randomizer.WithState()` static methods to create a new stateful randomizer based upon an initial state value.
 
 Use the `.WithState(TState initialState)` extension method on `IRandomizationSource` to create a derived stateful randomizer using that randomization source instance.
 
