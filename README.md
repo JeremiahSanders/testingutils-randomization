@@ -215,10 +215,43 @@ string verySimilarGeneratedFruit = Randomizer.Shared.GenerateRandomMarkov(source
 * `IRandomizationSource.DemographicsSurnameUsa(int maxLength)`
     * Generates a surname `string` of no more than `maxLength` characters. Generated names have an initial capital letter and all subsequent characters are lowercase.
 
+### Create a Custom Domain-Specific Language to Generate Complex or Custom Types
+
+This library does not provide a domain-specific language. However, by creating your own `static` methods extending `IStatefulRandomizationSource<TState>` (where `TState` should be _your generator options_), you can easily construct a domain-specific language to generate complex or custom types.
+
+> This library's unit tests include an [example Domain-Specific Language which generates characters for a role-playing game][example-stateful-dsl]. The documented example illustrates:
+>
+> * creating a randomization state object (to provide configuration)
+> * creating a domain value object (the _thing_ we want to generate)
+> * creating a domain-specific language (a `static` method extending `IStatefulRandomizationSource<TState>` which used the configuration and generated the value object)
+> * creating unit tests which use the domain-specific language
+
+This functionality was already possible by extending `IRandomizationSource` with methods accepting parameters. However, `IStatefulRandomizationSource<TState>` provides greater flexibility. By embedding state object types into your extension methods, you can simplify verbose generator method signatures.
+
+The `IStatefulRandomizationSource<TState>` extends `IRandomizationSource` with a `public TState State { get; }` property.
+
+#### Construction
+
+Use `Randomizer.WithState()` static methods to create a new stateful randomizer based upon an initial state value.
+
+Use the `.WithState(TState initialState)` extension method on `IRandomizationSource` to create a derived stateful randomizer using that randomization source instance.
+
+#### Modifying State
+
+In some scenarios, you may want to modify the existing randomization source state (e.g., when designing a "builder" interface). This is handled using some monadic methods.
+
+> It is intended that the state values used in a randomization source are immutable. When the state needs to change, the following monadic methods allow you to derive a new `IStatefulRandomizationSource<TState>` using the current state value.
+
+* `IStatefulRandomizationSource<TStateCurrent,TStateNew>.Bind(Func<TStateCurrent,IStatefulRandomizationSource<TStateNew>>)`
+  * Use `Bind` to replace the stateful randomization source with a new stateful randomization source derived from current state. _This is an uncommon `IStatefulRandomizationSource` operation, normally only used when swapping the underlying `IRandomizationSource`._
+* `IStatefulRandomizationSource<TStateCurrent,TStateNew>.Map(Func<TStateCurrent,TStateNew>)`
+  * Use `Map` to replace the state contained within the stateful randomization source with a new state (which may be of the same type or another). **This is the most common state operation.**
+
 [addr-spec]: https://datatracker.ietf.org/doc/html/rfc2822#section-3.4.1
 [API Documentation]: ./docs/api/TestingUtils.Randomization.md
 [cryptographically strong random number generator]: https://docs.microsoft.com/en-us/dotnet/api/system.security.cryptography.randomnumbergenerator.getint32?view=net-6.0#system-security-cryptography-randomnumbergenerator-getint32(system-int32-system-int32)
 [domain-names]: https://datatracker.ietf.org/doc/html/rfc1035#section-2.3.1
+[example-stateful-dsl]: https://github.com/JeremiahSanders/testingutils-randomization/blob/main/tests/unit/StatefulTests/RpgCharacterBuilderStateExample.cs
 [Lorem Ipsum]: https://en.wikipedia.org/wiki/Lorem_ipsum
 [Markov Chain]: https://en.wikipedia.org/wiki/Markov_chain
 [RFC-3986 URI syntax]: https://datatracker.ietf.org/doc/html/rfc3986#section-3

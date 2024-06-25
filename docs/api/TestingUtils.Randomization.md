@@ -10,10 +10,12 @@
 | static class [DomainRandomizationSourceExtensions](./Jds.TestingUtils.Randomization/DomainRandomizationSourceExtensions.md) |  |
 | static class [EnumerableExtensions](./Jds.TestingUtils.Randomization/EnumerableExtensions.md) |  |
 | interface [IRandomizationSource](./Jds.TestingUtils.Randomization/IRandomizationSource.md) | A random value provider. |
+| interface [IStatefulRandomizationSource&lt;TState&gt;](./Jds.TestingUtils.Randomization/IStatefulRandomizationSource-1.md) | A [`IRandomizationSource`](./Jds.TestingUtils.Randomization/IRandomizationSource.md) which contains state. |
 | static class [LoremIpsumRandomizationSourceExtensions](./Jds.TestingUtils.Randomization/LoremIpsumRandomizationSourceExtensions.md) |  |
 | static class [MailAddressRandomizationSourceExtensions](./Jds.TestingUtils.Randomization/MailAddressRandomizationSourceExtensions.md) |  |
 | static class [MarkovStringRandomizationSourceExtensions](./Jds.TestingUtils.Randomization/MarkovStringRandomizationSourceExtensions.md) |  |
 | static class [NumericRandomizationSourceExtensions](./Jds.TestingUtils.Randomization/NumericRandomizationSourceExtensions.md) |  |
+| static class [RandomizationSourceStatefulExtensions](./Jds.TestingUtils.Randomization/RandomizationSourceStatefulExtensions.md) | Methods extending [`IRandomizationSource`](./Jds.TestingUtils.Randomization/IRandomizationSource.md) to support [`IStatefulRandomizationSource`](./Jds.TestingUtils.Randomization/IStatefulRandomizationSource-1.md). |
 | static class [Randomizer](./Jds.TestingUtils.Randomization/Randomizer.md) | Facade for using Randomization and accessing pseudo random providers. |
 | class [RandomRandomizationSource](./Jds.TestingUtils.Randomization/RandomRandomizationSource.md) | A [`IRandomizationSource`](./Jds.TestingUtils.Randomization/IRandomizationSource.md) supported by a Random. |
 | static class [ReadOnlyDictionaryExtensions](./Jds.TestingUtils.Randomization/ReadOnlyDictionaryExtensions.md) |  |
