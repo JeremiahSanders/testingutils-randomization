@@ -254,4 +254,15 @@ public static class NumericRandomizationSourceExtensions
   {
     return randomizationSource.NextLongInRange(0L, long.MaxValue);
   }
+
+  /// <summary>
+  ///   Gets a pseudo-random <see cref="ushort" />, using <see cref="IRandomizationSource.NextIntInRange" />.
+  /// </summary>
+  /// <param name="randomizationSource">A <see cref="IRandomizationSource" /> providing values.</param>
+  /// <returns>A <see cref="ushort" />.</returns>
+  public static ushort UShort(this IRandomizationSource randomizationSource)
+  {
+    const int maxExclusive = ushort.MaxValue + 1;
+    return (ushort)randomizationSource.NextIntInRange(0, maxExclusive);
+  }
 }
