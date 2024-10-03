@@ -120,6 +120,17 @@ Randomizer.Shared.WeightedRandomKey(new Dictionary<string, double>
 * `IRandomizationSource.RandomStringLatin(int length, bool uppercase = false, bool alphanumeric = false)`
   * Generates a pseudo-random `string` of `length` characters using ASCII Latin characters. Uses `a` - `z` by default. If `uppercase`, uses `A` - `Z`. If `alphanumeric`, also includes `0` - `9` with either casing.
 
+### Generate a Random Hexadecimal String (e.g., certificate thumbprint)
+
+* `IRandomizationSource.Hexadecimal(int length)`
+  * Generates a pseudo-random hexadecimal (`0` through `f`, lowercase) string.
+* `IRandomizationSource.HashSha256()`
+  * Generates a `64`-character hexadecimal (`0` through `f`, lowercase) string.
+* `IRandomizationSource.HashSha384()`
+  * Generates a `96`-character hexadecimal (`0` through `f`, lowercase) string.
+* `IRandomizationSource.HashSha512()`
+  * Generates a `128`-character hexadecimal (`0` through `f`, lowercase) string.
+
 ### Generate a Mail Address
 
 * `IRandomizationSource.MailAddress()`
