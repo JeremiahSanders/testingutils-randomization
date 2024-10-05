@@ -1,6 +1,5 @@
-using System;
 using System.Collections.Generic;
-using System.Linq;
+using FluentAssertions;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -15,13 +14,11 @@ public class RandomStringLatinTests
     _outputHelper = outputHelper;
   }
 
-  private static IReadOnlyList<char> NumericChars { get; } = Enumerable.Range('0', 10).Select(Convert.ToChar).ToArray();
-
   public static IEnumerable<object[]> CreateTestCases()
   {
     object[] GenerateTestCase(bool uppercase, bool alphanumeric)
     {
-      return new object[] { uppercase, alphanumeric };
+      return new object[] {uppercase, alphanumeric};
     }
 
     return new[]
@@ -35,26 +32,40 @@ public class RandomStringLatinTests
   [MemberData(nameof(CreateTestCases))]
   public void GeneratesExpectedStringTypes(bool uppercase, bool alphanumeric)
   {
-    void CheckResult(string actual)
-    {
-      Assert.Equal(uppercase ? actual.ToUpperInvariant() : actual.ToLowerInvariant(), actual);
-
-      if (!alphanumeric)
-      {
-        foreach (var charValue in actual)
-        {
-          Assert.DoesNotContain(charValue, NumericChars);
-        }
-      }
-    }
-
-    var actual = RandomRandomizationSource.Shared.RandomStringLatin(
+    var value = RandomRandomizationSource.Shared.RandomStringLatin(
       Randomizer.Shared.IntInRange(100, 1000),
       uppercase,
       alphanumeric
     );
 
-    _outputHelper.WriteLine($"Checking for {actual}");
-    CheckResult(actual);
+    _outputHelper.WriteLine($"Checking for {value}");
+    CheckResult(value);
+    return;
+
+    void CheckResult(string actual)
+    {
+      if (uppercase)
+      {
+        if (alphanumeric)
+        {
+          actual.Should().NotBeLowerCased();
+        }
+        else
+        {
+          actual.Should().BeUpperCased();
+        }
+      }
+      else
+      {
+        if (alphanumeric)
+        {
+          actual.Should().NotBeUpperCased();
+        }
+        else
+        {
+          actual.Should().BeLowerCased();
+        }
+      }
+    }
   }
 }

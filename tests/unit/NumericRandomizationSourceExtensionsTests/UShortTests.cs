@@ -15,7 +15,7 @@ public class UShortTests
 
     var actual = fixedSource.UShort();
 
-    Assert.Equal(expected, actual);
+    actual.Should().Be(expected);
   }
 
   [Fact]
@@ -23,6 +23,6 @@ public class UShortTests
   {
     var actual = Randomizer.Shared.UShort();
 
-    Assert.InRange(actual, ushort.MinValue, ushort.MaxValue);
+    actual.Should().BeInRange(ushort.MinValue, ushort.MaxValue);
   }
 }

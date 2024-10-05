@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using FluentAssertions;
 using Xunit;
 
 namespace Jds.TestingUtils.Randomization.Tests.Unit.SelectionRandomizationSourceExtensionsTests;
@@ -13,7 +14,7 @@ public class RandomEnumValueTests
 
     var actual = Randomizer.Shared.RandomEnumValue<HasValues>();
 
-    Assert.Contains(actual, items);
+    items.Should().Contain(actual);
   }
 
   [Fact]
@@ -25,8 +26,8 @@ public class RandomEnumValueTests
 
     var actual = Randomizer.Shared.RandomEnumValue(except);
 
-    Assert.Contains(actual, filteredItems);
-    Assert.NotEqual(except, actual);
+    filteredItems.Should().Contain(actual);
+    actual.Should().NotBe(except);
   }
 
   [Fact]
@@ -36,7 +37,7 @@ public class RandomEnumValueTests
 
     var actual = Randomizer.Shared.RandomEnumValue(HasValues.First, HasValues.Third);
 
-    Assert.Equal(expected, actual);
+    actual.Should().Be(expected);
   }
 
   [Fact]
@@ -46,7 +47,7 @@ public class RandomEnumValueTests
 
     var actual = Randomizer.Shared.RandomEnumValue<OneValue>();
 
-    Assert.Equal(expected, actual);
+    actual.Should().Be(expected);
   }
 
   [Fact]

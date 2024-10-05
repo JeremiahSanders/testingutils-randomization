@@ -52,12 +52,17 @@ public static class MailAddressRandomizationSourceExtensionsTests
 
   public class MailAddressAddrSpecTests
   {
+    public MailAddressAddrSpecTests(ITestOutputHelper testOutputHelper)
+    {
+      TestOutputHelper = testOutputHelper;
+    }
+
     public ITestOutputHelper TestOutputHelper { get; }
 
-    private static Lazy<IEnumerable<object[]>> CreatePartLengthsCases { get; } = new Lazy<IEnumerable<object[]>>(() =>
+    private static Lazy<IEnumerable<object[]>> CreatePartLengthsCases { get; } = new(() =>
     {
-      var localPartLengths = new[] { 1, 5, 10, 20, 25, 64 };
-      var hostDomainLengths = new[] { 1, 5, 10, 15, 20, 60, 100, 253 };
+      var localPartLengths = new[] {1, 5, 10, 20, 25, 64};
+      var hostDomainLengths = new[] {1, 5, 10, 15, 20, 60, 100, 253};
       var cases = localPartLengths.SelectMany(localPart =>
           hostDomainLengths.Select(hostDomain => (LocalPart: localPart, Domain: hostDomain)))
         .Where(pair => pair.LocalPart + pair.Domain + 1 <= 254)
@@ -68,31 +73,26 @@ public static class MailAddressRandomizationSourceExtensionsTests
               Randomizer.Shared.MailAddressAddrSpec((caseValues.LocalPart, caseValues.Domain))
             )
             .Try();
-          return new object[] { caseValues, result };
+          return new object[] {caseValues, result};
         })
         .ToArray();
       return results;
     });
 
-    private static Lazy<IEnumerable<object[]>> CreateAddressLengthCases { get; } = new Lazy<IEnumerable<object[]>>(() =>
+    private static Lazy<IEnumerable<object[]>> CreateAddressLengthCases { get; } = new(() =>
     {
-      var lengths = new[] { 3, 4, 5, 8, 10, 12, 15, 20, 25, 30, 60, 100, 253 };
+      var lengths = new[] {3, 4, 5, 8, 10, 12, 15, 20, 25, 30, 60, 100, 253};
       var results = lengths.Select(length =>
         {
           var result = Prelude.Try(() =>
-              Randomizer.Shared.MailAddressAddrSpec((length))
+              Randomizer.Shared.MailAddressAddrSpec(length)
             )
             .Try();
-          return new object[] { length, result };
+          return new object[] {length, result};
         })
         .ToArray();
       return results;
     });
-
-    public MailAddressAddrSpecTests(ITestOutputHelper testOutputHelper)
-    {
-      TestOutputHelper = testOutputHelper;
-    }
 
     public static IEnumerable<object[]> GetPartLengthsCases()
     {
@@ -114,7 +114,7 @@ public static class MailAddressRandomizationSourceExtensionsTests
 
       var actual = result.Map(address => address.Length).IfFail(ex => throw ex);
 
-      Assert.Equal(expected, actual);
+      actual.Should().Be(expected);
     }
 
     [Theory]
@@ -129,7 +129,7 @@ public static class MailAddressRandomizationSourceExtensionsTests
 
       var actual = result.Map(address => address.Length).IfFail(ex => throw ex);
 
-      Assert.Equal(expected, actual);
+      actual.Should().Be(expected);
     }
 
     [Theory]
@@ -144,8 +144,9 @@ public static class MailAddressRandomizationSourceExtensionsTests
       var localPart = parts[0];
       var domain = parts[1];
 
-      Assert.Equal(request.LocalPartLength, localPart.Length);
-      Assert.Equal(request.DomainLength, domain.Length);
+      localPart.Length.Should().Be(request.LocalPartLength);
+      domain.Length.Should().Be(request.DomainLength);
+      ;
     }
 
     [Theory]
@@ -162,7 +163,7 @@ public static class MailAddressRandomizationSourceExtensionsTests
 
       var actual = new MailAddress(addressValue);
 
-      Assert.Equal(addressValue, actual.Address);
+      actual.Address.Should().Be(addressValue);
     }
 
     [Theory]
@@ -189,7 +190,7 @@ public static class MailAddressRandomizationSourceExtensionsTests
     public void GivenAddressLength_OutOfRange_ThrowsArgumentOutOfRangeException(int length)
     {
       Assert.Throws<ArgumentOutOfRangeException>(() =>
-        Randomizer.Shared.MailAddressAddrSpec((length))
+        Randomizer.Shared.MailAddressAddrSpec(length)
       );
     }
   }
@@ -203,6 +204,36 @@ public static class MailAddressRandomizationSourceExtensionsTests
 
     public ITestOutputHelper TestOutputHelper { get; }
 
+    private static Lazy<IEnumerable<object[]>> CreateAddressLengthCases { get; } = new(() =>
+    {
+      var lengths = new[] {3, 4, 5, 8, 10, 12, 15, 20, 25, 30, 60, 100, 253};
+      var results = lengths.Select(length =>
+        {
+          var result = Prelude.Try(() =>
+              Randomizer.Shared.MailAddress(length)
+            )
+            .Try();
+          return new object[] {length, result};
+        })
+        .ToArray();
+      return results;
+    });
+
+    private static Lazy<IEnumerable<object[]>> CreateParameterlessCases { get; } = new(() =>
+    {
+      const int testCount = 100;
+      var results = Enumerable.Range(1, testCount).Select(_ =>
+        {
+          var result = Prelude.Try(() =>
+              Randomizer.Shared.MailAddress()
+            )
+            .Try();
+          return new object[] {result};
+        })
+        .ToArray();
+      return results;
+    });
+
     public static IEnumerable<object[]> GetAddressLengthCases()
     {
       return CreateAddressLengthCases.Value;
@@ -213,43 +244,13 @@ public static class MailAddressRandomizationSourceExtensionsTests
       return CreateParameterlessCases.Value;
     }
 
-    private static Lazy<IEnumerable<object[]>> CreateAddressLengthCases { get; } = new Lazy<IEnumerable<object[]>>(() =>
-    {
-      var lengths = new[] { 3, 4, 5, 8, 10, 12, 15, 20, 25, 30, 60, 100, 253 };
-      var results = lengths.Select(length =>
-        {
-          var result = Prelude.Try(() =>
-              Randomizer.Shared.MailAddress(length)
-            )
-            .Try();
-          return new object[] { length, result };
-        })
-        .ToArray();
-      return results;
-    });
-
-    private static Lazy<IEnumerable<object[]>> CreateParameterlessCases { get; } = new Lazy<IEnumerable<object[]>>(() =>
-    {
-      const int testCount = 100;
-      var results = Enumerable.Range(1, testCount).Select(_ =>
-        {
-          var result = Prelude.Try(() =>
-              Randomizer.Shared.MailAddress()
-            )
-            .Try();
-          return new object[] { result };
-        })
-        .ToArray();
-      return results;
-    });
-
     [Theory]
     [MemberData(nameof(GetParameterlessCases))]
     public void GivenNoLength_ReturnsNonNull(Result<MailAddress> result)
     {
       var actual = result.IfFail(ex => throw ex);
 
-      Assert.NotNull(actual);
+      actual.Should().NotBeNull();
     }
 
     [Theory]
@@ -262,7 +263,7 @@ public static class MailAddressRandomizationSourceExtensionsTests
 
       var actual = result.Map(mailAddress => mailAddress.Address.Length).IfFail(ex => throw ex);
 
-      Assert.Equal(expected, actual);
+      actual.Should().Be(expected);
     }
 
     [Theory]
@@ -277,7 +278,7 @@ public static class MailAddressRandomizationSourceExtensionsTests
     public void GivenAddressLength_OutOfRange_ThrowsArgumentOutOfRangeException(int length)
     {
       Assert.Throws<ArgumentOutOfRangeException>(() =>
-        Randomizer.Shared.MailAddress((length))
+        Randomizer.Shared.MailAddress(length)
       );
     }
   }

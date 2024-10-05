@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using FluentAssertions;
 using Xunit;
 
 namespace Jds.TestingUtils.Randomization.Tests.Unit.ReadOnlyListExtensionsTests;
@@ -72,7 +73,8 @@ public static class GetWeightedRandomItemTests
         .Select(kvp => kvp.Key)
         .ToArray();
 
-      Assert.Equal(expected, sortedResults);
+      
+      sortedResults.Should().BeEquivalentTo(expected);
     }
   }
 
@@ -137,7 +139,7 @@ public static class GetWeightedRandomItemTests
         .Select(kvp => kvp.Key)
         .ToArray();
 
-      Assert.Equal(expected, sortedResults);
+      sortedResults.Should().BeEquivalentTo(expected);
     }
   }
 
@@ -202,7 +204,7 @@ public static class GetWeightedRandomItemTests
         .Select(kvp => kvp.Key)
         .ToArray();
 
-      Assert.Equal(expected, sortedResults);
+      sortedResults.Should().BeEquivalentTo(expected);
     }
   }
 
@@ -265,7 +267,7 @@ public static class GetWeightedRandomItemTests
         .Select(kvp => kvp.Key)
         .ToArray();
 
-      Assert.Equal(expected, sortedResults);
+      sortedResults.Should().BeEquivalentTo(expected);
     }
   }
 }

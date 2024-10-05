@@ -13,7 +13,7 @@ public static class DomainRandomizationSourceExtensionsTests
   public class DomainLabelTests
   {
     [Theory]
-    [InlineData(Int32.MaxValue)]
+    [InlineData(int.MaxValue)]
     [InlineData(64)]
     [InlineData(100)]
     [InlineData(250)]
@@ -25,7 +25,7 @@ public static class DomainRandomizationSourceExtensionsTests
     }
 
     [Theory]
-    [InlineData(Int32.MinValue)]
+    [InlineData(int.MinValue)]
     [InlineData(-1)]
     [InlineData(0)]
     public void GivenLengthBelow1_ThrowsArgumentOutOfRangeException(int value)
@@ -119,7 +119,7 @@ public static class DomainRandomizationSourceExtensionsTests
         $"Expected length: {requestedLength}; Actual length: {actual.Length}; Actual domain: {actual}"
       );
 
-      Assert.Equal(requestedLength, actual.Length);
+      actual.Should().HaveLength(requestedLength);
     }
 
     [Theory]
@@ -140,27 +140,27 @@ public static class DomainRandomizationSourceExtensionsTests
       var expected = distribution.Sum() + (distribution.Count - 1);
 
       TestOutputHelper.WriteLine(
-        $"Validating expected length. Expected: {expected} ({String.Join(",", distribution)})");
+        $"Validating expected length. Expected: {expected} ({string.Join(",", distribution)})");
       var actual = result.IfFail(exc => throw exc)!;
       TestOutputHelper.WriteLine(
         $"Expected length: {expected}; Actual length: {actual.Length}; Actual domain: {actual}"
       );
 
-      Assert.Equal(expected, actual.Length);
+      actual.Should().HaveLength(expected);
     }
 
     [Theory]
     [MemberData(nameof(CreateDomainLabelLengthsTestCases))]
     public void GivenLabelLengths_ReturnsExpectedLabelLengths(IReadOnlyList<int> distribution, Result<string> result)
     {
-      TestOutputHelper.WriteLine($"Validating component lengths. Distribution: ({String.Join(",", distribution)})");
+      TestOutputHelper.WriteLine($"Validating component lengths. Distribution: ({string.Join(",", distribution)})");
       var actual = result.IfFail(exc => throw exc)!.Split(".");
       TestOutputHelper.WriteLine(
-        $"Expected: {String.Join(",", distribution)}; Actual: {String.Join(",", actual)}"
+        $"Expected: {string.Join(",", distribution)}; Actual: {string.Join(",", actual)}"
       );
       var resultLengths = actual.Select(item => item.Length).ToArray();
 
-      Assert.Equal(distribution, resultLengths);
+      resultLengths.Should().BeEquivalentTo(distribution);
     }
 
     [Theory]
@@ -168,7 +168,7 @@ public static class DomainRandomizationSourceExtensionsTests
     public void GivenLabelLengths_GeneratedDomainsAppearValid(IReadOnlyList<int> distribution, Result<string> result)
     {
       TestOutputHelper.WriteLine(
-        $"Validating domain validity (approximating RFC-1053). Requested: {String.Join(",", distribution)}");
+        $"Validating domain validity (approximating RFC-1053). Requested: {string.Join(",", distribution)}");
       var actual = result.IfFail(exc => throw exc)!;
       TestOutputHelper.WriteLine($"Actual domain: {actual}");
 
@@ -220,7 +220,7 @@ public static class DomainRandomizationSourceExtensionsTests
     [InlineData("Y--Zabc")]
     public void IsDomainLabelMiddleInvalid_RecognizesInvalidMiddles(string invalidMiddle)
     {
-      Assert.True(DomainRandomizationSourceExtensions.IsDomainLabelMiddleInvalid(invalidMiddle));
+      DomainRandomizationSourceExtensions.IsDomainLabelMiddleInvalid(invalidMiddle).Should().BeTrue();
     }
 
     [Theory]
@@ -233,7 +233,7 @@ public static class DomainRandomizationSourceExtensionsTests
           invalidMiddle);
 
       var secondAndThird = result.Skip(1).Take(2);
-      Assert.All(secondAndThird, character => Assert.NotEqual('-', character));
+      Assert.All(secondAndThird, character => character.Should().NotBe('-'));
     }
   }
 }

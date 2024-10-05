@@ -9,6 +9,6 @@ public class IntTests
   {
     var actual = Randomizer.Shared.Int();
 
-    Assert.InRange(actual, int.MinValue, int.MaxValue);
+    actual.Should().BeInRange(int.MinValue, int.MaxValue);
   }
 }

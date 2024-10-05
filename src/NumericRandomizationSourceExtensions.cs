@@ -86,7 +86,10 @@ public static class NumericRandomizationSourceExtensions
              Convert.ToDecimal(randomizationSource.NextDouble()) * maxExclusive;
     }
 
-    return minInclusive + (maxExclusive - minInclusive) * Convert.ToDecimal(randomizationSource.NextDouble());
+    var multiplier = Convert.ToDecimal(randomizationSource.NextDouble());
+    var sum = minInclusive + (maxExclusive - minInclusive) * multiplier;
+
+    return sum < maxExclusive ? sum : minInclusive;
   }
 
   /// <summary>

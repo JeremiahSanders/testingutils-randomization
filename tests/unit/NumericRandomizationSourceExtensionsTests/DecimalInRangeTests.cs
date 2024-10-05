@@ -28,9 +28,7 @@ public class DecimalInRangeTests
   {
     var actual = Randomizer.Shared.DecimalInRange(minInclusive, maxExclusive);
 
-    Assert.False(actual < minInclusive, $"Value was below {nameof(minInclusive)}. Actual: {actual}");
-    Assert.True(actual < maxExclusive,
-      $"Value was equal to or greater than {nameof(maxExclusive)}. Actual: {actual}"
-    );
+    actual.Should().BeGreaterOrEqualTo(minInclusive);
+    actual.Should().BeLessThan(maxExclusive);
   }
 }

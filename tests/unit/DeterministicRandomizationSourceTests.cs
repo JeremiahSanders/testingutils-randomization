@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using FluentAssertions;
 using Xunit;
 
 namespace Jds.TestingUtils.Randomization.Tests.Unit;
@@ -15,7 +16,7 @@ public class DeterministicRandomizationSourceTests
     foreach (var expected in doubles)
     {
       var actual = source.NextDouble();
-      Assert.Equal(expected, actual);
+      actual.Should().Be(expected);
     }
   }
 
@@ -42,7 +43,7 @@ public class DeterministicRandomizationSourceTests
     foreach (var expected in floats)
     {
       var actual = source.NextFloat();
-      Assert.Equal(expected, actual);
+      actual.Should().Be(expected);
     }
   }
 
@@ -72,7 +73,7 @@ public class DeterministicRandomizationSourceTests
     foreach (var expected in integers.Where(value => value is >= minInclusive and < maxExclusive))
     {
       var actual = source.NextIntInRange(minInclusive, maxExclusive);
-      Assert.Equal(expected, actual);
+      actual.Should().Be(expected);
     }
   }
 
@@ -101,7 +102,7 @@ public class DeterministicRandomizationSourceTests
     foreach (var expected in longs.Where(value => value is >= minInclusive and < maxExclusive))
     {
       var actual = source.NextLongInRange(minInclusive, maxExclusive);
-      Assert.Equal(expected, actual);
+      actual.Should().Be(expected);
     }
   }
 
