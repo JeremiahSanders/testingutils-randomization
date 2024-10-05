@@ -9,6 +9,6 @@ public class LongTests
   {
     var actual = Randomizer.Shared.Long();
 
-    Assert.True(condition: actual < long.MaxValue, userMessage: $"Actual expected to be < {long.MaxValue}");
+    actual.Should().BeLessThan(long.MaxValue);
   }
 }

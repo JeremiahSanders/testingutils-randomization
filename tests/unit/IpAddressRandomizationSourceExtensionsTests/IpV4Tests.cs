@@ -17,7 +17,7 @@ public class IpV4Tests
 
     var actual = Randomizer.Shared.IpV4(octet1, octet2, octet3, octet4);
 
-    Assert.Equal(expected, actual);
+    actual.Should().Be(expected);
   }
 
   [Fact]
@@ -28,6 +28,6 @@ public class IpV4Tests
     // Convert method implicitly asserts value range
     var segments = actual.Split('.').Select(octet => Convert.ToByte(octet)).ToList();
 
-    Assert.Equal(4, segments.Count);
+    segments.Should().HaveCount(4);
   }
 }

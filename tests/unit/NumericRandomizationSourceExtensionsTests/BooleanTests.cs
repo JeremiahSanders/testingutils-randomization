@@ -13,6 +13,6 @@ public class BooleanTests
 
     var results = Enumerable.Range(1, testCount).Select(_ => Randomizer.Shared.Boolean()).ToArray();
     var falses = results.Count(item => !item);
-    Assert.True(falses > minExpected, $"Expected at least {minExpected}; actual false count: {falses}");
+    falses.Should().BeGreaterThan(minExpected);
   }
 }

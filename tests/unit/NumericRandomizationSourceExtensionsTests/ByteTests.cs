@@ -9,6 +9,6 @@ public class ByteTests
   {
     var actual = Randomizer.Shared.Byte();
 
-    Assert.InRange(actual, byte.MinValue, byte.MaxValue);
+    actual.Should().BeInRange(byte.MinValue, byte.MaxValue);
   }
 }

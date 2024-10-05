@@ -9,26 +9,23 @@ public class IntInRangeTests
   {
     object[] ToCaseArrangement(int minInclusive, int maxExclusive)
     {
-      return new object[] { minInclusive, maxExclusive };
+      return new object[] {minInclusive, maxExclusive};
     }
 
     return new[]
     {
-      ToCaseArrangement(int.MinValue, int.MaxValue), ToCaseArrangement(int.MinValue, maxExclusive: int.MaxValue / 2),
-      ToCaseArrangement(minInclusive: int.MaxValue / 2, int.MaxValue),
-      ToCaseArrangement(minInclusive: int.MaxValue - 1, int.MaxValue)
+      ToCaseArrangement(int.MinValue, int.MaxValue), ToCaseArrangement(int.MinValue, int.MaxValue / 2),
+      ToCaseArrangement(int.MaxValue / 2, int.MaxValue), ToCaseArrangement(int.MaxValue - 1, int.MaxValue)
     };
   }
 
   [Theory]
-  [MemberData(memberName: nameof(CreateTestCases))]
+  [MemberData(nameof(CreateTestCases))]
   public void ReturnsValueInRange(int minInclusive, int maxExclusive)
   {
     var actual = Randomizer.Shared.IntInRange(minInclusive, maxExclusive);
 
-    Assert.False(condition: actual < minInclusive, userMessage: $"Value was below {nameof(minInclusive)}");
-    Assert.True(condition: actual < maxExclusive,
-      userMessage: $"Value was equal to or greater than {nameof(maxExclusive)}"
-    );
+    actual.Should().BeGreaterOrEqualTo(minInclusive);
+    actual.Should().BeLessThan(maxExclusive);
   }
 }

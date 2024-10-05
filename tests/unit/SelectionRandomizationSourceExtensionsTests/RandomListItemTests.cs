@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using FluentAssertions;
 using Xunit;
 
 namespace Jds.TestingUtils.Randomization.Tests.Unit.SelectionRandomizationSourceExtensionsTests;
@@ -13,7 +14,7 @@ public class RandomListItemTests
 
     var actual = Randomizer.Shared.RandomListItem(items);
 
-    Assert.Contains(actual, items);
+    items.Should().Contain(actual);
   }
 
   [Fact]
@@ -21,9 +22,9 @@ public class RandomListItemTests
   {
     var expected = Randomizer.Shared.Int();
 
-    var actual = Randomizer.Shared.RandomListItem(new[] { expected });
+    var actual = Randomizer.Shared.RandomListItem(new[] {expected});
 
-    Assert.Equal(expected, actual);
+    actual.Should().Be(expected);
   }
 
   [Fact]

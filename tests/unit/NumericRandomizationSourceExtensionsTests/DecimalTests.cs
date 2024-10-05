@@ -9,6 +9,6 @@ public class DecimalTests
   {
     var actual = Randomizer.Shared.Decimal();
 
-    Assert.InRange(actual, decimal.MinValue, decimal.MaxValue);
+    actual.Should().BeInRange(decimal.MinValue, decimal.MaxValue);
   }
 }

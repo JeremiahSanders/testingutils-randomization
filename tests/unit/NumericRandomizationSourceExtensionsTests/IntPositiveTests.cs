@@ -9,6 +9,6 @@ public class IntPositiveTests
   {
     var actual = Randomizer.Shared.IntPositive();
 
-    Assert.True(condition: actual >= 0, userMessage: $"Actual < 0 ({actual})");
+    actual.Should().BePositive();
   }
 }

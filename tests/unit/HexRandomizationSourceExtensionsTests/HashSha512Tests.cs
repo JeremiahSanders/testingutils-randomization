@@ -1,3 +1,4 @@
+using FluentAssertions;
 using Xunit;
 
 namespace Jds.TestingUtils.Randomization.Tests.Unit.HexRandomizationSourceExtensionsTests;
@@ -9,7 +10,7 @@ public class HashSha512Tests
   {
     var value = Randomizer.Shared.HashSha512();
 
-    Assert.Equal(128, value.Length);
+    value.Should().HaveLength(128);
   }
 
   [Fact]
@@ -17,6 +18,7 @@ public class HashSha512Tests
   {
     var value = Randomizer.Shared.HashSha512();
 
-    Assert.All(value.ToCharArray(), character => Assert.Contains(character, HexRandomizationSourceExtensions.HexChars));
+    value.ToCharArray().Should()
+      .AllSatisfy(character => HexRandomizationSourceExtensions.HexChars.Should().Contain(character));
   }
 }

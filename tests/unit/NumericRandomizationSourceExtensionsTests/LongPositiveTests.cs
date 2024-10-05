@@ -9,7 +9,7 @@ public class LongPositiveTests
   {
     var actual = Randomizer.Shared.LongPositive();
 
-    Assert.True(condition: actual < long.MaxValue, userMessage: $"Actual expected to be < {long.MaxValue}");
-    Assert.True(condition: actual >= 0, userMessage: $"Actual {actual} expected to be >=0");
+    actual.Should().BePositive();
+    actual.Should().BeLessThan(long.MaxValue);
   }
 }

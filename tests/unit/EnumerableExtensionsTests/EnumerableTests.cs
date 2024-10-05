@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using FluentAssertions;
 using Xunit;
 
 namespace Jds.TestingUtils.Randomization.Tests.Unit.EnumerableExtensionsTests;
@@ -12,13 +13,13 @@ public class EnumerableTests
   [InlineData(5, 2)]
   public void GivenInvalidRange_ThrowsException(int min, int max)
   {
-    Assert.Throws<ArgumentOutOfRangeException>(() => Randomizer.Shared.Enumerable(Generate, min, max));
+    Randomizer.Shared.Invoking(r => r.Enumerable(Generate, min, max)).Should().Throw<ArgumentOutOfRangeException>();
   }
 
   [Fact]
   public void GivenRange1_ReturnsOneItem()
   {
-    var _ = Randomizer.Shared.Enumerable(GenerateFromIndex, 1, 2).SingleOrDefault();
+    Randomizer.Shared.Enumerable(GenerateFromIndex, 1, 2).Should().HaveCount(1);
   }
 
   [Fact]
@@ -30,8 +31,8 @@ public class EnumerableTests
     Randomizer.Shared.Enumerable(Guid.NewGuid, 3, 7);
     var actualCount = Randomizer.Shared.Enumerable(GenerateFromIndex, min, exclusiveMax).Count();
 
-    Assert.True(actualCount >= min, $"Expected {actualCount} to be >= {min}");
-    Assert.True(actualCount <= max, $"Expected {actualCount} to be <= {max}");
+    actualCount.Should().BeGreaterOrEqualTo(min);
+    actualCount.Should().BeLessThanOrEqualTo(max);
   }
 
   private static string? Generate()

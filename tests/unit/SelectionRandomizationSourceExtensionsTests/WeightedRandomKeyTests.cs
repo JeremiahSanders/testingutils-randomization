@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using FluentAssertions;
 using Xunit;
 
 namespace Jds.TestingUtils.Randomization.Tests.Unit.SelectionRandomizationSourceExtensionsTests;
@@ -55,7 +56,7 @@ public static class WeightedRandomKeyTests
         .Select(kvp => kvp.Key)
         .ToArray();
 
-      Assert.Equal(expected, sortedResults);
+      sortedResults.Should().BeEquivalentTo(expected);
     }
   }
 
@@ -105,7 +106,7 @@ public static class WeightedRandomKeyTests
         .Select(kvp => kvp.Key)
         .ToArray();
 
-      Assert.Equal(expected, sortedResults);
+      sortedResults.Should().BeEquivalentTo(expected);
     }
   }
 }

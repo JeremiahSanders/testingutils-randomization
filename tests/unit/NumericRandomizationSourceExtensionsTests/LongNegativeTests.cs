@@ -9,6 +9,6 @@ public class LongNegativeTests
   {
     var actual = Randomizer.Shared.LongNegative();
 
-    Assert.True(condition: actual < 0, userMessage: $"Actual ({actual}) expected to be < 0");
+    actual.Should().BeNegative();
   }
 }

@@ -1,3 +1,4 @@
+using FluentAssertions;
 using Xunit;
 
 namespace Jds.TestingUtils.Randomization.Tests.Unit.HexRandomizationSourceExtensionsTests;
@@ -10,7 +11,7 @@ public class HexadecimalTests
     var length = Randomizer.Shared.IntInRange(5, 200);
     var value = Randomizer.Shared.Hexadecimal(length);
 
-    Assert.Equal(length, value.Length);
+    value.Should().HaveLength(length);
   }
 
   [Fact]
@@ -19,6 +20,7 @@ public class HexadecimalTests
     var length = Randomizer.Shared.IntInRange(5, 200);
     var value = Randomizer.Shared.Hexadecimal(length);
 
-    Assert.All(value.ToCharArray(), character => Assert.Contains(character, HexRandomizationSourceExtensions.HexChars));
+    value.ToCharArray().Should()
+      .AllSatisfy(character => HexRandomizationSourceExtensions.HexChars.Should().Contain(character));
   }
 }

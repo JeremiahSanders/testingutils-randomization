@@ -22,7 +22,7 @@ public class IpV6Tests
 
     var actual = Randomizer.Shared.IpV6(piece1, piece2, piece3, piece4, piece5, piece6, piece7, piece8);
 
-    Assert.Equal(expected, actual);
+    actual.Should().Be(expected);
   }
 
   [Fact]
@@ -33,6 +33,6 @@ public class IpV6Tests
     // Convert method implicitly asserts value range
     IReadOnlyList<ushort> segments = actual.Split(':').Select(value => Convert.ToUInt16(value, 16)).ToList();
 
-    Assert.Equal(8, segments.Count);
+    segments.Should().HaveCount(8);
   }
 }
