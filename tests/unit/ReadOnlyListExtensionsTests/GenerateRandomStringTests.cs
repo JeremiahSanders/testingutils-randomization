@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using FluentAssertions;
 using Xunit;
 
 namespace Jds.TestingUtils.Randomization.Tests.Unit.ReadOnlyListExtensionsTests;
@@ -26,7 +27,7 @@ public static class GenerateRandomStringTests
 
         var actual = Strings.GenerateRandomString(_randomizer, expected).Length;
 
-        Assert.Equal(expected, actual);
+        actual.Should().Be(expected);
       }
 
       [Fact]
@@ -34,7 +35,7 @@ public static class GenerateRandomStringTests
       {
         var actual = Strings.GenerateRandomString(_randomizer, 0);
 
-        Assert.Equal(string.Empty, actual);
+        actual.Should().BeEmpty();
       }
 
       [Fact]
@@ -55,7 +56,7 @@ public static class GenerateRandomStringTests
 
         var actual = Strings.GenerateRandomString(expected).Length;
 
-        Assert.Equal(expected, actual);
+        actual.Should().Be(expected);
       }
 
       [Fact]
@@ -63,7 +64,7 @@ public static class GenerateRandomStringTests
       {
         var actual = Strings.GenerateRandomString(0);
 
-        Assert.Equal(string.Empty, actual);
+        actual.Should().BeEmpty();
       }
 
       [Fact]
@@ -96,7 +97,7 @@ public static class GenerateRandomStringTests
 
         var actual = Chars.GenerateRandomString(_randomizer, expected).Length;
 
-        Assert.Equal(expected, actual);
+        actual.Should().Be(expected);
       }
 
       [Fact]
@@ -104,7 +105,7 @@ public static class GenerateRandomStringTests
       {
         var actual = Chars.GenerateRandomString(_randomizer, 0);
 
-        Assert.Equal(string.Empty, actual);
+        actual.Should().BeEmpty();
       }
 
       [Fact]
@@ -125,7 +126,7 @@ public static class GenerateRandomStringTests
 
         var actual = Chars.GenerateRandomString(expected).Length;
 
-        Assert.Equal(expected, actual);
+        actual.Should().Be(expected);
       }
 
       [Fact]
@@ -133,7 +134,7 @@ public static class GenerateRandomStringTests
       {
         var actual = Chars.GenerateRandomString(0);
 
-        Assert.Equal(string.Empty, actual);
+        actual.Should().BeEmpty();
       }
 
       [Fact]

@@ -9,6 +9,6 @@ public class DecimalNegativeTests
   {
     var actual = Randomizer.Shared.DecimalNegative();
 
-    Assert.InRange(actual, decimal.MinValue, decimal.Zero);
+    actual.Should().BeInRange(decimal.MinValue, decimal.Zero);
   }
 }

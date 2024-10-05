@@ -9,6 +9,6 @@ public class IntNegativeTests
   {
     var actual = Randomizer.Shared.IntNegative();
 
-    Assert.True(condition: actual < 0, userMessage: $"Actual >= 0 ({actual})");
+    actual.Should().BeNegative();
   }
 }

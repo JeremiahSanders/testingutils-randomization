@@ -9,6 +9,6 @@ public class FloatTests
   {
     var actual = Randomizer.Shared.Float();
 
-    Assert.InRange(actual, float.MinValue, float.MaxValue);
+    actual.Should().BeInRange(float.MinValue, float.MaxValue);
   }
 }

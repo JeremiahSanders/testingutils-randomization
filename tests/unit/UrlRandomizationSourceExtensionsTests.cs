@@ -180,7 +180,7 @@ public static class UrlRandomizationSourceExtensionsTests
 
       var actual = resultUri.Map(uri => uri.Host.Length).IfFail(ex => throw ex);
 
-      Assert.Equal(hostLength, actual);
+      actual.Should().Be(hostLength);
     }
 
     [Theory]
@@ -192,7 +192,7 @@ public static class UrlRandomizationSourceExtensionsTests
       resultUri.IfSucc(uri => WriteUri(TestOutputHelper, uri));
       var actual = resultUri.Map(uri => uri.LocalPath.Length).IfFail(ex => throw ex);
 
-      Assert.Equal(pathLength, actual);
+      actual.Should().Be(pathLength);
     }
 
     [Theory]
@@ -216,7 +216,7 @@ public static class UrlRandomizationSourceExtensionsTests
           FragmentLength: uri.Fragment.Length
         )).IfFail(ex => throw ex);
 
-      Assert.Equal(expected, actual);
+      actual.Should().Be(expected);
     }
 
     internal static void WriteUri(ITestOutputHelper testOutputHelper, Uri uri)

@@ -1,4 +1,5 @@
 ﻿using System;
+using FluentAssertions;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -24,8 +25,8 @@ public class DemographicsBirthDateTimeTests
 
     TestOutputHelper.WriteLine(message: $"Expecting that {actual} is prior to {youngest} and after {oldest}");
 
-    Assert.True(condition: youngest > actual);
-    Assert.True(condition: oldest < actual);
+    actual.Should().BeBefore(youngest);
+    actual.Should().BeAfter(oldest);
   }
 
   [Fact]
@@ -41,8 +42,8 @@ public class DemographicsBirthDateTimeTests
 
     TestOutputHelper.WriteLine(message: $"Expecting that {actual} is prior to {youngest} and after {oldest}");
 
-    Assert.True(condition: youngest > actual);
-    Assert.True(condition: oldest < actual);
+    actual.Should().BeBefore(youngest);
+    actual.Should().BeAfter(oldest);
   }
 
   [Fact]
@@ -62,8 +63,8 @@ public class DemographicsBirthDateTimeTests
 
     TestOutputHelper.WriteLine(message: $"Expecting that {actual} is prior to {youngest} and after {oldest}");
 
-    Assert.True(condition: youngest > actual);
-    Assert.True(condition: oldest < actual);
+    actual.Should().BeBefore(youngest);
+    actual.Should().BeAfter(oldest);
   }
 
   [Fact]
@@ -82,8 +83,8 @@ public class DemographicsBirthDateTimeTests
 
     TestOutputHelper.WriteLine(message: $"Expecting that {actual} is prior to {youngest} and after {oldest}");
 
-    Assert.True(condition: youngest > actual);
-    Assert.True(condition: oldest < actual);
+    actual.Should().BeBefore(youngest);
+    actual.Should().BeAfter(oldest);
   }
 
   [Fact]

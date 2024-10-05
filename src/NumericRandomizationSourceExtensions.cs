@@ -86,7 +86,10 @@ public static class NumericRandomizationSourceExtensions
              Convert.ToDecimal(randomizationSource.NextDouble()) * maxExclusive;
     }
 
-    return minInclusive + (maxExclusive - minInclusive) * Convert.ToDecimal(randomizationSource.NextDouble());
+    var multiplier = Convert.ToDecimal(randomizationSource.NextDouble());
+    var sum = minInclusive + (maxExclusive - minInclusive) * multiplier;
+
+    return sum < maxExclusive ? sum : minInclusive;
   }
 
   /// <summary>
@@ -253,5 +256,16 @@ public static class NumericRandomizationSourceExtensions
   public static long LongPositive(this IRandomizationSource randomizationSource)
   {
     return randomizationSource.NextLongInRange(0L, long.MaxValue);
+  }
+
+  /// <summary>
+  ///   Gets a pseudo-random <see cref="ushort" />, using <see cref="IRandomizationSource.NextIntInRange" />.
+  /// </summary>
+  /// <param name="randomizationSource">A <see cref="IRandomizationSource" /> providing values.</param>
+  /// <returns>A <see cref="ushort" />.</returns>
+  public static ushort UShort(this IRandomizationSource randomizationSource)
+  {
+    const int maxExclusive = ushort.MaxValue + 1;
+    return (ushort)randomizationSource.NextIntInRange(0, maxExclusive);
   }
 }

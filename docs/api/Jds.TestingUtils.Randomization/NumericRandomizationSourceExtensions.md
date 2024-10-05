@@ -25,6 +25,7 @@ public static class NumericRandomizationSourceExtensions
 | static [LongInRange](NumericRandomizationSourceExtensions/LongInRange.md)(…) | Gets a pseudo-random Int64, using [`NextLongInRange`](./IRandomizationSource/NextLongInRange.md). The value should be greater than or equal to *minInclusive*, and less than *maxExclusive*. |
 | static [LongNegative](NumericRandomizationSourceExtensions/LongNegative.md)(…) | Gets a pseudo-random Int64, using [`NextLongInRange`](./IRandomizationSource/NextLongInRange.md). The value should be greater than or equal to MinValue, and less than 0. |
 | static [LongPositive](NumericRandomizationSourceExtensions/LongPositive.md)(…) | Gets a pseudo-random Int64, using [`NextLongInRange`](./IRandomizationSource/NextLongInRange.md). The value should be greater than or equal to 0, and less than MaxValue. |
+| static [UShort](NumericRandomizationSourceExtensions/UShort.md)(…) | Gets a pseudo-random UInt16, using [`NextIntInRange`](./IRandomizationSource/NextIntInRange.md). |
 
 ## See Also
 

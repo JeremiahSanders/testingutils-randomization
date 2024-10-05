@@ -9,6 +9,6 @@ public class DoubleTests
   {
     var actual = Randomizer.Shared.Double();
 
-    Assert.InRange(actual, double.MinValue, double.MaxValue);
+    actual.Should().BeInRange(double.MinValue, double.MaxValue);
   }
 }

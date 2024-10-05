@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using FluentAssertions;
 using Xunit;
 
 namespace Jds.TestingUtils.Randomization.Tests.Unit.StringRandomizationSourceExtensionsTests;
@@ -26,7 +27,7 @@ public static class RandomStringTests
 
         var actual = _randomizer.RandomString(expected, Strings).Length;
 
-        Assert.Equal(expected, actual);
+        actual.Should().Be(expected);
       }
 
       [Fact]
@@ -34,7 +35,7 @@ public static class RandomStringTests
       {
         var actual = _randomizer.RandomString(0, Strings);
 
-        Assert.Equal(string.Empty, actual);
+        actual.Should().BeEmpty();
       }
 
       [Fact]
@@ -67,7 +68,7 @@ public static class RandomStringTests
 
         var actual = _randomizer.RandomString(expected, Chars).Length;
 
-        Assert.Equal(expected, actual);
+        actual.Should().Be(expected);
       }
 
       [Fact]
@@ -75,7 +76,7 @@ public static class RandomStringTests
       {
         var actual = _randomizer.RandomString(0, Chars);
 
-        Assert.Equal(string.Empty, actual);
+        actual.Should().BeEmpty();
       }
 
       [Fact]

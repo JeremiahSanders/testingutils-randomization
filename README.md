@@ -64,6 +64,8 @@ using System.Linq;
   * Gets a pseudo-random `long`, using `IRandomizationSource.NextLongInRange`. The value should be greater than or equal to `long.MinValue`, and less than `0`.
 * `IRandomizationSource.LongPositive()`
   * Gets a pseudo-random `long`, using `IRandomizationSource.NextLongInRange`. The value should be greater than or equal to `0`, and less than `long.MaxValue`.
+* `IRandomizationSource.UShort()`
+  * Gets a pseudo-random `ushort`.
 
 ### Generate a Random Number of Generated Items
 
@@ -118,6 +120,17 @@ Randomizer.Shared.WeightedRandomKey(new Dictionary<string, double>
 * `IRandomizationSource.RandomStringLatin(int length, bool uppercase = false, bool alphanumeric = false)`
   * Generates a pseudo-random `string` of `length` characters using ASCII Latin characters. Uses `a` - `z` by default. If `uppercase`, uses `A` - `Z`. If `alphanumeric`, also includes `0` - `9` with either casing.
 
+### Generate a Random Hexadecimal String (e.g., certificate thumbprint)
+
+* `IRandomizationSource.Hexadecimal(int length)`
+  * Generates a pseudo-random hexadecimal (`0` through `f`, lowercase) string.
+* `IRandomizationSource.HashSha256()`
+  * Generates a `64`-character hexadecimal (`0` through `f`, lowercase) string.
+* `IRandomizationSource.HashSha384()`
+  * Generates a `96`-character hexadecimal (`0` through `f`, lowercase) string.
+* `IRandomizationSource.HashSha512()`
+  * Generates a `128`-character hexadecimal (`0` through `f`, lowercase) string.
+
 ### Generate a Mail Address
 
 * `IRandomizationSource.MailAddress()`
@@ -137,6 +150,13 @@ Randomizer.Shared.WeightedRandomKey(new Dictionary<string, double>
 
 * `IRandomizationSource.RandomUrl(int hostLength, int pathLength = 0, int queryLength = 0, int fragmentLength = 0, string scheme = "https", int? port = null)`
     * Generates a pseudo-random `string` URL according to [RFC-3986 URI syntax][]. The `host` segment is generated using `IRandomizationSource.DomainName(int length)`.
+
+### Generate an IP Address
+
+* `IRandomizationSource.IpV4(byte? octet1 = null, byte? octet2 = null, byte? octet3 = null, byte? octet4 = null)`
+  * Generates a pseudo-random IP v4 address.
+* `IRandomizationSource.IpV6(ushort? piece1 = null, ushort? piece2 = null, ushort? piece3 = null, ushort? piece4 = null, ushort? piece5 = null, ushort? piece6 = null, ushort? piece7 = null, ushort? piece8 = null)`
+  * Generates a pseudo-random IP v6 address.
 
 ### Generate a Sequence of Items from a [Markov Chain][] Model
 
@@ -248,7 +268,7 @@ In some scenarios, you may want to modify the existing randomization source stat
   * Use `Map` to replace the state contained within the stateful randomization source with a new state (which may be of the same type or another). **This is the most common state operation.**
 
 [addr-spec]: https://datatracker.ietf.org/doc/html/rfc2822#section-3.4.1
-[API Documentation]: ./docs/api/TestingUtils.Randomization.md
+[API Documentation]: https://github.com/JeremiahSanders/testingutils-randomization/blob/main/docs/api/TestingUtils.Randomization.md
 [cryptographically strong random number generator]: https://docs.microsoft.com/en-us/dotnet/api/system.security.cryptography.randomnumbergenerator.getint32?view=net-6.0#system-security-cryptography-randomnumbergenerator-getint32(system-int32-system-int32)
 [domain-names]: https://datatracker.ietf.org/doc/html/rfc1035#section-2.3.1
 [example-stateful-dsl]: https://github.com/JeremiahSanders/testingutils-randomization/blob/main/tests/unit/StatefulTests/RpgCharacterBuilderStateExample.cs

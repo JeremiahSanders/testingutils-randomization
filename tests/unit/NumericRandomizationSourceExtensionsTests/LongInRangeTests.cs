@@ -9,27 +9,23 @@ public class LongInRangeTests
   {
     object[] ToCaseArrangement(long minInclusive, long maxExclusive)
     {
-      return new object[] { minInclusive, maxExclusive };
+      return new object[] {minInclusive, maxExclusive};
     }
 
     return new[]
     {
-      ToCaseArrangement(long.MinValue, long.MaxValue),
-      ToCaseArrangement(long.MinValue, maxExclusive: long.MaxValue / 2),
-      ToCaseArrangement(minInclusive: long.MaxValue / 2, long.MaxValue),
-      ToCaseArrangement(minInclusive: long.MaxValue - 1, long.MaxValue)
+      ToCaseArrangement(long.MinValue, long.MaxValue), ToCaseArrangement(long.MinValue, long.MaxValue / 2),
+      ToCaseArrangement(long.MaxValue / 2, long.MaxValue), ToCaseArrangement(long.MaxValue - 1, long.MaxValue)
     };
   }
 
   [Theory]
-  [MemberData(memberName: nameof(CreateTestCases))]
+  [MemberData(nameof(CreateTestCases))]
   public void ReturnsValueInRange(long minInclusive, long maxExclusive)
   {
     var actual = Randomizer.Shared.LongInRange(minInclusive, maxExclusive);
 
-    Assert.False(condition: actual < minInclusive, userMessage: $"Value was below {nameof(minInclusive)}");
-    Assert.True(condition: actual < maxExclusive,
-      userMessage: $"Value was equal to or greater than {nameof(maxExclusive)}"
-    );
+    actual.Should().BeGreaterOrEqualTo(minInclusive);
+    actual.Should().BeLessThan(maxExclusive);
   }
 }

@@ -9,6 +9,8 @@
 | class [DeterministicRandomizationSource](./Jds.TestingUtils.Randomization/DeterministicRandomizationSource.md) | A [`IRandomizationSource`](./Jds.TestingUtils.Randomization/IRandomizationSource.md) which returns sequential values from IEnumerable sources. |
 | static class [DomainRandomizationSourceExtensions](./Jds.TestingUtils.Randomization/DomainRandomizationSourceExtensions.md) |  |
 | static class [EnumerableExtensions](./Jds.TestingUtils.Randomization/EnumerableExtensions.md) |  |
+| static class [HexRandomizationSourceExtensions](./Jds.TestingUtils.Randomization/HexRandomizationSourceExtensions.md) | Methods extending [`IRandomizationSource`](./Jds.TestingUtils.Randomization/IRandomizationSource.md) to generate hexadecimal values. |
+| static class [IpAddressRandomizationSourceExtensions](./Jds.TestingUtils.Randomization/IpAddressRandomizationSourceExtensions.md) | Methods extending [`IRandomizationSource`](./Jds.TestingUtils.Randomization/IRandomizationSource.md) to generate pseudo-random IP addresses. |
 | interface [IRandomizationSource](./Jds.TestingUtils.Randomization/IRandomizationSource.md) | A random value provider. |
 | interface [IStatefulRandomizationSource&lt;TState&gt;](./Jds.TestingUtils.Randomization/IStatefulRandomizationSource-1.md) | A [`IRandomizationSource`](./Jds.TestingUtils.Randomization/IRandomizationSource.md) which contains state. |
 | static class [LoremIpsumRandomizationSourceExtensions](./Jds.TestingUtils.Randomization/LoremIpsumRandomizationSourceExtensions.md) |  |

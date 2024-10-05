@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using System.Text.RegularExpressions;
+using FluentAssertions;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -32,8 +33,8 @@ public class DemographicsSurnameUsaTests
 
     foreach (var (maxLength, word) in words)
     {
-      Assert.True(condition: word.Length <= maxLength);
-      Assert.False(condition: string.IsNullOrWhiteSpace(word));
+      word.Should().NotBeNullOrWhiteSpace();
+      word.Length.Should().BeLessThanOrEqualTo(maxLength);
     }
   }
 

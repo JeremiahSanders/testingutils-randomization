@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using FluentAssertions;
 using Xunit;
 
 namespace Jds.TestingUtils.Randomization.Tests.Unit.ReadOnlyListExtensionsTests;
@@ -15,7 +16,7 @@ public static class GetRandomItemTests
 
       var actual = items.GetRandomItem();
 
-      Assert.Contains(actual, items);
+      items.Should().Contain(actual);
     }
 
     [Fact]
@@ -26,7 +27,7 @@ public static class GetRandomItemTests
 
       var actual = items.GetRandomItem();
 
-      Assert.Equal(expected, actual);
+      actual.Should().Be(expected);
     }
 
     [Fact]
@@ -52,7 +53,7 @@ public static class GetRandomItemTests
 
       var actual = items.GetRandomItem(_randomizationSource);
 
-      Assert.Contains(actual, items);
+      items.Should().Contain(actual);
     }
 
     [Fact]
@@ -63,7 +64,7 @@ public static class GetRandomItemTests
 
       var actual = items.GetRandomItem(_randomizationSource);
 
-      Assert.Equal(expected, actual);
+      actual.Should().Be(expected);
     }
 
     [Fact]
