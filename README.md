@@ -67,6 +67,15 @@ using System.Linq;
 * `IRandomizationSource.UShort()`
   * Gets a pseudo-random `ushort`.
 
+### Generate Pseudo-random Date and Time Values
+
+* `IRandomizationSource.DateOnly(int? year = null, int? month = null, int? day = null)`
+  * Gets a pseudo-random `DateOnly`.
+* `IRandomizationSource.DateTimeUtc(int? year = null, int? month = null, int? day = null, int? hour = null, int? minute = null, int? second = null)`
+  * Gets a pseudo-random `DateTime` in UTC.
+* `IRandomizationSource.TimeOnly(int? hour = null, int? minute = null, int? second = null)`
+  * Gets a pseudo-random `TimeOnly`.
+
 ### Generate a Random Number of Generated Items
 
 * `IRandomizationSource.Enumerable<T>(Func<T> factory, int inclusiveMinCount, int exclusiveMaxCount)`
