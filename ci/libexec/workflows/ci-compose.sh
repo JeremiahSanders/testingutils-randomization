@@ -16,27 +16,51 @@ set -o errexit  # Fail or exit immediately if there is an error.
 set -o nounset  # Fail if an unset variable is used.
 set -o pipefail # Fail pipelines if any command errors, not just the last one.
 
-function ci-compose() {
-  printf "Composing build artifacts...\n\n"
-  
+function ci-compose() {  
   function createDocs() {
-    cd "${PROJECT_ROOT}"
-    dotnet tool restore
-    local sourcePath="${BUILD_UNPACKAGED_DIST}/TestingUtils.Randomization.dll"
+    local sourcePath="${BUILD_UNPACKAGED_DIST}/net6.0/TestingUtils.Randomization.dll"
     local outputPath="${BUILD_DOCS}/md"
-    dotnet xmldocmd "${sourcePath}" "${outputPath}" \
-      --namespace "Jds.TestingUtils.Randomization" \
-      --source "https://github.com/JeremiahSanders/testingutils-randomization/tree/main/src" \
-      --newline lf \
-      --visibility public
+    
+    cd "${PROJECT_ROOT}" &&
+      dotnet tool restore &&
+      dotnet xmldocmd "${sourcePath}" "${outputPath}" \
+        --namespace "Jds.TestingUtils.Randomization" \
+        --source "https://github.com/JeremiahSanders/testingutils-randomization/tree/main/src" \
+        --newline lf \
+        --visibility public
   }
-  ci-dotnet-publish \
-    -p:GenerateDocumentationFile=true &&
-    ci-dotnet-pack \
-      -p:GenerateDocumentationFile=true &&
-    createDocs
   
-  printf "Composition complete.\n"
+  printf "Cleaning build artifacts from %s...\n\n" "${PROJECT_ROOT}/build" &&
+    rm -rfv \
+      "${PROJECT_ROOT}/build" &&
+    printf "Composing build artifacts...\n\n" &&
+    dotnet build "${PROJECT_ROOT}/src" \
+      --configuration Release \
+      -p:Version="${PROJECT_VERSION_DIST}" \
+      -p:GenerateDocumentationFile=true &&
+    printf "Publishing...\n\n" &&
+    dotnet publish "${PROJECT_ROOT}/src" \
+      --configuration Release \
+      --output "${BUILD_UNPACKAGED_DIST}/net8.0" \
+      -p:Version="${PROJECT_VERSION_DIST}" \
+      -p:GenerateDocumentationFile=true \
+      --framework net8.0 &&
+    dotnet publish "${PROJECT_ROOT}/src" \
+      --configuration Release \
+      --output "${BUILD_UNPACKAGED_DIST}/net6.0" \
+      -p:Version="${PROJECT_VERSION_DIST}" \
+      -p:GenerateDocumentationFile=true \
+      --framework net6.0 &&
+    printf "\nPublish complete. Packing...\n\n" &&
+    dotnet pack "${PROJECT_ROOT}/src" \
+      --configuration Release \
+      --output "${BUILD_PACKAGED_DIST}/nuget" \
+      -p:PackageVersion="${PROJECT_VERSION_DIST}" \
+      -p:Version="${PROJECT_VERSION_DIST}" \
+      -p:GenerateDocumentationFile=true &&
+    printf "\nPacking complete. Creating docs...\n\n" &&
+    createDocs &&
+    printf "Composition complete.\n"
 }
 
 export -f ci-compose
