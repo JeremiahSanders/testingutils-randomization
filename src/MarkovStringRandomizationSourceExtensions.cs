@@ -1,3 +1,5 @@
+using System.Diagnostics.CodeAnalysis;
+
 namespace Jds.TestingUtils.Randomization;
 
 public static class MarkovStringRandomizationSourceExtensions
@@ -53,6 +55,7 @@ public static class MarkovStringRandomizationSourceExtensions
   ///   <paramref name="sources" /> are empty, or if <paramref name="chainLength" /> exceeds the longest sequence in
   ///   <paramref name="sources" />.
   /// </exception>
+  [SuppressMessage("ReSharper", "RedundantNotNullConstraint", Justification = "Included for clarity of intent.")]
   public static IReadOnlyList<T> GenerateRandomMarkov<T>(this IRandomizationSource randomizationSource,
     IReadOnlyCollection<IReadOnlyList<T>> sources,
     int? maxLength = null,
@@ -139,6 +142,7 @@ public static class MarkovStringRandomizationSourceExtensions
   ///   <paramref name="sources" /> are empty, or if <paramref name="chainLength" /> exceeds the longest sequence in
   ///   <paramref name="sources" />.
   /// </exception>
+  [SuppressMessage("ReSharper", "RedundantNotNullConstraint", Justification = "Included for clarity of intent.")]
   public static Func<int, IReadOnlyList<T>> CreateMarkovGenerator<T>(this IRandomizationSource randomizationSource,
     IReadOnlyCollection<IReadOnlyList<T>> sources, int chainLength = 1) where T : notnull, IEquatable<T>
   {
@@ -170,6 +174,7 @@ public static class MarkovStringRandomizationSourceExtensions
     return MarkovGenerator;
   }
 
+  [SuppressMessage("ReSharper", "RedundantNotNullConstraint", Justification = "Included for clarity of intent.")]
   internal static IReadOnlyList<T> GenerateRandomMarkov<T>(this IRandomizationSource randomizationSource,
     IReadOnlyDictionary<IReadOnlyList<T>, MarkovResult<T>> markovProbability, int maxLength)
     where T : notnull, IEquatable<T>
@@ -195,8 +200,9 @@ public static class MarkovStringRandomizationSourceExtensions
     var defaultKvp = new KeyValuePair<IReadOnlyList<T>, Dictionary<OptionalValue<T>, int>>();
     while (!finished)
     {
+      var copiedPreviousItem = previousItem; // Copied to local variable to address: Captured variable is modified in the outer scope
       var possiblePreviousItemResults =
-        nextItemLookup.FirstOrDefault(kvp => kvp.Key.SequenceEqual(previousItem), defaultKvp);
+        nextItemLookup.FirstOrDefault(kvp => kvp.Key.SequenceEqual(copiedPreviousItem), defaultKvp);
 
       var possibleNext = !Equals(possiblePreviousItemResults, defaultKvp) && results.Count < maxLength
         ? possiblePreviousItemResults.Value.GetWeightedRandomKey(randomizationSource)
@@ -253,11 +259,13 @@ public static class MarkovStringRandomizationSourceExtensions
   /// <param name="sources">A collection of reference sequences.</param>
   /// <param name="itemsPerGroup">Count of items in each probability chain.</param>
   /// <returns>A Markov Chain model, for each <paramref name="itemsPerGroup" /> in <paramref name="sources" /> elements.</returns>
+  [SuppressMessage("ReSharper", "RedundantNotNullConstraint", Justification = "Included for clarity of intent.")]
   internal static IReadOnlyDictionary<IReadOnlyList<T>, MarkovResult<T>> GetMarkovProbability<T>(
     IReadOnlyCollection<IReadOnlyList<T>> sources,
     int itemsPerGroup
   ) where T : notnull, IEquatable<T>
   {
+    [SuppressMessage("ReSharper", "CanSimplifyDictionaryLookupWithTryAdd", Justification = "Included for clarity of intent.")]
     static Dictionary<IReadOnlyList<T>, MarkovResult<T>> GetMarkovProbabilities(IReadOnlyList<T> items, int order)
     {
       OptionalValue<T> TryGetNextItem(int index)
@@ -307,6 +315,7 @@ public static class MarkovStringRandomizationSourceExtensions
       return state;
     }
 
+    [SuppressMessage("ReSharper", "CanSimplifyDictionaryLookupWithTryAdd", Justification = "Included for clarity of intent.")]
     static Dictionary<T, int> MergeDictionaries(IDictionary<T, int> a, IDictionary<T, int> b)
     {
       var dictionary = new Dictionary<T, int>(a);

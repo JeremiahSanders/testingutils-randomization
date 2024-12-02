@@ -21,34 +21,38 @@ public class ArrangedRandomizationSource : IRandomizationSource
   )
   {
     _getNextDoubleEnumerable = getNextDoubleEnumerable ?? (() =>
-        throw new InvalidOperationException(message: $"No {nameof(getNextDoubleEnumerable)} provided")
+        throw new InvalidOperationException($"No {nameof(getNextDoubleEnumerable)} provided")
       );
     _getNextFloatEnumerable = getNextFloatEnumerable ?? (() =>
-        throw new InvalidOperationException(message: $"No {nameof(getNextFloatEnumerable)} provided")
+        throw new InvalidOperationException($"No {nameof(getNextFloatEnumerable)} provided")
       );
-    _getNextIntEnumerable = getNextIntEnumerable ?? ((int _, int _) =>
-        throw new InvalidOperationException(message: $"No {nameof(getNextIntEnumerable)} provided")
+    _getNextIntEnumerable = getNextIntEnumerable ?? (static (_, _) =>
+        throw new InvalidOperationException($"No {nameof(getNextIntEnumerable)} provided")
       );
-    _getNextLongEnumerable = getNextLongEnumerable ?? ((long _, long _) =>
-        throw new InvalidOperationException(message: $"No {nameof(getNextLongEnumerable)} provided")
+    _getNextLongEnumerable = getNextLongEnumerable ?? (static (_, _) =>
+        throw new InvalidOperationException($"No {nameof(getNextLongEnumerable)} provided")
       );
   }
 
+  /// <inheritdoc cref="IRandomizationSource.NextDouble" />
   public double NextDouble()
   {
     return _getNextDoubleEnumerable().First();
   }
 
+  /// <inheritdoc cref="IRandomizationSource.NextIntInRange" />
   public int NextIntInRange(int minInclusive, int maxExclusive)
   {
     return _getNextIntEnumerable(minInclusive, maxExclusive).First();
   }
 
+  /// <inheritdoc cref="IRandomizationSource.NextLongInRange" />
   public long NextLongInRange(long minInclusive, long maxExclusive)
   {
     return _getNextLongEnumerable(minInclusive, maxExclusive).First();
   }
 
+  /// <inheritdoc cref="IRandomizationSource.NextFloat" />
   public float NextFloat()
   {
     return _getNextFloatEnumerable().First();

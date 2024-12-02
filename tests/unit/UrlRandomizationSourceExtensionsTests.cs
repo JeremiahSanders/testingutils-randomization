@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text.Json;
 using LanguageExt;
@@ -173,6 +174,7 @@ public static class UrlRandomizationSourceExtensionsTests
 
     [Theory]
     [MemberData(memberName: nameof(HostPathOnly))]
+    [SuppressMessage("Usage", "xUnit1026:Theory methods should use all of their parameters", Justification = "MemberData serves multiple cases.")]
     public void GivenHostPathOnly_ReturnsExpectedHostLength(int hostLength, int pathLength, Result<string> result,
       Result<Uri> resultUri)
     {
@@ -185,6 +187,7 @@ public static class UrlRandomizationSourceExtensionsTests
 
     [Theory]
     [MemberData(memberName: nameof(HostPathOnly))]
+    [SuppressMessage("Usage", "xUnit1026:Theory methods should use all of their parameters", Justification = "MemberData serves multiple cases.")]
     public void GivenHostPathOnly_ReturnsExpectedPathLength(int hostLength, int pathLength, Result<string> result,
       Result<Uri> resultUri)
     {

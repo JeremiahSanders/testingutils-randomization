@@ -3,12 +3,9 @@
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
-
     <IsPackable>false</IsPackable>
-
     <RootNamespace>Jds.TestingUtils.Randomization.Tests.Unit</RootNamespace>
-
-    <LangVersion>14</LangVersion>
+    <LangVersion>13</LangVersion>
   </PropertyGroup>
 
   <ItemGroup>

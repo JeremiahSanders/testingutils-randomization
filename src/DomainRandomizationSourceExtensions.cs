@@ -5,8 +5,8 @@ namespace Jds.TestingUtils.Randomization;
 
 public static class DomainRandomizationSourceExtensions
 {
-  private const int maxBytesPerLabel = 63;
-  private const int maxBytesPerDomain = 253; // Max of 255, but requires two buffer bytes.
+  private const int MaxBytesPerLabel = 63;
+  private const int MaxBytesPerDomain = 253; // Max of 255, but requires two buffer bytes.
 
   /// <summary>
   ///   <see cref="char" /> values between `a` and `z`, values between `A` and `Z`, values between `0` and `9`, and the value `-`.
@@ -78,9 +78,9 @@ public static class DomainRandomizationSourceExtensions
   /// <exception cref="ArgumentOutOfRangeException"></exception>
   internal static string DomainLabel(this IRandomizationSource randomizationSource, int length)
   {
-    if (length > maxBytesPerLabel)
+    if (length > MaxBytesPerLabel)
     {
-      throw new ArgumentOutOfRangeException(nameof(length), $"Maximum length {maxBytesPerLabel}");
+      throw new ArgumentOutOfRangeException(nameof(length), $"Maximum length {MaxBytesPerLabel}");
     }
 
     if (length < 1)
@@ -142,7 +142,7 @@ public static class DomainRandomizationSourceExtensions
         // Valid distribution is:
         // * Each item is <= maxBytesPerLabel
         // * (Sum of items) + (items.Length -1) == totalDomainLength
-        return distribution.All(labelLength => labelLength <= maxBytesPerLabel) &&
+        return distribution.All(labelLength => labelLength <= MaxBytesPerLabel) &&
                length == distribution.Sum() + (distribution.Count - 1);
       }
 
@@ -155,14 +155,14 @@ public static class DomainRandomizationSourceExtensions
         {
           var next = randomizationSource.IntInRange(
             1,
-            Math.Clamp(length - GetDistributionLength(randomLengths), 1, maxBytesPerLabel)
+            Math.Clamp(length - GetDistributionLength(randomLengths), 1, MaxBytesPerLabel)
           );
           var remainingAfterNext = length - currentDistributionLength - (next + 1);
           if (remainingAfterNext < 3)
           {
             // There will only be <3 characters left after this.
             // If possible, we need to extend this to capture those.
-            if ((remainingAfterNext + next) <= maxBytesPerLabel)
+            if ((remainingAfterNext + next) <= MaxBytesPerLabel)
             {
               next += remainingAfterNext;
             }
@@ -231,16 +231,16 @@ public static class DomainRandomizationSourceExtensions
       throw new ArgumentOutOfRangeException(nameof(domainLabelLengths), "Total length must be > 0");
     }
 
-    if (length > maxBytesPerDomain)
+    if (length > MaxBytesPerDomain)
     {
       throw new ArgumentOutOfRangeException(nameof(domainLabelLengths),
-        $"Maximum domain length is {maxBytesPerDomain}");
+        $"Maximum domain length is {MaxBytesPerDomain}");
     }
 
-    if (domainLabelLengths.Any(labelLength => labelLength > maxBytesPerLabel))
+    if (domainLabelLengths.Any(labelLength => labelLength > MaxBytesPerLabel))
     {
       throw new ArgumentOutOfRangeException((nameof(domainLabelLengths)),
-        $"No domain labels may be over {maxBytesPerLabel} characters");
+        $"No domain labels may be over {MaxBytesPerLabel} characters");
     }
 
     return String.Join(".", domainLabelLengths.Select(randomizationSource.DomainLabel));
@@ -280,10 +280,10 @@ public static class DomainRandomizationSourceExtensions
   /// <returns>A pseudo-random domain name which conforms to RFC-1035.</returns>
   public static string DomainName(this IRandomizationSource randomizationSource, int domainLength)
   {
-    if (domainLength > maxBytesPerDomain)
+    if (domainLength > MaxBytesPerDomain)
     {
       throw new ArgumentOutOfRangeException(nameof(domainLength),
-        $"Maximum domain length is {maxBytesPerDomain}");
+        $"Maximum domain length is {MaxBytesPerDomain}");
     }
 
     return randomizationSource.DomainName(randomizationSource.GenerateLabelLengths(domainLength));

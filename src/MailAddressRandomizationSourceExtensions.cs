@@ -67,7 +67,7 @@ public static class MailAddressRandomizationSourceExtensions
     /// </code>
     /// </remarks>
     public static IReadOnlyList<char> QStringChars { get; } =
-      new char[] { '!' }
+      new[] { '!' }
         .Concat(Enumerable.Range('#', '[' - '#').Select(value => (char)value))
         .Concat(Enumerable.Range(']', '~' - ']').Select(value => (char)value))
         .ToImmutableArray();

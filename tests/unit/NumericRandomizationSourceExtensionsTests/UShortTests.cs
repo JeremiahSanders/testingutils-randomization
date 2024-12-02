@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Xunit;
 
@@ -6,6 +7,7 @@ namespace Jds.TestingUtils.Randomization.Tests.Unit.NumericRandomizationSourceEx
 public class UShortTests
 {
   [Fact]
+  [SuppressMessage("ReSharper", "UnusedParameter.Local", Justification = "Included for clarity of intent.")]
   public void CanGenerateUShortMaxValue()
   {
     IRandomizationSource fixedSource = new ArrangedRandomizationSource(

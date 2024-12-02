@@ -4,7 +4,7 @@ namespace Jds.TestingUtils.Randomization;
 
 /// <summary>
 ///   Collections of <see cref="char" /> suitable for use with
-///   <see cref="StringRandomizationSourceExtensions.RandomString" />.
+///   <see cref="StringRandomizationSourceExtensions.RandomString(Jds.TestingUtils.Randomization.IRandomizationSource,int,System.Collections.Generic.IReadOnlyList{char})" />.
 /// </summary>
 internal static class CharCollections
 {
