@@ -1,6 +1,5 @@
 using System;
 using System.Linq;
-using FluentAssertions;
 using Xunit;
 
 namespace Jds.TestingUtils.Randomization.Tests.Unit.EnumerableExtensionsTests;
@@ -31,7 +30,7 @@ public class EnumerableTests
     Randomizer.Shared.Enumerable(Guid.NewGuid, 3, 7);
     var actualCount = Randomizer.Shared.Enumerable(GenerateFromIndex, min, exclusiveMax).Count();
 
-    actualCount.Should().BeGreaterOrEqualTo(min);
+    actualCount.Should().BeGreaterThanOrEqualTo(min);
     actualCount.Should().BeLessThanOrEqualTo(max);
   }
 

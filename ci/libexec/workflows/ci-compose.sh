@@ -41,6 +41,12 @@ function ci-compose() {
     printf "Publishing...\n\n" &&
     dotnet publish "${PROJECT_ROOT}/src" \
       --configuration Release \
+      --output "${BUILD_UNPACKAGED_DIST}/net10.0" \
+      -p:Version="${PROJECT_VERSION_DIST}" \
+      -p:GenerateDocumentationFile=true \
+      --framework net10.0 &&
+    dotnet publish "${PROJECT_ROOT}/src" \
+      --configuration Release \
       --output "${BUILD_UNPACKAGED_DIST}/net8.0" \
       -p:Version="${PROJECT_VERSION_DIST}" \
       -p:GenerateDocumentationFile=true \

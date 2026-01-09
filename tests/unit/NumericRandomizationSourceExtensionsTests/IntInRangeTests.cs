@@ -25,7 +25,7 @@ public class IntInRangeTests
   {
     var actual = Randomizer.Shared.IntInRange(minInclusive, maxExclusive);
 
-    actual.Should().BeGreaterOrEqualTo(minInclusive);
+    actual.Should().BeGreaterThanOrEqualTo(minInclusive);
     actual.Should().BeLessThan(maxExclusive);
   }
 }
