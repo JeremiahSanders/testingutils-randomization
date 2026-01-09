@@ -67,6 +67,15 @@ using System.Linq;
 * `IRandomizationSource.UShort()`
   * Gets a pseudo-random `ushort`.
 
+### Generate Pseudo-random Date and Time Values
+
+* `IRandomizationSource.DateOnly(int? year = null, int? month = null, int? day = null)`
+  * Gets a pseudo-random `DateOnly`.
+* `IRandomizationSource.DateTimeUtc(int? year = null, int? month = null, int? day = null, int? hour = null, int? minute = null, int? second = null)`
+  * Gets a pseudo-random `DateTime` in UTC.
+* `IRandomizationSource.TimeOnly(int? hour = null, int? minute = null, int? second = null)`
+  * Gets a pseudo-random `TimeOnly`.
+
 ### Generate a Random Number of Generated Items
 
 * `IRandomizationSource.Enumerable<T>(Func<T> factory, int inclusiveMinCount, int exclusiveMaxCount)`
@@ -266,6 +275,15 @@ In some scenarios, you may want to modify the existing randomization source stat
   * Use `Bind` to replace the stateful randomization source with a new stateful randomization source derived from current state. _This is an uncommon `IStatefulRandomizationSource` operation, normally only used when swapping the underlying `IRandomizationSource`._
 * `IStatefulRandomizationSource<TStateCurrent,TStateNew>.Map(Func<TStateCurrent,TStateNew>)`
   * Use `Map` to replace the state contained within the stateful randomization source with a new state (which may be of the same type or another). **This is the most common state operation.**
+
+### Conditional (Re)Generation
+
+* `IRandomizationSource.GenerateUntil<TResult>(Func<IRandomizationSource, TResult> generator, Func<TResult, bool> condition)`
+* `IRandomizationSource.GenerateUntilAsync<TResult>(Func<IRandomizationSource, Task<TResult>> generator, Func<TResult, bool> condition, CancellationToken)`
+* `IRandomizationSource.GenerateUntilAsync<TResult>(Func<IRandomizationSource, Task<TResult>> generator, Func<TResult, Task<bool>> condition, CancellationToken)`
+  * Use `GenerateUntil` to repeatedly generate a value until the result matches a condition.
+    * For example, a multiple of 3 can be generated using: `int multipleOfThree = Randomizer.Shared.GenerateUntil(static source => source.IntPositive(), static value => value > 0 && value % 3 == 0);`
+  * The `GenerateUntilAsync` method is useful for generating values with asynchronous dependencies. Additionally, calling code can provide a `CancellationToken` to avoid infinite loops.
 
 [addr-spec]: https://datatracker.ietf.org/doc/html/rfc2822#section-3.4.1
 [API Documentation]: https://github.com/JeremiahSanders/testingutils-randomization/blob/main/docs/api/TestingUtils.Randomization.md

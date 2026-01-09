@@ -9,7 +9,7 @@ public class DecimalInRangeTests
   {
     object[] ToCaseArrangement(decimal minInclusive, decimal maxExclusive)
     {
-      return new object[] {minInclusive, maxExclusive};
+      return new object[] { minInclusive, maxExclusive };
     }
 
     return new[]
@@ -28,7 +28,7 @@ public class DecimalInRangeTests
   {
     var actual = Randomizer.Shared.DecimalInRange(minInclusive, maxExclusive);
 
-    actual.Should().BeGreaterOrEqualTo(minInclusive);
+    actual.Should().BeGreaterThanOrEqualTo(minInclusive);
     actual.Should().BeLessThan(maxExclusive);
   }
 }
