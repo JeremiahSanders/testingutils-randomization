@@ -5,6 +5,7 @@
 | public type | description |
 | --- | --- |
 | class [ArrangedRandomizationSource](./Jds.TestingUtils.Randomization/ArrangedRandomizationSource.md) | A [`IRandomizationSource`](./Jds.TestingUtils.Randomization/IRandomizationSource.md) which uses delegates to provide values. |
+| static class [ConditionalGenerationExtensions](./Jds.TestingUtils.Randomization/ConditionalGenerationExtensions.md) |  |
 | static class [DateTimeRandomizationSourceExtensions](./Jds.TestingUtils.Randomization/DateTimeRandomizationSourceExtensions.md) | Methods extending [`IRandomizationSource`](./Jds.TestingUtils.Randomization/IRandomizationSource.md) supporting the generation of date and time related values. |
 | static class [DemographicsRandomizationSourceExtensions](./Jds.TestingUtils.Randomization/DemographicsRandomizationSourceExtensions.md) |  |
 | class [DeterministicRandomizationSource](./Jds.TestingUtils.Randomization/DeterministicRandomizationSource.md) | A [`IRandomizationSource`](./Jds.TestingUtils.Randomization/IRandomizationSource.md) which returns sequential values from IEnumerable sources. |
