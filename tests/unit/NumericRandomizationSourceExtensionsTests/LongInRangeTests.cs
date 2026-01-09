@@ -25,7 +25,7 @@ public class LongInRangeTests
   {
     var actual = Randomizer.Shared.LongInRange(minInclusive, maxExclusive);
 
-    actual.Should().BeGreaterOrEqualTo(minInclusive);
+    actual.Should().BeGreaterThanOrEqualTo(minInclusive);
     actual.Should().BeLessThan(maxExclusive);
   }
 }

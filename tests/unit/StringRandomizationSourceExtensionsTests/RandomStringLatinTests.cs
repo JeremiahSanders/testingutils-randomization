@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using FluentAssertions;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -18,7 +17,7 @@ public class RandomStringLatinTests
   {
     object[] GenerateTestCase(bool uppercase, bool alphanumeric)
     {
-      return new object[] {uppercase, alphanumeric};
+      return new object[] { uppercase, alphanumeric };
     }
 
     return new[]
@@ -46,25 +45,11 @@ public class RandomStringLatinTests
     {
       if (uppercase)
       {
-        if (alphanumeric)
-        {
-          actual.Should().NotBeLowerCased();
-        }
-        else
-        {
-          actual.Should().BeUpperCased();
-        }
+        actual.Should().BeUpperCased();
       }
       else
       {
-        if (alphanumeric)
-        {
-          actual.Should().NotBeUpperCased();
-        }
-        else
-        {
-          actual.Should().BeLowerCased();
-        }
+        actual.Should().BeLowerCased();
       }
     }
   }
