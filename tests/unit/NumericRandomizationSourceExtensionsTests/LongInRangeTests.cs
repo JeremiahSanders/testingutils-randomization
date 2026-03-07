@@ -9,7 +9,7 @@ public class LongInRangeTests
   {
     object[] ToCaseArrangement(long minInclusive, long maxExclusive)
     {
-      return new object[] {minInclusive, maxExclusive};
+      return new object[] { minInclusive, maxExclusive };
     }
 
     return new[]

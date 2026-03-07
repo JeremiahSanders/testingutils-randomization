@@ -5,46 +5,120 @@ namespace Jds.TestingUtils.Randomization;
 
 public static class DomainRandomizationSourceExtensions
 {
-  private const int maxBytesPerLabel = 63;
   private const int maxBytesPerDomain = 253; // Max of 255, but requires two buffer bytes.
+  private const int maxBytesPerLabel = 63;
 
   /// <summary>
-  ///   <see cref="char" /> values between `a` and `z`, values between `A` and `Z`, values between `0` and `9`, and the value `-`.
+  ///   <see cref="char" /> values between `a` and `z`, values between `A` and `Z`, values between `0` and `9`, and the value
+  ///   `-`.
   /// </summary>
   private static IReadOnlyList<char> LettersDigitsHyphen { get; } = CharCollections.LettersDigits
     .Append('-')
     .ToImmutableArray();
 
   /// <summary>
-  /// Validates that the middle of a domain label appears valid.
+  ///   Generates a pseudo-random domain name.
   /// </summary>
   /// <remarks>
-  /// The label 'middle' starts at index 1 and ends with labelLength-1. The third and fourth characters of the label (indexes 2 and 3), are second and third characters (indexes 1 and 2) of the 'middle'.
+  ///   <para>
+  ///     See https://datatracker.ietf.org/doc/html/rfc1035#section-2.3.4
+  ///   </para>
+  ///   <code>
+  ///  &lt;domain&gt; ::= &lt;subdomain&gt; | " "
+  /// 
+  ///  &lt;subdomain&gt; ::= &lt;label&gt; | &lt;subdomain&gt; "." &lt;label&gt;
+  /// 
+  ///  &lt;label&gt; ::= &lt;letter&gt; [ [ &lt;ldh-str&gt; ] &lt;let-dig&gt; ]
+  /// 
+  ///  &lt;ldh-str&gt; ::= &lt;let-dig-hyp&gt; | &lt;let-dig-hyp&gt; &lt;ldh-str&gt;
+  /// 
+  ///  &lt;let-dig-hyp&gt; ::= &lt;let-dig&gt; | "-"
+  /// 
+  ///  &lt;let-dig&gt; ::= &lt;letter&gt; | &lt;digit&gt;
+  /// 
+  ///  &lt;letter&gt; ::= any one of the 52 alphabetic characters A through Z in
+  ///  upper case and a through z in lower case
+  /// 
+  ///  &lt;digit&gt; ::= any one of the ten digits 0 through 9
+  /// </code>
+  ///   <para>
+  ///     Source https://datatracker.ietf.org/doc/html/rfc1035#section-2.3.1
+  ///   </para>
   /// </remarks>
-  /// <param name="possibleLabelMiddle"></param>
-  /// <returns></returns>
-  internal static bool IsDomainLabelMiddleInvalid(string possibleLabelMiddle)
+  /// <param name="randomizationSource">A <see cref="IRandomizationSource" /> providing values.</param>
+  /// <param name="domainLabelLengths">A list of domain label segment lengths.</param>
+  /// <returns>A pseudo-random domain name which conforms to RFC-1035.</returns>
+  public static string DomainName(this IRandomizationSource randomizationSource, IReadOnlyList<int> domainLabelLengths)
   {
-    // The third and fourth characters of a label may not both be hyphens.
-    // The label 'middle' starts at index 1 and ends with labelLength-1. The third and fourth characters of the label (indexes 2 and 3), are second and third characters (indexes 1 and 2) of the 'middle'.
-    const int thirdCharacterOfLabelMiddleIndex = 1;
-    return possibleLabelMiddle.Substring(thirdCharacterOfLabelMiddleIndex, 2) == "--";
+    if (!domainLabelLengths.Any())
+    {
+      throw new ArgumentException("At least one label length required", nameof(domainLabelLengths));
+    }
+
+
+    var length = GetDistributionLength(domainLabelLengths);
+
+    if (length < 1)
+    {
+      throw new ArgumentOutOfRangeException(nameof(domainLabelLengths), "Total length must be > 0");
+    }
+
+    if (length > maxBytesPerDomain)
+    {
+      throw new ArgumentOutOfRangeException(nameof(domainLabelLengths),
+        $"Maximum domain length is {maxBytesPerDomain}");
+    }
+
+    if (domainLabelLengths.Any(labelLength => labelLength > maxBytesPerLabel))
+    {
+      throw new ArgumentOutOfRangeException(nameof(domainLabelLengths),
+        $"No domain labels may be over {maxBytesPerLabel} characters");
+    }
+
+    return string.Join(".", domainLabelLengths.Select(randomizationSource.DomainLabel));
   }
 
   /// <summary>
-  ///   Replaces the initial <paramref name="middle"/> if <see cref="IsDomainLabelMiddleInvalid"/>.
+  ///   Generates a pseudo-random domain name.
   /// </summary>
+  /// <remarks>
+  ///   <para>
+  ///     See https://datatracker.ietf.org/doc/html/rfc1035#section-2.3.4
+  ///   </para>
+  ///   <code>
+  ///  &lt;domain&gt; ::= &lt;subdomain&gt; | " "
+  /// 
+  ///  &lt;subdomain&gt; ::= &lt;label&gt; | &lt;subdomain&gt; "." &lt;label&gt;
+  /// 
+  ///  &lt;label&gt; ::= &lt;letter&gt; [ [ &lt;ldh-str&gt; ] &lt;let-dig&gt; ]
+  /// 
+  ///  &lt;ldh-str&gt; ::= &lt;let-dig-hyp&gt; | &lt;let-dig-hyp&gt; &lt;ldh-str&gt;
+  /// 
+  ///  &lt;let-dig-hyp&gt; ::= &lt;let-dig&gt; | "-"
+  /// 
+  ///  &lt;let-dig&gt; ::= &lt;letter&gt; | &lt;digit&gt;
+  /// 
+  ///  &lt;letter&gt; ::= any one of the 52 alphabetic characters A through Z in
+  ///  upper case and a through z in lower case
+  /// 
+  ///  &lt;digit&gt; ::= any one of the ten digits 0 through 9
+  /// </code>
+  ///   <para>
+  ///     Source https://datatracker.ietf.org/doc/html/rfc1035#section-2.3.1
+  ///   </para>
+  /// </remarks>
   /// <param name="randomizationSource">A <see cref="IRandomizationSource" /> providing values.</param>
-  /// <param name="middle"></param>
-  /// <returns></returns>
-  internal static string RegenerateLabelMiddleWithAlphaIfInvalid(IRandomizationSource randomizationSource,
-    string middle)
+  /// <param name="domainLength">A desired domain name length.</param>
+  /// <returns>A pseudo-random domain name which conforms to RFC-1035.</returns>
+  public static string DomainName(this IRandomizationSource randomizationSource, int domainLength)
   {
-    // The third and fourth characters of a label may not both be hyphens.
-    return IsDomainLabelMiddleInvalid(middle)
-      // Since the first attempt, with hyphens, was invalid, just fall back to all alphanumeric.
-      ? randomizationSource.RandomString(middle.Length, CharCollections.LettersDigits)
-      : middle;
+    if (domainLength > maxBytesPerDomain)
+    {
+      throw new ArgumentOutOfRangeException(nameof(domainLength),
+        $"Maximum domain length is {maxBytesPerDomain}");
+    }
+
+    return randomizationSource.DomainName(randomizationSource.GenerateLabelLengths(domainLength));
   }
 
   /// <summary>
@@ -56,16 +130,16 @@ public static class DomainRandomizationSourceExtensions
   ///   </para>
   ///   <code>
   ///  &lt;label&gt; ::= &lt;letter&gt; [ [ &lt;ldh-str&gt; ] &lt;let-dig&gt; ]
-  ///
+  /// 
   ///  &lt;ldh-str&gt; ::= &lt;let-dig-hyp&gt; | &lt;let-dig-hyp&gt; &lt;ldh-str&gt;
-  ///
+  /// 
   ///  &lt;let-dig-hyp&gt; ::= &lt;let-dig&gt; | "-"
-  ///
+  /// 
   ///  &lt;let-dig&gt; ::= &lt;letter&gt; | &lt;digit&gt;
-  ///
+  /// 
   ///  &lt;letter&gt; ::= any one of the 52 alphabetic characters A through Z in
   ///  upper case and a through z in lower case
-  ///
+  /// 
   ///  &lt;digit&gt; ::= any one of the ten digits 0 through 9
   /// </code>
   ///   <para>
@@ -115,12 +189,6 @@ public static class DomainRandomizationSourceExtensions
     return stringBuilder.ToString();
   }
 
-  private static int GetDistributionLength(IReadOnlyList<int> lengths)
-  {
-    var dotLength = lengths.Count - 1;
-    return lengths.Sum() + dotLength;
-  }
-
   /// <summary>
   ///   Generates a pseudo-random list of domain label lengths.
   /// </summary>
@@ -162,7 +230,7 @@ public static class DomainRandomizationSourceExtensions
           {
             // There will only be <3 characters left after this.
             // If possible, we need to extend this to capture those.
-            if ((remainingAfterNext + next) <= maxBytesPerLabel)
+            if (remainingAfterNext + next <= maxBytesPerLabel)
             {
               next += remainingAfterNext;
             }
@@ -185,107 +253,41 @@ public static class DomainRandomizationSourceExtensions
   }
 
   /// <summary>
-  ///   Generates a pseudo-random domain name.
+  ///   Validates that the middle of a domain label appears valid.
   /// </summary>
   /// <remarks>
-  ///   <para>
-  ///     See https://datatracker.ietf.org/doc/html/rfc1035#section-2.3.4
-  ///   </para>
-  ///   <code>
-  ///  &lt;domain&gt; ::= &lt;subdomain&gt; | " "
-  ///
-  ///  &lt;subdomain&gt; ::= &lt;label&gt; | &lt;subdomain&gt; "." &lt;label&gt;
-  ///
-  ///  &lt;label&gt; ::= &lt;letter&gt; [ [ &lt;ldh-str&gt; ] &lt;let-dig&gt; ]
-  ///
-  ///  &lt;ldh-str&gt; ::= &lt;let-dig-hyp&gt; | &lt;let-dig-hyp&gt; &lt;ldh-str&gt;
-  ///
-  ///  &lt;let-dig-hyp&gt; ::= &lt;let-dig&gt; | "-"
-  ///
-  ///  &lt;let-dig&gt; ::= &lt;letter&gt; | &lt;digit&gt;
-  ///
-  ///  &lt;letter&gt; ::= any one of the 52 alphabetic characters A through Z in
-  ///  upper case and a through z in lower case
-  ///
-  ///  &lt;digit&gt; ::= any one of the ten digits 0 through 9
-  /// </code>
-  ///   <para>
-  ///     Source https://datatracker.ietf.org/doc/html/rfc1035#section-2.3.1
-  ///   </para>
+  ///   The label 'middle' starts at index 1 and ends with labelLength-1. The third and fourth characters of the label
+  ///   (indexes 2 and 3), are second and third characters (indexes 1 and 2) of the 'middle'.
   /// </remarks>
-  /// <param name="randomizationSource">A <see cref="IRandomizationSource" /> providing values.</param>
-  /// <param name="domainLabelLengths">A list of domain label segment lengths.</param>
-  /// <returns>A pseudo-random domain name which conforms to RFC-1035.</returns>
-  public static string DomainName(this IRandomizationSource randomizationSource, IReadOnlyList<int> domainLabelLengths)
+  /// <param name="possibleLabelMiddle"></param>
+  /// <returns></returns>
+  internal static bool IsDomainLabelMiddleInvalid(string possibleLabelMiddle)
   {
-    if (!domainLabelLengths.Any())
-    {
-      throw new ArgumentException("At least one label length required", nameof(domainLabelLengths));
-    }
-
-
-    var length = GetDistributionLength(domainLabelLengths);
-
-    if (length < 1)
-    {
-      throw new ArgumentOutOfRangeException(nameof(domainLabelLengths), "Total length must be > 0");
-    }
-
-    if (length > maxBytesPerDomain)
-    {
-      throw new ArgumentOutOfRangeException(nameof(domainLabelLengths),
-        $"Maximum domain length is {maxBytesPerDomain}");
-    }
-
-    if (domainLabelLengths.Any(labelLength => labelLength > maxBytesPerLabel))
-    {
-      throw new ArgumentOutOfRangeException((nameof(domainLabelLengths)),
-        $"No domain labels may be over {maxBytesPerLabel} characters");
-    }
-
-    return String.Join(".", domainLabelLengths.Select(randomizationSource.DomainLabel));
+    // The third and fourth characters of a label may not both be hyphens.
+    // The label 'middle' starts at index 1 and ends with labelLength-1. The third and fourth characters of the label (indexes 2 and 3), are second and third characters (indexes 1 and 2) of the 'middle'.
+    const int thirdCharacterOfLabelMiddleIndex = 1;
+    return possibleLabelMiddle.Substring(thirdCharacterOfLabelMiddleIndex, 2) == "--";
   }
 
   /// <summary>
-  ///   Generates a pseudo-random domain name.
+  ///   Replaces the initial <paramref name="middle" /> if <see cref="IsDomainLabelMiddleInvalid" />.
   /// </summary>
-  /// <remarks>
-  ///   <para>
-  ///     See https://datatracker.ietf.org/doc/html/rfc1035#section-2.3.4
-  ///   </para>
-  ///   <code>
-  ///  &lt;domain&gt; ::= &lt;subdomain&gt; | " "
-  ///
-  ///  &lt;subdomain&gt; ::= &lt;label&gt; | &lt;subdomain&gt; "." &lt;label&gt;
-  ///
-  ///  &lt;label&gt; ::= &lt;letter&gt; [ [ &lt;ldh-str&gt; ] &lt;let-dig&gt; ]
-  ///
-  ///  &lt;ldh-str&gt; ::= &lt;let-dig-hyp&gt; | &lt;let-dig-hyp&gt; &lt;ldh-str&gt;
-  ///
-  ///  &lt;let-dig-hyp&gt; ::= &lt;let-dig&gt; | "-"
-  ///
-  ///  &lt;let-dig&gt; ::= &lt;letter&gt; | &lt;digit&gt;
-  ///
-  ///  &lt;letter&gt; ::= any one of the 52 alphabetic characters A through Z in
-  ///  upper case and a through z in lower case
-  ///
-  ///  &lt;digit&gt; ::= any one of the ten digits 0 through 9
-  /// </code>
-  ///   <para>
-  ///     Source https://datatracker.ietf.org/doc/html/rfc1035#section-2.3.1
-  ///   </para>
-  /// </remarks>
   /// <param name="randomizationSource">A <see cref="IRandomizationSource" /> providing values.</param>
-  /// <param name="domainLength">A desired domain name length.</param>
-  /// <returns>A pseudo-random domain name which conforms to RFC-1035.</returns>
-  public static string DomainName(this IRandomizationSource randomizationSource, int domainLength)
+  /// <param name="middle"></param>
+  /// <returns></returns>
+  internal static string RegenerateLabelMiddleWithAlphaIfInvalid(IRandomizationSource randomizationSource,
+    string middle)
   {
-    if (domainLength > maxBytesPerDomain)
-    {
-      throw new ArgumentOutOfRangeException(nameof(domainLength),
-        $"Maximum domain length is {maxBytesPerDomain}");
-    }
+    // The third and fourth characters of a label may not both be hyphens.
+    return IsDomainLabelMiddleInvalid(middle)
+      // Since the first attempt, with hyphens, was invalid, just fall back to all alphanumeric.
+      ? randomizationSource.RandomString(middle.Length, CharCollections.LettersDigits)
+      : middle;
+  }
 
-    return randomizationSource.DomainName(randomizationSource.GenerateLabelLengths(domainLength));
+  private static int GetDistributionLength(IReadOnlyList<int> lengths)
+  {
+    var dotLength = lengths.Count - 1;
+    return lengths.Sum() + dotLength;
   }
 }

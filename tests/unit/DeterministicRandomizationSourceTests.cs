@@ -1,6 +1,5 @@
 using System;
 using System.Linq;
-using FluentAssertions;
 using Xunit;
 
 namespace Jds.TestingUtils.Randomization.Tests.Unit;
@@ -62,6 +61,18 @@ public class DeterministicRandomizationSourceTests
   }
 
   [Fact]
+  public void NextIntInRange_GivenNoValuesInRange_Throws()
+  {
+    const int minInclusive = 10000;
+    const int maxExclusive = int.MaxValue;
+
+    var integers = new[] { -5000, 0, -500, 250, -250, 8000 };
+    var source = new DeterministicRandomizationSource(ints: integers);
+
+    Assert.Throws<InvalidOperationException>(() => source.NextIntInRange(minInclusive, maxExclusive));
+  }
+
+  [Fact]
   public void NextIntInRange_GivenValuesInRange_ReturnsExpectedValues()
   {
     const int minInclusive = 100;
@@ -78,15 +89,15 @@ public class DeterministicRandomizationSourceTests
   }
 
   [Fact]
-  public void NextIntInRange_GivenNoValuesInRange_Throws()
+  public void NextLongInRange_GivenNoValuesInRange_Throws()
   {
-    const int minInclusive = 10000;
-    const int maxExclusive = int.MaxValue;
+    const long minInclusive = int.MaxValue;
+    const long maxExclusive = int.MaxValue + 500L;
 
-    var integers = new[] { -5000, 0, -500, 250, -250, 8000 };
-    var source = new DeterministicRandomizationSource(ints: integers);
+    var longs = new[] { -5000L, 0L, -500L, 250L, -250L, 8000L, int.MaxValue - 5L };
+    var source = new DeterministicRandomizationSource(longs: longs);
 
-    Assert.Throws<InvalidOperationException>(() => source.NextIntInRange(minInclusive, maxExclusive));
+    Assert.Throws<InvalidOperationException>(() => source.NextLongInRange(minInclusive, maxExclusive));
   }
 
 
@@ -104,17 +115,5 @@ public class DeterministicRandomizationSourceTests
       var actual = source.NextLongInRange(minInclusive, maxExclusive);
       actual.Should().Be(expected);
     }
-  }
-
-  [Fact]
-  public void NextLongInRange_GivenNoValuesInRange_Throws()
-  {
-    const long minInclusive = int.MaxValue;
-    const long maxExclusive = int.MaxValue + 500L;
-
-    var longs = new[] { -5000L, 0L, -500L, 250L, -250L, 8000L, int.MaxValue - 5L };
-    var source = new DeterministicRandomizationSource(longs: longs);
-
-    Assert.Throws<InvalidOperationException>(() => source.NextLongInRange(minInclusive, maxExclusive));
   }
 }

@@ -8,6 +8,17 @@ namespace Jds.TestingUtils.Randomization.Tests.Unit.IpAddressRandomizationSource
 public class IpV6Tests
 {
   [Fact]
+  public void GivenSharedSource_GeneratesAddresses()
+  {
+    var actual = Randomizer.Shared.IpV6();
+
+    // Convert method implicitly asserts value range
+    IReadOnlyList<ushort> segments = actual.Split(':').Select(value => Convert.ToUInt16(value, 16)).ToList();
+
+    segments.Should().HaveCount(8);
+  }
+
+  [Fact]
   public void UsesParameters()
   {
     var piece1 = Randomizer.Shared.UShort();
@@ -23,16 +34,5 @@ public class IpV6Tests
     var actual = Randomizer.Shared.IpV6(piece1, piece2, piece3, piece4, piece5, piece6, piece7, piece8);
 
     actual.Should().Be(expected);
-  }
-
-  [Fact]
-  public void GivenSharedSource_GeneratesAddresses()
-  {
-    var actual = Randomizer.Shared.IpV6();
-
-    // Convert method implicitly asserts value range
-    IReadOnlyList<ushort> segments = actual.Split(':').Select(value => Convert.ToUInt16(value, 16)).ToList();
-
-    segments.Should().HaveCount(8);
   }
 }

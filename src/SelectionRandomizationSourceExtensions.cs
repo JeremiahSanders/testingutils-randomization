@@ -3,24 +3,6 @@ namespace Jds.TestingUtils.Randomization;
 public static class SelectionRandomizationSourceExtensions
 {
   /// <summary>
-  ///   Retrieves a random item from <paramref name="items" />, assumed to be non-empty.
-  /// </summary>
-  /// <param name="randomizationSource">A <see cref="IRandomizationSource" /> providing values.</param>
-  /// <param name="items">A collection of items from which an item is retrieved.</param>
-  /// <typeparam name="T">A collection item type.</typeparam>
-  /// <returns>A randomly-selected item from <paramref name="items" />.</returns>
-  /// <exception cref="ArgumentException">Thrown if <paramref name="items" /> is empty.</exception>
-  public static T RandomListItem<T>(this IRandomizationSource randomizationSource, IReadOnlyList<T> items)
-  {
-    if (!items.Any())
-    {
-      throw new ArgumentException("Collection is empty", nameof(items));
-    }
-
-    return items[randomizationSource.NextIntInRange(0, items.Count)];
-  }
-
-  /// <summary>
   ///   Retrieves a random value from <typeparamref name="TEnum" />, assumed to be non-empty.
   /// </summary>
   /// <param name="randomizationSource">A <see cref="IRandomizationSource" /> providing values.</param>
@@ -70,6 +52,68 @@ public static class SelectionRandomizationSourceExtensions
     }
 
     return randomizationSource.RandomListItem(values);
+  }
+
+  /// <summary>
+  ///   Retrieves a random item from <paramref name="items" />, assumed to be non-empty.
+  /// </summary>
+  /// <param name="randomizationSource">A <see cref="IRandomizationSource" /> providing values.</param>
+  /// <param name="items">A collection of items from which an item is retrieved.</param>
+  /// <typeparam name="T">A collection item type.</typeparam>
+  /// <returns>A randomly-selected item from <paramref name="items" />.</returns>
+  /// <exception cref="ArgumentException">Thrown if <paramref name="items" /> is empty.</exception>
+  public static T RandomListItem<T>(this IRandomizationSource randomizationSource, IReadOnlyList<T> items)
+  {
+    if (!items.Any())
+    {
+      throw new ArgumentException("Collection is empty", nameof(items));
+    }
+
+    return items[randomizationSource.NextIntInRange(0, items.Count)];
+  }
+
+  /// <summary>
+  ///   Retrieves a weighted random key from <paramref name="weightedKeys" />, assumed to be non-empty.
+  /// </summary>
+  /// <param name="randomizationSource">A <see cref="IRandomizationSource" /> providing values.</param>
+  /// <param name="weightedKeys">A collection of weighted items from which an item is retrieved.</param>
+  /// <typeparam name="T">A collection item type.</typeparam>
+  /// <returns>A randomly selected <typeparamref name="T" />.</returns>
+  /// <exception cref="ArgumentException">Thrown when <paramref name="weightedKeys" /> is empty.</exception>
+  /// <exception cref="ArgumentOutOfRangeException">
+  ///   Thrown when any item's weight is below 0 or if the sum is above
+  ///   Double.MaxValue.
+  /// </exception>
+  public static T WeightedRandomKey<T>(this IRandomizationSource randomizationSource,
+    IReadOnlyDictionary<T, double> weightedKeys)
+  {
+    return randomizationSource.WeightedRandomListItem(
+      weightedKeys.Select(keyValuePair =>
+          (keyValuePair.Key, keyValuePair.Value))
+        .ToList()
+    );
+  }
+
+  /// <summary>
+  ///   Retrieves a weighted random key from <paramref name="weightedKeys" />, assumed to be non-empty.
+  /// </summary>
+  /// <param name="randomizationSource">A <see cref="IRandomizationSource" /> providing values.</param>
+  /// <param name="weightedKeys">A collection of weighted items from which an item is retrieved.</param>
+  /// <typeparam name="T">A collection item type.</typeparam>
+  /// <returns>A randomly selected <typeparamref name="T" />.</returns>
+  /// <exception cref="ArgumentException">Thrown when <paramref name="weightedKeys" /> is empty.</exception>
+  /// <exception cref="ArgumentOutOfRangeException">
+  ///   Thrown when any item's weight is below 0 or if the sum is above
+  ///   Double.MaxValue.
+  /// </exception>
+  public static T WeightedRandomKey<T>(this IRandomizationSource randomizationSource,
+    IReadOnlyDictionary<T, int> weightedKeys)
+  {
+    return randomizationSource.WeightedRandomListItem(
+      weightedKeys.Select(keyValuePair =>
+          (keyValuePair.Key, keyValuePair.Value))
+        .ToList()
+    );
   }
 
   /// <summary>
@@ -178,49 +222,5 @@ public static class SelectionRandomizationSourceExtensions
     return weightedItems.OrderBy(choice => choice.Weight)
       .Aggregate((currentRangeEnd: 0, selected: false, value: default(T?)), MakeNext)
       .value ?? weightedItems[0].Item;
-  }
-
-  /// <summary>
-  ///   Retrieves a weighted random key from <paramref name="weightedKeys" />, assumed to be non-empty.
-  /// </summary>
-  /// <param name="randomizationSource">A <see cref="IRandomizationSource" /> providing values.</param>
-  /// <param name="weightedKeys">A collection of weighted items from which an item is retrieved.</param>
-  /// <typeparam name="T">A collection item type.</typeparam>
-  /// <returns>A randomly selected <typeparamref name="T" />.</returns>
-  /// <exception cref="ArgumentException">Thrown when <paramref name="weightedKeys" /> is empty.</exception>
-  /// <exception cref="ArgumentOutOfRangeException">
-  ///   Thrown when any item's weight is below 0 or if the sum is above
-  ///   Double.MaxValue.
-  /// </exception>
-  public static T WeightedRandomKey<T>(this IRandomizationSource randomizationSource,
-    IReadOnlyDictionary<T, double> weightedKeys)
-  {
-    return randomizationSource.WeightedRandomListItem(
-      weightedKeys.Select(keyValuePair =>
-          (keyValuePair.Key, keyValuePair.Value))
-        .ToList()
-    );
-  }
-
-  /// <summary>
-  ///   Retrieves a weighted random key from <paramref name="weightedKeys" />, assumed to be non-empty.
-  /// </summary>
-  /// <param name="randomizationSource">A <see cref="IRandomizationSource" /> providing values.</param>
-  /// <param name="weightedKeys">A collection of weighted items from which an item is retrieved.</param>
-  /// <typeparam name="T">A collection item type.</typeparam>
-  /// <returns>A randomly selected <typeparamref name="T" />.</returns>
-  /// <exception cref="ArgumentException">Thrown when <paramref name="weightedKeys" /> is empty.</exception>
-  /// <exception cref="ArgumentOutOfRangeException">
-  ///   Thrown when any item's weight is below 0 or if the sum is above
-  ///   Double.MaxValue.
-  /// </exception>
-  public static T WeightedRandomKey<T>(this IRandomizationSource randomizationSource,
-    IReadOnlyDictionary<T, int> weightedKeys)
-  {
-    return randomizationSource.WeightedRandomListItem(
-      weightedKeys.Select(keyValuePair =>
-          (keyValuePair.Key, keyValuePair.Value))
-        .ToList()
-    );
   }
 }

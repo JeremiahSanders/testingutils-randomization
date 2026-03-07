@@ -1,7 +1,6 @@
 using System;
 using System.Linq;
 using System.Text.RegularExpressions;
-using FluentAssertions;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -17,6 +16,28 @@ public class DemographicsForenameUsaTests
   }
 
   [Fact]
+  public void GeneratesNamesInLatinLowercaseWithFirstCharacterCapitalized()
+  {
+    const int wordCount = 50;
+    var lowercaseRegex = new Regex("^([A-Z]){1}([a-z])*$");
+
+    var names = Enumerable.Range(1, wordCount).Select(_ =>
+    {
+      var maxLength = Randomizer.Shared.IntInRange(3, 30);
+      var name = Randomizer.Shared.DemographicsForenameUsa(maxLength);
+      return (maxLength, word: name);
+    }).ToList();
+
+    _testOutputHelper.WriteLine(string.Join(Environment.NewLine,
+      names.Select(tuple => $"{tuple.word}")));
+
+    foreach (var (_, word) in names)
+    {
+      Assert.Matches(lowercaseRegex, word);
+    }
+  }
+
+  [Fact]
   public void GeneratesNamesWithinSpecifiedLimit()
   {
     const int wordCount = 50;
@@ -28,35 +49,13 @@ public class DemographicsForenameUsaTests
       return (maxLength, word);
     }).ToList();
 
-    _testOutputHelper.WriteLine(message: string.Join(Environment.NewLine,
-      values: words.Select(tuple => $"{tuple.word}")));
+    _testOutputHelper.WriteLine(string.Join(Environment.NewLine,
+      words.Select(tuple => $"{tuple.word}")));
 
     foreach (var (maxLength, word) in words)
     {
       word.Should().NotBeNullOrWhiteSpace();
       word.Length.Should().BeLessThanOrEqualTo(maxLength);
-    }
-  }
-
-  [Fact]
-  public void GeneratesNamesInLatinLowercaseWithFirstCharacterCapitalized()
-  {
-    const int wordCount = 50;
-    var lowercaseRegex = new Regex(pattern: "^([A-Z]){1}([a-z])*$");
-
-    var names = Enumerable.Range(1, wordCount).Select(_ =>
-    {
-      var maxLength = Randomizer.Shared.IntInRange(3, 30);
-      var name = Randomizer.Shared.DemographicsForenameUsa(maxLength);
-      return (maxLength, word: name);
-    }).ToList();
-
-    _testOutputHelper.WriteLine(message: string.Join(Environment.NewLine,
-      values: names.Select(tuple => $"{tuple.word}")));
-
-    foreach (var (_, word) in names)
-    {
-      Assert.Matches(lowercaseRegex, word);
     }
   }
 

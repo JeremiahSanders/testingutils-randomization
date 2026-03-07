@@ -24,13 +24,15 @@ public class GenerateRandomMarkovTests
   [InlineData(2, 10)]
   [InlineData(3, 10)]
   [InlineData(4, 10)]
-  public void GeneratesNonEmptyWords(int depth, int maxLength)
+  public void FirstCharacterFromInputWords(int depth, int maxLength)
   {
+    var firstChars = _sourceWords.Select(word => word.ToCharArray().First());
+
     var word = Randomizer.Shared.GenerateRandomMarkov(_sourceWords, maxLength, depth);
+    var actual = word.ToCharArray().First();
+    TestOutputHelper.WriteLine($"Generated word: {word}");
 
-    TestOutputHelper.WriteLine(message: $"Generated word: {word}");
-
-    Assert.False(condition: string.IsNullOrWhiteSpace(word));
+    Assert.Contains(actual, firstChars);
   }
 
   [Theory]
@@ -38,15 +40,13 @@ public class GenerateRandomMarkovTests
   [InlineData(2, 10)]
   [InlineData(3, 10)]
   [InlineData(4, 10)]
-  public void FirstCharacterFromInputWords(int depth, int maxLength)
+  public void GeneratesNonEmptyWords(int depth, int maxLength)
   {
-    var firstChars = _sourceWords.Select(word => word.ToCharArray().First());
-
     var word = Randomizer.Shared.GenerateRandomMarkov(_sourceWords, maxLength, depth);
-    var actual = word.ToCharArray().First();
-    TestOutputHelper.WriteLine(message: $"Generated word: {word}");
 
-    Assert.Contains(actual, firstChars);
+    TestOutputHelper.WriteLine($"Generated word: {word}");
+
+    Assert.False(string.IsNullOrWhiteSpace(word));
   }
 
   [Theory]
@@ -60,9 +60,9 @@ public class GenerateRandomMarkovTests
       .Select(_ => Randomizer.Shared.GenerateRandomMarkov(_sourceWords, maxLength, depth))
       .ToArray();
 
-    TestOutputHelper.WriteLine(message: $"Generated words: {JsonSerializer.Serialize(words)}");
+    TestOutputHelper.WriteLine($"Generated words: {JsonSerializer.Serialize(words)}");
 
-    Assert.All(words, word => Assert.True(condition: word.Length <= maxLength));
+    Assert.All(words, word => Assert.True(word.Length <= maxLength));
   }
 
   [Theory]
@@ -78,10 +78,11 @@ public class GenerateRandomMarkovTests
   }
 
   [Fact]
-  public void GivenEmptySources_ThrowsArgumentException()
+  public void GivenChainLengthOverSourceLengths_ThrowsArgumentException()
   {
+    const int exceptionalLength = 15; // A length greater than any source.
     Assert.Throws<ArgumentException>(() =>
-      Randomizer.Shared.GenerateRandomMarkov(sources: Array.Empty<string>())
+      Randomizer.Shared.GenerateRandomMarkov(new[] { new[] { 1, 2, 3 } }, chainLength: exceptionalLength)
     );
   }
 
@@ -89,16 +90,15 @@ public class GenerateRandomMarkovTests
   public void GivenEmptySourceLists_ThrowsArgumentException()
   {
     Assert.Throws<ArgumentException>(() =>
-      Randomizer.Shared.GenerateRandomMarkov(sources: new[] { string.Empty })
+      Randomizer.Shared.GenerateRandomMarkov(new[] { string.Empty })
     );
   }
 
   [Fact]
-  public void GivenChainLengthOverSourceLengths_ThrowsArgumentException()
+  public void GivenEmptySources_ThrowsArgumentException()
   {
-    const int exceptionalLength = 15; // A length greater than any source.
     Assert.Throws<ArgumentException>(() =>
-      Randomizer.Shared.GenerateRandomMarkov(sources: new[] { new[] { 1, 2, 3 } }, chainLength: exceptionalLength)
+      Randomizer.Shared.GenerateRandomMarkov(Array.Empty<string>())
     );
   }
 }

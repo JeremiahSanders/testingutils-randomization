@@ -15,15 +15,15 @@ public class ArrangedRandomizationSourceTests
     }
 
     [Fact]
-    public void NextFloat_Throws()
-    {
-      Assert.Throws<InvalidOperationException>(() => new ArrangedRandomizationSource().NextFloat());
-    }
-
-    [Fact]
     public void NextDouble_Throws()
     {
       Assert.Throws<InvalidOperationException>(() => new ArrangedRandomizationSource().NextDouble());
+    }
+
+    [Fact]
+    public void NextFloat_Throws()
+    {
+      Assert.Throws<InvalidOperationException>(() => new ArrangedRandomizationSource().NextFloat());
     }
 
     [Fact]
@@ -45,8 +45,8 @@ public class ArrangedRandomizationSourceTests
 
   public class GivenParameters
   {
-    private const float expectedFloat = 42f;
     private const double expectedDouble = 42d;
+    private const float expectedFloat = 42f;
     private readonly ArrangedRandomizationSource _source;
     private int doubleDelegateExecutions;
     private int floatDelegateExecutions;
@@ -63,46 +63,6 @@ public class ArrangedRandomizationSourceTests
         getNextLongEnumerable: LongDelegate
       );
       // ReSharper restore ArgumentsStyleNamedExpression
-    }
-
-    private IEnumerable<long> LongDelegate(long minInclusive, long maxExclusive)
-    {
-      longDelegateExecutions++;
-      return new[] { Random.Shared.NextInt64(minInclusive, maxExclusive) };
-    }
-
-    private IEnumerable<int> IntDelegate(int minInclusive, int maxExclusive)
-    {
-      intDelegateExecutions++;
-      return new[] { Random.Shared.Next(minInclusive, maxExclusive) };
-    }
-
-    private IEnumerable<float> FloatDelegate()
-    {
-      floatDelegateExecutions++;
-      return new[] { expectedFloat };
-    }
-
-    private IEnumerable<double> DoubleDelegate()
-    {
-      doubleDelegateExecutions++;
-      return new[] { expectedDouble };
-    }
-
-    [Fact]
-    public void NextFloat_ExecutesDelegate()
-    {
-      var _ = _source.NextFloat();
-
-      Assert.Equal(1, floatDelegateExecutions);
-    }
-
-    [Fact]
-    public void NextFloat_ReturnsExpectedValue()
-    {
-      var actual = _source.NextFloat();
-
-      Assert.Equal(expectedFloat, actual);
     }
 
     [Fact]
@@ -122,6 +82,22 @@ public class ArrangedRandomizationSourceTests
     }
 
     [Fact]
+    public void NextFloat_ExecutesDelegate()
+    {
+      var _ = _source.NextFloat();
+
+      Assert.Equal(1, floatDelegateExecutions);
+    }
+
+    [Fact]
+    public void NextFloat_ReturnsExpectedValue()
+    {
+      var actual = _source.NextFloat();
+
+      Assert.Equal(expectedFloat, actual);
+    }
+
+    [Fact]
     public void NextIntInRange_ExecutesDelegate()
     {
       var _ = _source.NextIntInRange(int.MinValue, int.MaxValue);
@@ -136,9 +112,9 @@ public class ArrangedRandomizationSourceTests
       var maxExclusive = Random.Shared.Next(100, 10000);
       var actual = _source.NextIntInRange(minInclusive, maxExclusive);
 
-      Assert.False(condition: actual < minInclusive, userMessage: $"Int value was below {minInclusive}");
-      Assert.True(condition: actual < maxExclusive,
-        userMessage: $"Int value was equal to or greater than {maxExclusive}");
+      Assert.False(actual < minInclusive, $"Int value was below {minInclusive}");
+      Assert.True(actual < maxExclusive,
+        $"Int value was equal to or greater than {maxExclusive}");
     }
 
     [Fact]
@@ -156,9 +132,33 @@ public class ArrangedRandomizationSourceTests
       var maxExclusive = Random.Shared.NextInt64(100, 10000);
       var actual = _source.NextLongInRange(minInclusive, maxExclusive);
 
-      Assert.False(condition: actual < minInclusive, userMessage: $"Long value was below {minInclusive}");
-      Assert.True(condition: actual < maxExclusive,
-        userMessage: $"Long value was equal to or greater than {maxExclusive}");
+      Assert.False(actual < minInclusive, $"Long value was below {minInclusive}");
+      Assert.True(actual < maxExclusive,
+        $"Long value was equal to or greater than {maxExclusive}");
+    }
+
+    private IEnumerable<double> DoubleDelegate()
+    {
+      doubleDelegateExecutions++;
+      return new[] { expectedDouble };
+    }
+
+    private IEnumerable<float> FloatDelegate()
+    {
+      floatDelegateExecutions++;
+      return new[] { expectedFloat };
+    }
+
+    private IEnumerable<int> IntDelegate(int minInclusive, int maxExclusive)
+    {
+      intDelegateExecutions++;
+      return new[] { Random.Shared.Next(minInclusive, maxExclusive) };
+    }
+
+    private IEnumerable<long> LongDelegate(long minInclusive, long maxExclusive)
+    {
+      longDelegateExecutions++;
+      return new[] { Random.Shared.NextInt64(minInclusive, maxExclusive) };
     }
   }
 }

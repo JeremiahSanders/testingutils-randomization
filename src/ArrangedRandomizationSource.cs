@@ -21,16 +21,16 @@ public class ArrangedRandomizationSource : IRandomizationSource
   )
   {
     _getNextDoubleEnumerable = getNextDoubleEnumerable ?? (() =>
-        throw new InvalidOperationException(message: $"No {nameof(getNextDoubleEnumerable)} provided")
+        throw new InvalidOperationException($"No {nameof(getNextDoubleEnumerable)} provided")
       );
     _getNextFloatEnumerable = getNextFloatEnumerable ?? (() =>
-        throw new InvalidOperationException(message: $"No {nameof(getNextFloatEnumerable)} provided")
+        throw new InvalidOperationException($"No {nameof(getNextFloatEnumerable)} provided")
       );
-    _getNextIntEnumerable = getNextIntEnumerable ?? ((int _, int _) =>
-        throw new InvalidOperationException(message: $"No {nameof(getNextIntEnumerable)} provided")
+    _getNextIntEnumerable = getNextIntEnumerable ?? ((_, _) =>
+        throw new InvalidOperationException($"No {nameof(getNextIntEnumerable)} provided")
       );
-    _getNextLongEnumerable = getNextLongEnumerable ?? ((long _, long _) =>
-        throw new InvalidOperationException(message: $"No {nameof(getNextLongEnumerable)} provided")
+    _getNextLongEnumerable = getNextLongEnumerable ?? ((_, _) =>
+        throw new InvalidOperationException($"No {nameof(getNextLongEnumerable)} provided")
       );
   }
 

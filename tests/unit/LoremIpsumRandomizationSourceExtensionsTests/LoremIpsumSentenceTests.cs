@@ -23,16 +23,16 @@ public class LoremIpsumSentenceTests
     {
       var maxLength = Randomizer.Shared.IntInRange(1, 20);
       var wordCount = Randomizer.Shared.IntInRange(1, 20);
-      var Sentence = Randomizer.Shared.LoremIpsumSentence(sentenceParameters: (wordCount, maxLength));
+      var Sentence = Randomizer.Shared.LoremIpsumSentence((wordCount, maxLength));
       return (wordCount, maxLength, Sentence);
     }).ToList();
 
-    _testOutputHelper.WriteLine(message: string.Join(Environment.NewLine,
-      values: sentences.Select(tuple => $"{tuple.Sentence}")));
+    _testOutputHelper.WriteLine(string.Join(Environment.NewLine,
+      sentences.Select(tuple => $"{tuple.Sentence}")));
 
     foreach (var (wordCount, maxLength, sentence) in sentences)
     {
-      var words = sentence.Split(separator: " ");
+      var words = sentence.Split(" ");
 
       Assert.Equal(wordCount, words.Length);
     }
@@ -48,7 +48,7 @@ public class LoremIpsumSentenceTests
   public void GivenLengthBelowOne_ThrowsArgumentOutOfRangeException(int wordCount, int maxWordLength)
   {
     Assert.Throws<ArgumentOutOfRangeException>(() =>
-      Randomizer.Shared.LoremIpsumSentence(sentenceParameters: (wordCount, maxWordLength))
+      Randomizer.Shared.LoremIpsumSentence((wordCount, maxWordLength))
     );
   }
 }

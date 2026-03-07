@@ -729,13 +729,13 @@ infirmitas est agnoscenda.
     return source switch
     {
       LoremIpsumSource.CiceroDeFinibusBonorumEtMalorum => MarkovSourceHelpers.ParseIntoWords(
-        source: CiceroDeFinibusBonorumEtMalorum.ToLowerInvariant()),
+        CiceroDeFinibusBonorumEtMalorum.ToLowerInvariant()),
       LoremIpsumSource.MeditatioIvDeVeroEtFalso => MarkovSourceHelpers.ParseIntoWords(
-        source: MeditatioIvDeVeroEtFalso.ToLowerInvariant()),
+        MeditatioIvDeVeroEtFalso.ToLowerInvariant()),
       LoremIpsumSource.MeditatioViDeRerumMaterialiumExistentiaEtRealiMentisACorporeDistinctione =>
         MarkovSourceHelpers.ParseIntoWords(
-          source: MeditatioViDeRerumMaterialiumExistentiaEtRealiMentisACorporeDistinctione.ToLowerInvariant()),
-      _ => throw new ArgumentOutOfRangeException(paramName: nameof(source), source, null)
+          MeditatioViDeRerumMaterialiumExistentiaEtRealiMentisACorporeDistinctione.ToLowerInvariant()),
+      _ => throw new ArgumentOutOfRangeException(nameof(source), source, null)
     };
   }
 }
