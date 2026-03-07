@@ -5,103 +5,6 @@ namespace Jds.TestingUtils.Randomization;
 
 public static class UrlRandomizationSourceExtensions
 {
-  private static string UrlPathAbsolute(this IRandomizationSource randomizationSource, int length)
-  {
-    var stringBuilder = new StringBuilder();
-    while (stringBuilder.Length < length)
-    {
-      if (length - stringBuilder.Length == 1)
-      {
-        // If just one, add another character... but skip plain ".", as that would make the path relative.
-        var nextCharacter = UrlConstants.UnreservedChars.GetRandomItem(randomizationSource);
-
-        while (nextCharacter == '.')
-        {
-          nextCharacter = UrlConstants.UnreservedChars.GetRandomItem(randomizationSource);
-        }
-
-        stringBuilder.Append(nextCharacter);
-      }
-      else
-      {
-        // If > 1, add a segment.
-        stringBuilder.Append('/');
-        var remaining = length - stringBuilder.Length;
-        var segmentLength = randomizationSource.IntInRange(1, maxExclusive: remaining + 1);
-        var segment = randomizationSource.RandomString(segmentLength, UrlConstants.UnreservedChars);
-        while (segment.All(charValue => charValue == '.'))
-        {
-          // Regenerate if all segment characters are ".". That's valid as a relative path, but must be stripped during parsing.
-          segment = randomizationSource.RandomString(segmentLength, UrlConstants.UnreservedChars);
-        }
-
-        stringBuilder.Append(segment);
-      }
-    }
-
-    return stringBuilder.ToString();
-  }
-
-  private static string UrlPath(this IRandomizationSource randomizationSource, int length)
-  {
-    return length switch
-    {
-      0 => "",
-      1 => "/",
-      _ => randomizationSource.UrlPathAbsolute(length)
-    };
-  }
-
-  private static string UrlQuery(this IRandomizationSource randomizationSource, int length)
-  {
-    string GenerateQuery()
-    {
-      var stringBuilder = new StringBuilder();
-
-      stringBuilder.Append('?');
-
-      while (stringBuilder.Length < length)
-      {
-        stringBuilder.Append(value: UrlConstants.QueryChars.GetRandomItem(randomizationSource));
-      }
-
-      return stringBuilder.ToString();
-    }
-
-    return length switch
-    {
-      0 => "",
-      1 => "?",
-      _ => GenerateQuery()
-    };
-  }
-
-  private static string UrlFragment(this IRandomizationSource randomizationSource, int length)
-  {
-    string GenerateFragment()
-    {
-      // fragment    = *( pchar / "/" / "?" )
-      var stringBuilder = new StringBuilder();
-
-      stringBuilder.Append('#');
-
-      while (stringBuilder.Length < length)
-      {
-        stringBuilder.Append(value: UrlConstants.FragmentChars.GetRandomItem(randomizationSource));
-      }
-
-      return stringBuilder.ToString();
-    }
-
-    return length switch
-    {
-      0 => "",
-      1 => "#",
-      _ => GenerateFragment()
-    };
-  }
-
-
   /// <summary>
   ///   Generates a pseudo-random URL.
   /// </summary>
@@ -133,18 +36,18 @@ public static class UrlRandomizationSourceExtensions
   {
     if (string.IsNullOrWhiteSpace(scheme))
     {
-      throw new ArgumentException(message: $"{nameof(scheme)} is required.", paramName: nameof(scheme));
+      throw new ArgumentException($"{nameof(scheme)} is required.", nameof(scheme));
     }
 
     if (hostLength < 1)
     {
-      throw new ArgumentOutOfRangeException(paramName: nameof(hostLength),
-        message: $"{nameof(hostLength)} must be > 0");
+      throw new ArgumentOutOfRangeException(nameof(hostLength),
+        $"{nameof(hostLength)} must be > 0");
     }
 
     if (port is < 0)
     {
-      throw new ArgumentOutOfRangeException(paramName: nameof(port), message: $"{nameof(port)} may not < 0");
+      throw new ArgumentOutOfRangeException(nameof(port), $"{nameof(port)} may not < 0");
     }
 
     var domain = randomizationSource.DomainName(hostLength);
@@ -158,20 +61,122 @@ public static class UrlRandomizationSourceExtensions
     return $"{scheme}://{domain}{portDisplay}{path}{query}{fragment}";
   }
 
+  private static string UrlFragment(this IRandomizationSource randomizationSource, int length)
+  {
+    string GenerateFragment()
+    {
+      // fragment    = *( pchar / "/" / "?" )
+      var stringBuilder = new StringBuilder();
+
+      stringBuilder.Append('#');
+
+      while (stringBuilder.Length < length)
+      {
+        stringBuilder.Append(UrlConstants.FragmentChars.GetRandomItem(randomizationSource));
+      }
+
+      return stringBuilder.ToString();
+    }
+
+    return length switch
+    {
+      0 => "",
+      1 => "#",
+      _ => GenerateFragment()
+    };
+  }
+
+  private static string UrlPath(this IRandomizationSource randomizationSource, int length)
+  {
+    return length switch
+    {
+      0 => "",
+      1 => "/",
+      _ => randomizationSource.UrlPathAbsolute(length)
+    };
+  }
+
+  private static string UrlPathAbsolute(this IRandomizationSource randomizationSource, int length)
+  {
+    var stringBuilder = new StringBuilder();
+    while (stringBuilder.Length < length)
+    {
+      if (length - stringBuilder.Length == 1)
+      {
+        // If just one, add another character... but skip plain ".", as that would make the path relative.
+        var nextCharacter = UrlConstants.UnreservedChars.GetRandomItem(randomizationSource);
+
+        while (nextCharacter == '.')
+        {
+          nextCharacter = UrlConstants.UnreservedChars.GetRandomItem(randomizationSource);
+        }
+
+        stringBuilder.Append(nextCharacter);
+      }
+      else
+      {
+        // If > 1, add a segment.
+        stringBuilder.Append('/');
+        var remaining = length - stringBuilder.Length;
+        var segmentLength = randomizationSource.IntInRange(1, remaining + 1);
+        var segment = randomizationSource.RandomString(segmentLength, UrlConstants.UnreservedChars);
+        while (segment.All(charValue => charValue == '.'))
+        {
+          // Regenerate if all segment characters are ".". That's valid as a relative path, but must be stripped during parsing.
+          segment = randomizationSource.RandomString(segmentLength, UrlConstants.UnreservedChars);
+        }
+
+        stringBuilder.Append(segment);
+      }
+    }
+
+    return stringBuilder.ToString();
+  }
+
+  private static string UrlQuery(this IRandomizationSource randomizationSource, int length)
+  {
+    string GenerateQuery()
+    {
+      var stringBuilder = new StringBuilder();
+
+      stringBuilder.Append('?');
+
+      while (stringBuilder.Length < length)
+      {
+        stringBuilder.Append(UrlConstants.QueryChars.GetRandomItem(randomizationSource));
+      }
+
+      return stringBuilder.ToString();
+    }
+
+    return length switch
+    {
+      0 => "",
+      1 => "?",
+      _ => GenerateQuery()
+    };
+  }
+
   internal static class UrlConstants
   {
     /// <summary>
-    ///   Gets the chars allowed in an unreserved.
+    ///   Gets the chars allowed in a fragment.
     /// </summary>
     /// <remarks>
+    ///   <para>
+    ///     fragment    = *( pchar / "/" / "?" )
+    ///   </para>
+    ///   <para>
+    ///     pchar         = unreserved / pct-encoded / sub-delims / ":" / "@"
+    ///   </para>
     ///   <para>
     ///     unreserved    = ALPHA / DIGIT / "-" / "." / "_" / "~"
     ///   </para>
     ///   <para>See https://datatracker.ietf.org/doc/html/rfc3986#appendix-A</para>
     /// </remarks>
-    public static IReadOnlyList<char> UnreservedChars { get; } =
-      CharCollections.LatinAlpha.Concat(CharCollections.Integers)
-        .Concat(second: new[] { '-', '.', '_', '~' })
+    public static IReadOnlyList<char> FragmentChars { get; } =
+      PCharChars
+        .Concat(new[] { '/', '?' })
         .ToImmutableArray();
 
     /// <summary>
@@ -188,7 +193,7 @@ public static class UrlRandomizationSourceExtensions
     /// </remarks>
     public static IReadOnlyList<char> PCharChars { get; } =
       UnreservedChars
-        .Concat(second: new[] { ':', '@' })
+        .Concat(new[] { ':', '@' })
         .ToImmutableArray();
 
     /// <summary>
@@ -208,27 +213,21 @@ public static class UrlRandomizationSourceExtensions
     /// </remarks>
     public static IReadOnlyList<char> QueryChars { get; } =
       PCharChars
-        .Concat(second: new[] { '/', '?' })
+        .Concat(new[] { '/', '?' })
         .ToImmutableArray();
 
     /// <summary>
-    ///   Gets the chars allowed in a fragment.
+    ///   Gets the chars allowed in an unreserved.
     /// </summary>
     /// <remarks>
-    ///   <para>
-    ///     fragment    = *( pchar / "/" / "?" )
-    ///   </para>
-    ///   <para>
-    ///     pchar         = unreserved / pct-encoded / sub-delims / ":" / "@"
-    ///   </para>
     ///   <para>
     ///     unreserved    = ALPHA / DIGIT / "-" / "." / "_" / "~"
     ///   </para>
     ///   <para>See https://datatracker.ietf.org/doc/html/rfc3986#appendix-A</para>
     /// </remarks>
-    public static IReadOnlyList<char> FragmentChars { get; } =
-      PCharChars
-        .Concat(second: new[] { '/', '?' })
+    public static IReadOnlyList<char> UnreservedChars { get; } =
+      CharCollections.LatinAlpha.Concat(CharCollections.Integers)
+        .Concat(new[] { '-', '.', '_', '~' })
         .ToImmutableArray();
   }
 }

@@ -4,7 +4,7 @@ namespace Jds.TestingUtils.Randomization;
 
 internal static class MarkovSourceHelpers
 {
-  private static readonly Regex LowerAndWhitespaceOnly = new(pattern: "(([a-z])|(\\ ))*", RegexOptions.Compiled);
+  private static readonly Regex LowerAndWhitespaceOnly = new("(([a-z])|(\\ ))*", RegexOptions.Compiled);
 
   public static IEnumerable<string> ParseIntoWords(string source)
   {

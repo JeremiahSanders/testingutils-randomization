@@ -8,25 +8,6 @@ namespace Jds.TestingUtils.Randomization.Tests.Unit.ConditionalGenerationExtensi
 public class GenerateUntilAsyncTests
 {
   [Fact]
-  public async Task ReturnsValue()
-  {
-    var multipleOfThree = Randomizer.Shared.GenerateUntilAsync(
-      static async source =>
-      {
-        await Task.Delay(1);
-        return source.IntPositive();
-      },
-      static async value =>
-      {
-        await Task.Delay(1);
-        return value > 0 && value % 3 == 0;
-      });
-
-    var remainderOfThree = await multipleOfThree % 3;
-    Assert.Equal(0, remainderOfThree);
-  }
-
-  [Fact]
   public async Task RetriesOnFalse_AsyncPredicate()
   {
     var callCount = 0;
@@ -73,6 +54,25 @@ public class GenerateUntilAsyncTests
     var remainderOfThree = multipleOfThree % 3;
     Assert.Equal(0, remainderOfThree);
     Assert.True(callCount >= expectedMiniumCalls);
+  }
+
+  [Fact]
+  public async Task ReturnsValue()
+  {
+    var multipleOfThree = Randomizer.Shared.GenerateUntilAsync(
+      static async source =>
+      {
+        await Task.Delay(1);
+        return source.IntPositive();
+      },
+      static async value =>
+      {
+        await Task.Delay(1);
+        return value > 0 && value % 3 == 0;
+      });
+
+    var remainderOfThree = await multipleOfThree % 3;
+    Assert.Equal(0, remainderOfThree);
   }
 
   [Fact]

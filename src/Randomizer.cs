@@ -11,7 +11,10 @@ public static class Randomizer
   /// <summary>
   ///   Gets a thread-safe, shared randomization source, which uses <see cref="System.Random.Shared" /> to provide values.
   /// </summary>
-  public static IRandomizationSource Shared => RandomRandomizationSource.Shared;
+  public static IRandomizationSource Shared
+  {
+    get => RandomRandomizationSource.Shared;
+  }
 
   /// <summary>
   ///   Creates a <see cref="IStatefulRandomizationSource{TState}" /> using <paramref name="randomizationSource" />.

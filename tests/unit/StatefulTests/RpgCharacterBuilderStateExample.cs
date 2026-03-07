@@ -35,25 +35,6 @@ public static class RpgCharacterBuilderStateExample
     );
   }
 
-  public static string RandomPrimaryCharacteristic(
-    this IStatefulRandomizationSource<RpgCharacterOptions> statefulRandomizer)
-  {
-    var possibleCharacteristics = statefulRandomizer.State.AllCharacterStatistics;
-
-    // Note that we're using the randomizer methods ( .RandomListItem() ) exposed by the stateful randomizer which
-    //   we are extending. (As compared to using Randomizer.Shared.)
-    return statefulRandomizer.RandomListItem(possibleCharacteristics);
-  }
-
-  public static string RandomType(this IStatefulRandomizationSource<RpgCharacterOptions> statefulRandomizer)
-  {
-    var possibleTypes = statefulRandomizer.State.AllCharacterTypes;
-
-    // Note that we're using the randomizer methods ( .RandomListItem() ) exposed by the stateful randomizer which
-    //   we are extending. (As compared to using Randomizer.Shared.)
-    return statefulRandomizer.RandomListItem(possibleTypes);
-  }
-
   /// <summary>
   ///   An example of using a <see cref="IStatefulRandomizationSource{TState}" /> to create complex generated output
   ///   using the contents of its state, notably by composing other methods in the same domain-specific language.
@@ -74,12 +55,55 @@ public static class RpgCharacterBuilderStateExample
     };
   }
 
+  public static string RandomPrimaryCharacteristic(
+    this IStatefulRandomizationSource<RpgCharacterOptions> statefulRandomizer)
+  {
+    var possibleCharacteristics = statefulRandomizer.State.AllCharacterStatistics;
+
+    // Note that we're using the randomizer methods ( .RandomListItem() ) exposed by the stateful randomizer which
+    //   we are extending. (As compared to using Randomizer.Shared.)
+    return statefulRandomizer.RandomListItem(possibleCharacteristics);
+  }
+
+  public static string RandomType(this IStatefulRandomizationSource<RpgCharacterOptions> statefulRandomizer)
+  {
+    var possibleTypes = statefulRandomizer.State.AllCharacterTypes;
+
+    // Note that we're using the randomizer methods ( .RandomListItem() ) exposed by the stateful randomizer which
+    //   we are extending. (As compared to using Randomizer.Shared.)
+    return statefulRandomizer.RandomListItem(possibleTypes);
+  }
+
   /// <summary>
   ///   An example xUnit test class which verifies the functionality of the example bespoke domain-specific language
   ///   (implemented in this example as <see cref="RpgCharacterBuilderStateExample.GenerateRpgCharacterOverview" />).
   /// </summary>
   public class GenerateRpgCharacterOverviewAssertions
   {
+    [Fact]
+    public void GivenConstrainedNameChoices_GeneratesExpectedName()
+    {
+      const string onlyNameOption = "Bob";
+      var randomizer =
+        Randomizer.WithState(new RpgCharacterOptions { CommonNameComponents = new[] { onlyNameOption } });
+
+      var character = randomizer.GenerateRpgCharacterOverview();
+
+      Assert.Contains(onlyNameOption, character.Name);
+    }
+
+    [Fact]
+    public void GivenConstrainedNameChoicesAndCount_GeneratesExpectedName()
+    {
+      const string onlyNameOption = "Bob";
+      var randomizer =
+        Randomizer.WithState(new RpgCharacterOptions { CommonNameComponents = new[] { onlyNameOption } });
+
+      var character = randomizer.GenerateRpgCharacterOverview(1);
+
+      Assert.Equal(onlyNameOption, character.Name);
+    }
+
     [Fact]
     public void GivenDefaultOptions_GeneratesCharactersWithAllPropertiesPopulated()
     {
@@ -91,28 +115,6 @@ public static class RpgCharacterBuilderStateExample
       Assert.False(string.IsNullOrWhiteSpace(character.PrimaryStatistic));
       Assert.False(string.IsNullOrWhiteSpace(character.Type));
     }
-
-    [Fact]
-    public void GivenConstrainedNameChoices_GeneratesExpectedName()
-    {
-      const string onlyNameOption = "Bob";
-      var randomizer = Randomizer.WithState(new RpgCharacterOptions { CommonNameComponents = new[] { onlyNameOption } });
-
-      var character = randomizer.GenerateRpgCharacterOverview();
-
-      Assert.Contains(onlyNameOption, character.Name);
-    }
-
-    [Fact]
-    public void GivenConstrainedNameChoicesAndCount_GeneratesExpectedName()
-    {
-      const string onlyNameOption = "Bob";
-      var randomizer = Randomizer.WithState(new RpgCharacterOptions { CommonNameComponents = new[] { onlyNameOption } });
-
-      var character = randomizer.GenerateRpgCharacterOverview(1);
-
-      Assert.Equal(onlyNameOption, character.Name);
-    }
   }
 
   /// <summary>
@@ -121,9 +123,8 @@ public static class RpgCharacterBuilderStateExample
   /// </summary>
   public record RpgCharacterOptions
   {
-    public IReadOnlyList<string> AllCharacterTypes { get; init; } = new[] { "Offense", "Defense", "Support" };
-
     public IReadOnlyList<string> AllCharacterStatistics { get; init; } = new[] { "Strength", "Agility", "Mind" };
+    public IReadOnlyList<string> AllCharacterTypes { get; init; } = new[] { "Offense", "Defense", "Support" };
 
     public IReadOnlyList<string> CommonNameComponents { get; init; } =
       new[] { "Blink", "Fog", "Hyper", "Musk", "Tea", "Yawn" };

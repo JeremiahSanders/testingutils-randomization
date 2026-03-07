@@ -1,6 +1,5 @@
 using System;
 using System.Linq;
-using FluentAssertions;
 using Xunit;
 
 namespace Jds.TestingUtils.Randomization.Tests.Unit.ReadOnlyListExtensionsTests;
@@ -20,6 +19,12 @@ public static class GetRandomItemTests
     }
 
     [Fact]
+    public void GivenNoItems_ItThrowsArgumentException()
+    {
+      Assert.Throws<ArgumentException>(() => Array.Empty<int>().GetRandomItem());
+    }
+
+    [Fact]
     public void GivenOneItem_ItReturnsOnlyItem()
     {
       var expected = Randomizer.Shared.Int();
@@ -28,12 +33,6 @@ public static class GetRandomItemTests
       var actual = items.GetRandomItem();
 
       actual.Should().Be(expected);
-    }
-
-    [Fact]
-    public void GivenNoItems_ItThrowsArgumentException()
-    {
-      Assert.Throws<ArgumentException>(() => Array.Empty<int>().GetRandomItem());
     }
   }
 
@@ -57,6 +56,12 @@ public static class GetRandomItemTests
     }
 
     [Fact]
+    public void GivenNoItems_ItThrowsArgumentException()
+    {
+      Assert.Throws<ArgumentException>(() => Array.Empty<int>().GetRandomItem(_randomizationSource));
+    }
+
+    [Fact]
     public void GivenOneItem_ItReturnsOnlyItem()
     {
       var expected = Randomizer.Shared.Int();
@@ -65,12 +70,6 @@ public static class GetRandomItemTests
       var actual = items.GetRandomItem(_randomizationSource);
 
       actual.Should().Be(expected);
-    }
-
-    [Fact]
-    public void GivenNoItems_ItThrowsArgumentException()
-    {
-      Assert.Throws<ArgumentException>(() => Array.Empty<int>().GetRandomItem(_randomizationSource));
     }
   }
 }

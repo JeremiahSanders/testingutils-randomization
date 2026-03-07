@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using FluentAssertions;
 using Xunit;
 
 namespace Jds.TestingUtils.Randomization.Tests.Unit.SelectionRandomizationSourceExtensionsTests;
@@ -25,12 +24,6 @@ public static class WeightedRandomKeyTests
     }
 
     [Fact]
-    public void GivenEmptyCollection_ThrowsArgumentException()
-    {
-      Assert.Throws<ArgumentException>(() => _randomizer.WeightedRandomKey(new Dictionary<TestEnum, double>()));
-    }
-
-    [Fact]
     public void Given1000Executions_ReturnsExpectedDistribution()
     {
       var expected = new[] { TestEnum.Yellow, TestEnum.Green, TestEnum.Purple, TestEnum.Red };
@@ -57,6 +50,12 @@ public static class WeightedRandomKeyTests
         .ToArray();
 
       sortedResults.Should().BeEquivalentTo(expected);
+    }
+
+    [Fact]
+    public void GivenEmptyCollection_ThrowsArgumentException()
+    {
+      Assert.Throws<ArgumentException>(() => _randomizer.WeightedRandomKey(new Dictionary<TestEnum, double>()));
     }
   }
 
@@ -75,12 +74,6 @@ public static class WeightedRandomKeyTests
     }
 
     [Fact]
-    public void GivenEmptyCollection_ThrowsArgumentException()
-    {
-      Assert.Throws<ArgumentException>(() => _randomizer.WeightedRandomKey(new Dictionary<TestEnum, int>()));
-    }
-
-    [Fact]
     public void Given1000Executions_ReturnsExpectedDistribution()
     {
       var expected = new[] { TestEnum.Yellow, TestEnum.Green, TestEnum.Purple, TestEnum.Red };
@@ -107,6 +100,12 @@ public static class WeightedRandomKeyTests
         .ToArray();
 
       sortedResults.Should().BeEquivalentTo(expected);
+    }
+
+    [Fact]
+    public void GivenEmptyCollection_ThrowsArgumentException()
+    {
+      Assert.Throws<ArgumentException>(() => _randomizer.WeightedRandomKey(new Dictionary<TestEnum, int>()));
     }
   }
 }

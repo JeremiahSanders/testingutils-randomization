@@ -9,7 +9,7 @@ public class ByteInRangeTests
   {
     object[] ToCaseArrangement(byte minInclusive, byte maxExclusive)
     {
-      return new object[] {minInclusive, maxExclusive};
+      return new object[] { minInclusive, maxExclusive };
     }
 
     return new[]

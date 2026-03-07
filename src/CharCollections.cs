@@ -35,14 +35,14 @@ internal static class CharCollections
   }
 
   /// <summary>
-  ///   <see cref="char" /> values between `a` and `z` and values between `A` and `Z`.
-  /// </summary>
-  public static IReadOnlyList<char> LatinAlpha { get; }
-
-  /// <summary>
   ///   <see cref="char" /> values between `0` and `9`.
   /// </summary>
   public static IReadOnlyList<char> Integers { get; }
+
+  /// <summary>
+  ///   <see cref="char" /> values between `a` and `z` and values between `A` and `Z`.
+  /// </summary>
+  public static IReadOnlyList<char> LatinAlpha { get; }
 
   /// <summary>
   ///   <see cref="char" /> values between `a` and `z` and between `0` and `9`.
@@ -63,7 +63,7 @@ internal static class CharCollections
   ///   <see cref="char" /> values between `0` and `9`.
   /// </summary>
   public static IReadOnlyList<char> LatinUppercase { get; }
-  
+
   /// <summary>
   ///   <see cref="char" /> values between `a` and `z`, values between `A` and `Z`, and values between `0` and `9`.
   /// </summary>

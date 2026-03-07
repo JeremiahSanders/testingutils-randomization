@@ -9,7 +9,7 @@ public class IntInRangeTests
   {
     object[] ToCaseArrangement(int minInclusive, int maxExclusive)
     {
-      return new object[] {minInclusive, maxExclusive};
+      return new object[] { minInclusive, maxExclusive };
     }
 
     return new[]

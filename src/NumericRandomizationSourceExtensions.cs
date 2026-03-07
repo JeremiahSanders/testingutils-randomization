@@ -93,20 +93,6 @@ public static class NumericRandomizationSourceExtensions
   }
 
   /// <summary>
-  ///   Gets a pseudo-random <see cref="decimal" /> between <see cref="decimal.Zero" /> and
-  ///   <see cref="decimal.MaxValue" />.
-  /// </summary>
-  /// <param name="randomizationSource">A <see cref="IRandomizationSource" /> providing values.</param>
-  /// <returns>
-  ///   A <see cref="decimal" /> between <see cref="decimal.MinValue" /> and
-  ///   <see cref="decimal.MaxValue" />.
-  /// </returns>
-  public static decimal DecimalPositive(this IRandomizationSource randomizationSource)
-  {
-    return Convert.ToDecimal(randomizationSource.NextDouble()) * decimal.MaxValue;
-  }
-
-  /// <summary>
   ///   Gets a pseudo-random <see cref="decimal" /> between <see cref="decimal.MinValue" /> and
   ///   <see cref="decimal.Zero" />.
   /// </summary>
@@ -118,6 +104,20 @@ public static class NumericRandomizationSourceExtensions
   public static decimal DecimalNegative(this IRandomizationSource randomizationSource)
   {
     return Convert.ToDecimal(randomizationSource.NextDouble()) * decimal.MinValue;
+  }
+
+  /// <summary>
+  ///   Gets a pseudo-random <see cref="decimal" /> between <see cref="decimal.Zero" /> and
+  ///   <see cref="decimal.MaxValue" />.
+  /// </summary>
+  /// <param name="randomizationSource">A <see cref="IRandomizationSource" /> providing values.</param>
+  /// <returns>
+  ///   A <see cref="decimal" /> between <see cref="decimal.MinValue" /> and
+  ///   <see cref="decimal.MaxValue" />.
+  /// </returns>
+  public static decimal DecimalPositive(this IRandomizationSource randomizationSource)
+  {
+    return Convert.ToDecimal(randomizationSource.NextDouble()) * decimal.MaxValue;
   }
 
   /// <summary>

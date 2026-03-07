@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using FluentAssertions;
 using Xunit;
 
 namespace Jds.TestingUtils.Randomization.Tests.Unit.ReadOnlyListExtensionsTests;
@@ -25,29 +24,6 @@ public static class GetWeightedRandomItemTests
     }
 
     [Fact]
-    public void GivenEmptyCollection_ThrowsArgumentException()
-    {
-      Assert.Throws<ArgumentException>(() => new List<(TestEnum, double)>().GetWeightedRandomItem(_randomizer));
-    }
-
-    [Fact]
-    public void GivenNoWeight_ThrowsArgumentOutOfRangeException()
-    {
-      Assert.Throws<ArgumentOutOfRangeException>(() =>
-        new List<(TestEnum, double)> { (TestEnum.Purple, 0d) }.GetWeightedRandomItem(_randomizer)
-      );
-    }
-
-    [Fact]
-    public void GivenExcessiveWeight_ThrowsArgumentOutOfRangeException()
-    {
-      Assert.Throws<ArgumentOutOfRangeException>(() =>
-        new List<(TestEnum, double)> { (TestEnum.Purple, double.MaxValue), (TestEnum.Green, double.MaxValue) }
-          .GetWeightedRandomItem(_randomizer)
-      );
-    }
-
-    [Fact]
     public void Given1000Executions_ReturnsExpectedDistribution()
     {
       var expected = new[] { TestEnum.Yellow, TestEnum.Green, TestEnum.Purple, TestEnum.Red };
@@ -73,8 +49,31 @@ public static class GetWeightedRandomItemTests
         .Select(kvp => kvp.Key)
         .ToArray();
 
-      
+
       sortedResults.Should().BeEquivalentTo(expected);
+    }
+
+    [Fact]
+    public void GivenEmptyCollection_ThrowsArgumentException()
+    {
+      Assert.Throws<ArgumentException>(() => new List<(TestEnum, double)>().GetWeightedRandomItem(_randomizer));
+    }
+
+    [Fact]
+    public void GivenExcessiveWeight_ThrowsArgumentOutOfRangeException()
+    {
+      Assert.Throws<ArgumentOutOfRangeException>(() =>
+        new List<(TestEnum, double)> { (TestEnum.Purple, double.MaxValue), (TestEnum.Green, double.MaxValue) }
+          .GetWeightedRandomItem(_randomizer)
+      );
+    }
+
+    [Fact]
+    public void GivenNoWeight_ThrowsArgumentOutOfRangeException()
+    {
+      Assert.Throws<ArgumentOutOfRangeException>(() =>
+        new List<(TestEnum, double)> { (TestEnum.Purple, 0d) }.GetWeightedRandomItem(_randomizer)
+      );
     }
   }
 
@@ -93,27 +92,6 @@ public static class GetWeightedRandomItemTests
     }
 
     [Fact]
-    public void GivenEmptyCollection_ThrowsArgumentException()
-    {
-      Assert.Throws<ArgumentException>(() => new List<(TestEnum, int)>().GetWeightedRandomItem(_randomizer));
-    }
-
-    [Fact]
-    public void GivenNoWeight_ThrowsArgumentOutOfRangeException()
-    {
-      Assert.Throws<ArgumentOutOfRangeException>(() =>
-        new List<(TestEnum, int)> { (TestEnum.Purple, 0) }.GetWeightedRandomItem(_randomizer));
-    }
-
-    [Fact]
-    public void GivenExcessiveWeight_ThrowsOverflowException()
-    {
-      Assert.Throws<OverflowException>(() =>
-        new List<(TestEnum, int)> { (TestEnum.Purple, int.MaxValue), (TestEnum.Green, int.MaxValue) }
-          .GetWeightedRandomItem(_randomizer));
-    }
-
-    [Fact]
     public void Given1000Executions_ReturnsExpectedDistribution()
     {
       var expected = new[] { TestEnum.Yellow, TestEnum.Green, TestEnum.Purple, TestEnum.Red };
@@ -141,6 +119,27 @@ public static class GetWeightedRandomItemTests
 
       sortedResults.Should().BeEquivalentTo(expected);
     }
+
+    [Fact]
+    public void GivenEmptyCollection_ThrowsArgumentException()
+    {
+      Assert.Throws<ArgumentException>(() => new List<(TestEnum, int)>().GetWeightedRandomItem(_randomizer));
+    }
+
+    [Fact]
+    public void GivenExcessiveWeight_ThrowsOverflowException()
+    {
+      Assert.Throws<OverflowException>(() =>
+        new List<(TestEnum, int)> { (TestEnum.Purple, int.MaxValue), (TestEnum.Green, int.MaxValue) }
+          .GetWeightedRandomItem(_randomizer));
+    }
+
+    [Fact]
+    public void GivenNoWeight_ThrowsArgumentOutOfRangeException()
+    {
+      Assert.Throws<ArgumentOutOfRangeException>(() =>
+        new List<(TestEnum, int)> { (TestEnum.Purple, 0) }.GetWeightedRandomItem(_randomizer));
+    }
   }
 
   public class GivenDoubleNoRandomizer
@@ -153,29 +152,6 @@ public static class GetWeightedRandomItemTests
       {
         (TestEnum.Red, 1.0), (TestEnum.Purple, 4.0), (TestEnum.Green, 10.0), (TestEnum.Yellow, 30.0)
       };
-    }
-
-    [Fact]
-    public void GivenEmptyCollection_ThrowsArgumentException()
-    {
-      Assert.Throws<ArgumentException>(() => new List<(TestEnum, double)>().GetWeightedRandomItem());
-    }
-
-    [Fact]
-    public void GivenNoWeight_ThrowsArgumentOutOfRangeException()
-    {
-      Assert.Throws<ArgumentOutOfRangeException>(() =>
-        new List<(TestEnum, double)> { (TestEnum.Purple, 0d) }.GetWeightedRandomItem()
-      );
-    }
-
-    [Fact]
-    public void GivenExcessiveWeight_ThrowsArgumentOutOfRangeException()
-    {
-      Assert.Throws<ArgumentOutOfRangeException>(() =>
-        new List<(TestEnum, double)> { (TestEnum.Purple, double.MaxValue), (TestEnum.Green, double.MaxValue) }
-          .GetWeightedRandomItem()
-      );
     }
 
     [Fact]
@@ -205,6 +181,29 @@ public static class GetWeightedRandomItemTests
         .ToArray();
 
       sortedResults.Should().BeEquivalentTo(expected);
+    }
+
+    [Fact]
+    public void GivenEmptyCollection_ThrowsArgumentException()
+    {
+      Assert.Throws<ArgumentException>(() => new List<(TestEnum, double)>().GetWeightedRandomItem());
+    }
+
+    [Fact]
+    public void GivenExcessiveWeight_ThrowsArgumentOutOfRangeException()
+    {
+      Assert.Throws<ArgumentOutOfRangeException>(() =>
+        new List<(TestEnum, double)> { (TestEnum.Purple, double.MaxValue), (TestEnum.Green, double.MaxValue) }
+          .GetWeightedRandomItem()
+      );
+    }
+
+    [Fact]
+    public void GivenNoWeight_ThrowsArgumentOutOfRangeException()
+    {
+      Assert.Throws<ArgumentOutOfRangeException>(() =>
+        new List<(TestEnum, double)> { (TestEnum.Purple, 0d) }.GetWeightedRandomItem()
+      );
     }
   }
 
@@ -221,27 +220,6 @@ public static class GetWeightedRandomItemTests
     }
 
     [Fact]
-    public void GivenEmptyCollection_ThrowsArgumentException()
-    {
-      Assert.Throws<ArgumentException>(() => new List<(TestEnum, int)>().GetWeightedRandomItem());
-    }
-
-    [Fact]
-    public void GivenNoWeight_ThrowsArgumentOutOfRangeException()
-    {
-      Assert.Throws<ArgumentOutOfRangeException>(() =>
-        new List<(TestEnum, int)> { (TestEnum.Purple, 0) }.GetWeightedRandomItem());
-    }
-
-    [Fact]
-    public void GivenExcessiveWeight_ThrowsOverflowException()
-    {
-      Assert.Throws<OverflowException>(() =>
-        new List<(TestEnum, int)> { (TestEnum.Purple, int.MaxValue), (TestEnum.Green, int.MaxValue) }
-          .GetWeightedRandomItem());
-    }
-
-    [Fact]
     public void Given1000Executions_ReturnsExpectedDistribution()
     {
       var expected = new[] { TestEnum.Yellow, TestEnum.Green, TestEnum.Purple, TestEnum.Red };
@@ -268,6 +246,27 @@ public static class GetWeightedRandomItemTests
         .ToArray();
 
       sortedResults.Should().BeEquivalentTo(expected);
+    }
+
+    [Fact]
+    public void GivenEmptyCollection_ThrowsArgumentException()
+    {
+      Assert.Throws<ArgumentException>(() => new List<(TestEnum, int)>().GetWeightedRandomItem());
+    }
+
+    [Fact]
+    public void GivenExcessiveWeight_ThrowsOverflowException()
+    {
+      Assert.Throws<OverflowException>(() =>
+        new List<(TestEnum, int)> { (TestEnum.Purple, int.MaxValue), (TestEnum.Green, int.MaxValue) }
+          .GetWeightedRandomItem());
+    }
+
+    [Fact]
+    public void GivenNoWeight_ThrowsArgumentOutOfRangeException()
+    {
+      Assert.Throws<ArgumentOutOfRangeException>(() =>
+        new List<(TestEnum, int)> { (TestEnum.Purple, 0) }.GetWeightedRandomItem());
     }
   }
 }

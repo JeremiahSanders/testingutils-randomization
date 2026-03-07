@@ -59,69 +59,8 @@ public class GetMarkovProbabilityTests
     var expectedJson = JsonSerializer.Serialize(expectedSerializable);
     var actualJson = JsonSerializer.Serialize(actualSerializable);
 
-    TestOutputHelper.WriteLine(message: $"Expected:{Environment.NewLine}{expectedJson}");
-    TestOutputHelper.WriteLine(message: $"Actual:{Environment.NewLine}{actualJson}");
-
-    Assert.Equal(expectedJson, actualJson);
-  }
-
-
-  [Fact]
-  public void GivenTwoItemCollection_ReturnsExpectedResults()
-  {
-    var expected =
-      new Dictionary<IReadOnlyList<char>, MarkovStringRandomizationSourceExtensions.MarkovResult<char>>
-      {
-        {
-          new[] { '1', '2' },
-          new MarkovStringRandomizationSourceExtensions.MarkovResult<char>
-          {
-            FirstItemCount = 1, Occurrences = 1, NextItemCounts = new Dictionary<char, int> { { '3', 1 } }
-          }
-        },
-        {
-          new[] { '2', '3' },
-          new MarkovStringRandomizationSourceExtensions.MarkovResult<char>
-          {
-            Occurrences = 1, NextItemCounts = new Dictionary<char, int> { { '4', 1 } }
-          }
-        },
-        {
-          new[] { '3', '4' },
-          new MarkovStringRandomizationSourceExtensions.MarkovResult<char> { Occurrences = 1, LastItemCount = 1 }
-        },
-        {
-          new[] { '4', '3' },
-          new MarkovStringRandomizationSourceExtensions.MarkovResult<char>
-          {
-            FirstItemCount = 1, Occurrences = 1, NextItemCounts = new Dictionary<char, int> { { '2', 1 } }
-          }
-        },
-        {
-          new[] { '3', '2' },
-          new MarkovStringRandomizationSourceExtensions.MarkovResult<char>
-          {
-            Occurrences = 1, NextItemCounts = new Dictionary<char, int> { { '1', 1 } }
-          }
-        },
-        {
-          new[] { '2', '1' },
-          new MarkovStringRandomizationSourceExtensions.MarkovResult<char> { Occurrences = 1, LastItemCount = 1 }
-        }
-      };
-
-    var sources = new[] { "1234".ToCharArray(), "4321".ToCharArray() };
-    var depth = 2;
-
-    var actual = MarkovStringRandomizationSourceExtensions.GetMarkovProbability(sources, depth);
-
-    var expectedSerializable = expected.ToDictionary(kvp => string.Concat(kvp.Key), kvp => kvp.Value);
-    var actualSerializable = actual.ToDictionary(kvp => string.Concat(kvp.Key), kvp => kvp.Value);
-    var expectedJson = JsonSerializer.Serialize(expectedSerializable);
-    var actualJson = JsonSerializer.Serialize(actualSerializable);
-
-    TestOutputHelper.WriteLine(message: $"Expected:{Environment.NewLine}{expectedJson}");
-    TestOutputHelper.WriteLine(message: $"Actual:{Environment.NewLine}{actualJson}");
+    TestOutputHelper.WriteLine($"Expected:{Environment.NewLine}{expectedJson}");
+    TestOutputHelper.WriteLine($"Actual:{Environment.NewLine}{actualJson}");
 
     Assert.Equal(expectedJson, actualJson);
   }
@@ -195,11 +134,11 @@ public class GetMarkovProbabilityTests
 
     var expectedSerializable = expected.ToDictionary(kvp => string.Concat(kvp.Key), kvp => kvp.Value);
     var expectedJson = JsonSerializer.Serialize(expectedSerializable);
-    TestOutputHelper.WriteLine(message: $"Expected:{Environment.NewLine}{expectedJson}");
+    TestOutputHelper.WriteLine($"Expected:{Environment.NewLine}{expectedJson}");
 
     var actualSerializable = actual.ToDictionary(kvp => string.Concat(kvp.Key), kvp => kvp.Value);
     var actualJson = JsonSerializer.Serialize(actualSerializable);
-    TestOutputHelper.WriteLine(message: $"Actual:{Environment.NewLine}{actualJson}");
+    TestOutputHelper.WriteLine($"Actual:{Environment.NewLine}{actualJson}");
 
     Assert.Equal(expectedJson, actualJson);
   }
@@ -319,7 +258,7 @@ public class GetMarkovProbabilityTests
           kvp.Value.NextItemCounts.ToDictionary(kvp => JsonSerializer.Serialize(kvp.Key), kvp => kvp.Value)
       });
     var expectedJson = JsonSerializer.Serialize(expectedSerializable);
-    TestOutputHelper.WriteLine(message: $"Expected:{Environment.NewLine}{expectedJson}");
+    TestOutputHelper.WriteLine($"Expected:{Environment.NewLine}{expectedJson}");
 
     var actualSerializable = actual.ToDictionary(kvp => JsonSerializer.Serialize(kvp.Key),
       kvp => new
@@ -331,7 +270,68 @@ public class GetMarkovProbabilityTests
           kvp.Value.NextItemCounts.ToDictionary(kvp => JsonSerializer.Serialize(kvp.Key), kvp => kvp.Value)
       });
     var actualJson = JsonSerializer.Serialize(actualSerializable);
-    TestOutputHelper.WriteLine(message: $"Actual:{Environment.NewLine}{actualJson}");
+    TestOutputHelper.WriteLine($"Actual:{Environment.NewLine}{actualJson}");
+
+    Assert.Equal(expectedJson, actualJson);
+  }
+
+
+  [Fact]
+  public void GivenTwoItemCollection_ReturnsExpectedResults()
+  {
+    var expected =
+      new Dictionary<IReadOnlyList<char>, MarkovStringRandomizationSourceExtensions.MarkovResult<char>>
+      {
+        {
+          new[] { '1', '2' },
+          new MarkovStringRandomizationSourceExtensions.MarkovResult<char>
+          {
+            FirstItemCount = 1, Occurrences = 1, NextItemCounts = new Dictionary<char, int> { { '3', 1 } }
+          }
+        },
+        {
+          new[] { '2', '3' },
+          new MarkovStringRandomizationSourceExtensions.MarkovResult<char>
+          {
+            Occurrences = 1, NextItemCounts = new Dictionary<char, int> { { '4', 1 } }
+          }
+        },
+        {
+          new[] { '3', '4' },
+          new MarkovStringRandomizationSourceExtensions.MarkovResult<char> { Occurrences = 1, LastItemCount = 1 }
+        },
+        {
+          new[] { '4', '3' },
+          new MarkovStringRandomizationSourceExtensions.MarkovResult<char>
+          {
+            FirstItemCount = 1, Occurrences = 1, NextItemCounts = new Dictionary<char, int> { { '2', 1 } }
+          }
+        },
+        {
+          new[] { '3', '2' },
+          new MarkovStringRandomizationSourceExtensions.MarkovResult<char>
+          {
+            Occurrences = 1, NextItemCounts = new Dictionary<char, int> { { '1', 1 } }
+          }
+        },
+        {
+          new[] { '2', '1' },
+          new MarkovStringRandomizationSourceExtensions.MarkovResult<char> { Occurrences = 1, LastItemCount = 1 }
+        }
+      };
+
+    var sources = new[] { "1234".ToCharArray(), "4321".ToCharArray() };
+    var depth = 2;
+
+    var actual = MarkovStringRandomizationSourceExtensions.GetMarkovProbability(sources, depth);
+
+    var expectedSerializable = expected.ToDictionary(kvp => string.Concat(kvp.Key), kvp => kvp.Value);
+    var actualSerializable = actual.ToDictionary(kvp => string.Concat(kvp.Key), kvp => kvp.Value);
+    var expectedJson = JsonSerializer.Serialize(expectedSerializable);
+    var actualJson = JsonSerializer.Serialize(actualSerializable);
+
+    TestOutputHelper.WriteLine($"Expected:{Environment.NewLine}{expectedJson}");
+    TestOutputHelper.WriteLine($"Actual:{Environment.NewLine}{actualJson}");
 
     Assert.Equal(expectedJson, actualJson);
   }

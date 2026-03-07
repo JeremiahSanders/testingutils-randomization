@@ -21,7 +21,7 @@ public class IterateGroupedItemsTests
     foreach (var ((expectedItems, expectedIndex), (actualItems, actualIndex)) in expected.Zip(actual))
     {
       Assert.Equal(expectedIndex, actualIndex);
-      Assert.True(condition: expectedItems.SequenceEqual(actualItems));
+      Assert.True(expectedItems.SequenceEqual(actualItems));
     }
   }
 }

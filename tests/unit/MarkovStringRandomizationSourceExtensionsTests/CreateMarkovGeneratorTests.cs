@@ -41,52 +41,39 @@ public class CreateMarkovGeneratorTests
   public ITestOutputHelper TestOutputHelper { get; }
 
   [Theory]
-  [InlineData(1, 10)]
-  [InlineData(2, 10)]
-  [InlineData(3, 10)]
-  [InlineData(4, 10)]
-  public void GivenStrings_GeneratesNonEmptyWords(int depth, int maxLength)
+  [InlineData(0)]
+  [InlineData(-1)]
+  [InlineData(int.MinValue)]
+  public void GivenChainLengthBelow1_ThrowsArgumentOutOfRangeException(int chainLength)
   {
-    var generator = Randomizer.Shared.CreateMarkovGenerator(_sourceWords, depth);
-    var word = generator(maxLength);
-
-    TestOutputHelper.WriteLine(message: $"Generated word: {word}");
-
-    Assert.False(condition: string.IsNullOrWhiteSpace(word));
+    Assert.Throws<ArgumentOutOfRangeException>(() =>
+      Randomizer.Shared.CreateMarkovGenerator(_sourceComplexObjects, chainLength)
+    );
   }
 
-  [Theory]
-  [InlineData(1, 10)]
-  [InlineData(2, 10)]
-  [InlineData(3, 10)]
-  [InlineData(4, 10)]
-  public void GivenStrings_FirstCharacterFromInputWords(int depth, int maxLength)
+  [Fact]
+  public void GivenChainLengthOverSourceLengths_ThrowsArgumentException()
   {
-    var firstChars = _sourceWords.Select(word => word.ToCharArray().First());
-    var generator = Randomizer.Shared.CreateMarkovGenerator(_sourceWords, depth);
-
-    var word = generator(maxLength);
-    var actual = word.ToCharArray().First();
-    TestOutputHelper.WriteLine(message: $"Generated word: {word}");
-
-    Assert.Contains(actual, firstChars);
+    const int exceptionalLength = 5; // A length greater than any source.
+    Assert.Throws<ArgumentException>(() =>
+      Randomizer.Shared.CreateMarkovGenerator(new[] { new[] { 1, 2, 3 } }, exceptionalLength)
+    );
   }
 
-  [Theory]
-  [InlineData(25, 1, 15)]
-  [InlineData(25, 2, 15)]
-  [InlineData(25, 3, 15)]
-  [InlineData(25, 4, 15)]
-  public void GivenStrings_GeneratesWordsWithinMaxLength(int count, int depth, int maxLength)
+  [Fact]
+  public void GivenEmptySourceLists_ThrowsArgumentException()
   {
-    var generator = Randomizer.Shared.CreateMarkovGenerator(_sourceWords, depth);
-    var words = Enumerable.Range(0, count)
-      .Select(_ => generator(maxLength))
-      .ToArray();
+    Assert.Throws<ArgumentException>(() =>
+      Randomizer.Shared.CreateMarkovGenerator(new[] { string.Empty })
+    );
+  }
 
-    TestOutputHelper.WriteLine(message: $"Generated words: {JsonSerializer.Serialize(words)}");
-
-    Assert.All(words, word => Assert.True(condition: word.Length <= maxLength));
+  [Fact]
+  public void GivenEmptySources_ThrowsArgumentException()
+  {
+    Assert.Throws<ArgumentException>(() =>
+      Randomizer.Shared.CreateMarkovGenerator(Array.Empty<string>())
+    );
   }
 
   [Theory]
@@ -101,44 +88,57 @@ public class CreateMarkovGeneratorTests
       .Select(_ => generator(maxLength))
       .ToArray();
 
-    TestOutputHelper.WriteLine(message: $"Generated words: {JsonSerializer.Serialize(words)}");
+    TestOutputHelper.WriteLine($"Generated words: {JsonSerializer.Serialize(words)}");
 
-    Assert.All(words, word => Assert.True(condition: word.Count <= maxLength));
+    Assert.All(words, word => Assert.True(word.Count <= maxLength));
   }
 
   [Theory]
-  [InlineData(0)]
-  [InlineData(-1)]
-  [InlineData(int.MinValue)]
-  public void GivenChainLengthBelow1_ThrowsArgumentOutOfRangeException(int chainLength)
+  [InlineData(1, 10)]
+  [InlineData(2, 10)]
+  [InlineData(3, 10)]
+  [InlineData(4, 10)]
+  public void GivenStrings_FirstCharacterFromInputWords(int depth, int maxLength)
   {
-    Assert.Throws<ArgumentOutOfRangeException>(() =>
-      Randomizer.Shared.CreateMarkovGenerator(_sourceComplexObjects, chainLength)
-    );
+    var firstChars = _sourceWords.Select(word => word.ToCharArray().First());
+    var generator = Randomizer.Shared.CreateMarkovGenerator(_sourceWords, depth);
+
+    var word = generator(maxLength);
+    var actual = word.ToCharArray().First();
+    TestOutputHelper.WriteLine($"Generated word: {word}");
+
+    Assert.Contains(actual, firstChars);
   }
 
-  [Fact]
-  public void GivenEmptySources_ThrowsArgumentException()
+  [Theory]
+  [InlineData(1, 10)]
+  [InlineData(2, 10)]
+  [InlineData(3, 10)]
+  [InlineData(4, 10)]
+  public void GivenStrings_GeneratesNonEmptyWords(int depth, int maxLength)
   {
-    Assert.Throws<ArgumentException>(() =>
-      Randomizer.Shared.CreateMarkovGenerator(sources: Array.Empty<string>())
-    );
+    var generator = Randomizer.Shared.CreateMarkovGenerator(_sourceWords, depth);
+    var word = generator(maxLength);
+
+    TestOutputHelper.WriteLine($"Generated word: {word}");
+
+    Assert.False(string.IsNullOrWhiteSpace(word));
   }
 
-  [Fact]
-  public void GivenEmptySourceLists_ThrowsArgumentException()
+  [Theory]
+  [InlineData(25, 1, 15)]
+  [InlineData(25, 2, 15)]
+  [InlineData(25, 3, 15)]
+  [InlineData(25, 4, 15)]
+  public void GivenStrings_GeneratesWordsWithinMaxLength(int count, int depth, int maxLength)
   {
-    Assert.Throws<ArgumentException>(() =>
-      Randomizer.Shared.CreateMarkovGenerator(sources: new[] { string.Empty })
-    );
-  }
+    var generator = Randomizer.Shared.CreateMarkovGenerator(_sourceWords, depth);
+    var words = Enumerable.Range(0, count)
+      .Select(_ => generator(maxLength))
+      .ToArray();
 
-  [Fact]
-  public void GivenChainLengthOverSourceLengths_ThrowsArgumentException()
-  {
-    const int exceptionalLength = 5; // A length greater than any source.
-    Assert.Throws<ArgumentException>(() =>
-      Randomizer.Shared.CreateMarkovGenerator(sources: new[] { new[] { 1, 2, 3 } }, exceptionalLength)
-    );
+    TestOutputHelper.WriteLine($"Generated words: {JsonSerializer.Serialize(words)}");
+
+    Assert.All(words, word => Assert.True(word.Length <= maxLength));
   }
 }

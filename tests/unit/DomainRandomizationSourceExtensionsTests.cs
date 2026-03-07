@@ -13,6 +13,17 @@ public static class DomainRandomizationSourceExtensionsTests
   public class DomainLabelTests
   {
     [Theory]
+    [InlineData(int.MinValue)]
+    [InlineData(-1)]
+    [InlineData(0)]
+    public void GivenLengthBelow1_ThrowsArgumentOutOfRangeException(int value)
+    {
+      Assert.Throws<ArgumentOutOfRangeException>(() =>
+        Randomizer.Shared.DomainLabel(value)
+      );
+    }
+
+    [Theory]
     [InlineData(int.MaxValue)]
     [InlineData(64)]
     [InlineData(100)]
@@ -20,93 +31,82 @@ public static class DomainRandomizationSourceExtensionsTests
     public void GivenLengthOver63_ThrowsArgumentOutOfRangeException(int length)
     {
       Assert.Throws<ArgumentOutOfRangeException>(() =>
-        DomainRandomizationSourceExtensions.DomainLabel(Randomizer.Shared, length)
-      );
-    }
-
-    [Theory]
-    [InlineData(int.MinValue)]
-    [InlineData(-1)]
-    [InlineData(0)]
-    public void GivenLengthBelow1_ThrowsArgumentOutOfRangeException(int value)
-    {
-      Assert.Throws<ArgumentOutOfRangeException>(() =>
-        DomainRandomizationSourceExtensions.DomainLabel(Randomizer.Shared, value)
+        Randomizer.Shared.DomainLabel(length)
       );
     }
   }
 
   public class DomainNameTests
   {
-    public ITestOutputHelper TestOutputHelper { get; }
-    public IRandomizationSource RandomizationSource { get; }
-
     public DomainNameTests(ITestOutputHelper testOutputHelper)
     {
       TestOutputHelper = testOutputHelper;
       RandomizationSource = Randomizer.Shared;
     }
 
+    public IRandomizationSource RandomizationSource { get; }
+    public ITestOutputHelper TestOutputHelper { get; }
+
     private static Lazy<IEnumerable<object[]>> CreateDomainLabelLengthsTestCasesLazy { get; } =
-      new Lazy<IEnumerable<object[]>>(
-        () =>
+      new(() =>
+      {
+        const int testCaseCount = 125;
+        return Enumerable.Range(1, testCaseCount).Select(_ =>
         {
-          const int testCaseCount = 125;
-          return Enumerable.Range(1, testCaseCount).Select(_ =>
-          {
-            var lengths = Randomizer.Shared.GenerateLabelLengths(Randomizer.Shared.IntInRange(1, 253));
-            Result<string> result = Prelude.Try(() => Randomizer.Shared.DomainName(lengths)).Try();
-            return new object[] { lengths, result };
-          }).ToArray();
-        });
+          var lengths = Randomizer.Shared.GenerateLabelLengths(Randomizer.Shared.IntInRange(1, 253));
+          Result<string> result = Prelude.Try(() => Randomizer.Shared.DomainName(lengths)).Try();
+          return new object[] { lengths, result };
+        }).ToArray();
+      });
 
     private static Lazy<IEnumerable<object[]>> CreateDomainLengthTestCasesLazy { get; } =
-      new Lazy<IEnumerable<object[]>>(
-        () =>
+      new(() =>
+      {
+        var results = Enumerable.Range(1, 253).Select(caseLength =>
         {
-          var results = Enumerable.Range(1, 253).Select(caseLength =>
-          {
-            Result<string> result = Prelude.Try(() => Randomizer.Shared.DomainName(caseLength)).Try();
-            return new object[] { caseLength, result };
-          }).ToArray();
+          Result<string> result = Prelude.Try(() => Randomizer.Shared.DomainName(caseLength)).Try();
+          return new object[] { caseLength, result };
+        }).ToArray();
 
-          return results;
-        });
-
-    public static IEnumerable<object[]> CreateDomainLengthTestCases()
-    {
-      return CreateDomainLengthTestCasesLazy.Value;
-    }
+        return results;
+      });
 
     public static IEnumerable<object[]> CreateDomainLabelLengthsTestCases()
     {
       return CreateDomainLabelLengthsTestCasesLazy.Value;
     }
 
-    private static void AssertDomainNameAppearsValid(string result)
+    public static IEnumerable<object[]> CreateDomainLengthTestCases()
     {
-      var splitOnDot = result.Split('.');
+      return CreateDomainLengthTestCasesLazy.Value;
+    }
 
-      Assert.True(result.Length <= 253);
-      Assert.All(splitOnDot, domainLabel =>
-      {
-        Assert.True(domainLabel.Length <= 63);
+    [Theory]
+    [InlineData(254)]
+    [InlineData(int.MaxValue)]
+    public void GivenDomainLengthGreaterThan253_ThrowsArgumentOutOfRange(int length)
+    {
+      Assert.Throws<ArgumentOutOfRangeException>(() => Randomizer.Shared.DomainName(length));
+    }
 
-        if (domainLabel.Length >= 4)
-        {
-          var thirdAndFourth = domainLabel.Substring(2, 2);
-          Assert.NotEqual("--", thirdAndFourth);
-        }
+    [Theory]
+    [InlineData(0)]
+    [InlineData(-1)]
+    [InlineData(int.MinValue)]
+    public void GivenDomainLengthLessThan1_ThrowsArgumentOutOfRange(int length)
+    {
+      Assert.Throws<ArgumentOutOfRangeException>(() => Randomizer.Shared.DomainName(length));
+    }
 
-        var firstChar = domainLabel.First();
-        Assert.Contains(firstChar, CharCollections.LatinAlpha);
+    [Theory]
+    [MemberData(nameof(CreateDomainLengthTestCases))]
+    public void GivenDomainNameLength_GeneratedDomainsAppearValid(int requestedLength, Result<string> result)
+    {
+      TestOutputHelper.WriteLine($"Validating domain validity (approximating RFC-1053). Requested: {requestedLength}");
+      var actual = result.IfFail(exc => throw exc)!;
+      TestOutputHelper.WriteLine($"Actual domain: {actual}");
 
-        if (result.Length > 1)
-        {
-          var lastChar = domainLabel.Last();
-          Assert.Contains(lastChar, CharCollections.LettersDigits);
-        }
-      });
+      AssertDomainNameAppearsValid(actual);
     }
 
     [Theory]
@@ -123,14 +123,29 @@ public static class DomainRandomizationSourceExtensionsTests
     }
 
     [Theory]
-    [MemberData(nameof(CreateDomainLengthTestCases))]
-    public void GivenDomainNameLength_GeneratedDomainsAppearValid(int requestedLength, Result<string> result)
+    [MemberData(nameof(CreateDomainLabelLengthsTestCases))]
+    public void GivenLabelLengths_GeneratedDomainsAppearValid(IReadOnlyList<int> distribution, Result<string> result)
     {
-      TestOutputHelper.WriteLine($"Validating domain validity (approximating RFC-1053). Requested: {requestedLength}");
+      TestOutputHelper.WriteLine(
+        $"Validating domain validity (approximating RFC-1053). Requested: {string.Join(",", distribution)}");
       var actual = result.IfFail(exc => throw exc)!;
       TestOutputHelper.WriteLine($"Actual domain: {actual}");
 
       AssertDomainNameAppearsValid(actual);
+    }
+
+    [Theory]
+    [MemberData(nameof(CreateDomainLabelLengthsTestCases))]
+    public void GivenLabelLengths_ReturnsExpectedLabelLengths(IReadOnlyList<int> distribution, Result<string> result)
+    {
+      TestOutputHelper.WriteLine($"Validating component lengths. Distribution: ({string.Join(",", distribution)})");
+      var actual = result.IfFail(exc => throw exc)!.Split(".");
+      TestOutputHelper.WriteLine(
+        $"Expected: {string.Join(",", distribution)}; Actual: {string.Join(",", actual)}"
+      );
+      var resultLengths = actual.Select(item => item.Length).ToArray();
+
+      resultLengths.Should().BeEquivalentTo(distribution);
     }
 
     [Theory]
@@ -150,46 +165,11 @@ public static class DomainRandomizationSourceExtensionsTests
     }
 
     [Theory]
-    [MemberData(nameof(CreateDomainLabelLengthsTestCases))]
-    public void GivenLabelLengths_ReturnsExpectedLabelLengths(IReadOnlyList<int> distribution, Result<string> result)
-    {
-      TestOutputHelper.WriteLine($"Validating component lengths. Distribution: ({string.Join(",", distribution)})");
-      var actual = result.IfFail(exc => throw exc)!.Split(".");
-      TestOutputHelper.WriteLine(
-        $"Expected: {string.Join(",", distribution)}; Actual: {string.Join(",", actual)}"
-      );
-      var resultLengths = actual.Select(item => item.Length).ToArray();
-
-      resultLengths.Should().BeEquivalentTo(distribution);
-    }
-
-    [Theory]
-    [MemberData(nameof(CreateDomainLabelLengthsTestCases))]
-    public void GivenLabelLengths_GeneratedDomainsAppearValid(IReadOnlyList<int> distribution, Result<string> result)
-    {
-      TestOutputHelper.WriteLine(
-        $"Validating domain validity (approximating RFC-1053). Requested: {string.Join(",", distribution)}");
-      var actual = result.IfFail(exc => throw exc)!;
-      TestOutputHelper.WriteLine($"Actual domain: {actual}");
-
-      AssertDomainNameAppearsValid(actual);
-    }
-
-    [Theory]
-    [InlineData(0)]
-    [InlineData(-1)]
-    [InlineData(int.MinValue)]
-    public void GivenDomainLengthLessThan1_ThrowsArgumentOutOfRange(int length)
-    {
-      Assert.Throws<ArgumentOutOfRangeException>(() => Randomizer.Shared.DomainName(length));
-    }
-
-    [Theory]
-    [InlineData(254)]
+    [InlineData(64)]
     [InlineData(int.MaxValue)]
-    public void GivenDomainLengthGreaterThan253_ThrowsArgumentOutOfRange(int length)
+    public void GivenLabelLengthsGreaterThan63_ThrowsArgumentOutOfRange(int length)
     {
-      Assert.Throws<ArgumentOutOfRangeException>(() => Randomizer.Shared.DomainName(length));
+      Assert.Throws<ArgumentOutOfRangeException>(() => Randomizer.Shared.DomainName(new[] { length }));
     }
 
     [Theory]
@@ -197,14 +177,6 @@ public static class DomainRandomizationSourceExtensionsTests
     [InlineData(-1)]
     [InlineData(int.MinValue)]
     public void GivenLabelLengthsLessThan1_ThrowsArgumentOutOfRange(int length)
-    {
-      Assert.Throws<ArgumentOutOfRangeException>(() => Randomizer.Shared.DomainName(new[] { length }));
-    }
-
-    [Theory]
-    [InlineData(64)]
-    [InlineData(int.MaxValue)]
-    public void GivenLabelLengthsGreaterThan63_ThrowsArgumentOutOfRange(int length)
     {
       Assert.Throws<ArgumentOutOfRangeException>(() => Randomizer.Shared.DomainName(new[] { length }));
     }
@@ -234,6 +206,32 @@ public static class DomainRandomizationSourceExtensionsTests
 
       var secondAndThird = result.Skip(1).Take(2);
       Assert.All(secondAndThird, character => character.Should().NotBe('-'));
+    }
+
+    private static void AssertDomainNameAppearsValid(string result)
+    {
+      var splitOnDot = result.Split('.');
+
+      Assert.True(result.Length <= 253);
+      Assert.All(splitOnDot, domainLabel =>
+      {
+        Assert.True(domainLabel.Length <= 63);
+
+        if (domainLabel.Length >= 4)
+        {
+          var thirdAndFourth = domainLabel.Substring(2, 2);
+          Assert.NotEqual("--", thirdAndFourth);
+        }
+
+        var firstChar = domainLabel.First();
+        Assert.Contains(firstChar, CharCollections.LatinAlpha);
+
+        if (result.Length > 1)
+        {
+          var lastChar = domainLabel.Last();
+          Assert.Contains(lastChar, CharCollections.LettersDigits);
+        }
+      });
     }
   }
 }

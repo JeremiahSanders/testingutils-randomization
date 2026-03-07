@@ -1,12 +1,49 @@
 using System;
 using System.Linq;
-using FluentAssertions;
 using Xunit;
 
 namespace Jds.TestingUtils.Randomization.Tests.Unit.SelectionRandomizationSourceExtensionsTests;
 
 public class RandomEnumValueTests
 {
+  [Fact]
+  public void GivenAllValuesExcluded_ItThrowsInvalidOperationException()
+  {
+    Assert.Throws<InvalidOperationException>(() => Randomizer.Shared.RandomEnumValue(OneValue.OnlyOne));
+  }
+
+  [Fact]
+  public void GivenExclusionsReducingToOneAvailableValue_ItReturnsRandomExpectedItem()
+  {
+    const HasValues expected = HasValues.Second;
+
+    var actual = Randomizer.Shared.RandomEnumValue(HasValues.First, HasValues.Third);
+
+    actual.Should().Be(expected);
+  }
+
+  [Fact]
+  public void GivenNoValues_ItThrowsArgumentException()
+  {
+    Assert.Throws<ArgumentException>(() => Randomizer.Shared.RandomEnumValue<NoValues>());
+  }
+
+  [Fact]
+  public void GivenNoValuesAndExcept_ItThrowsArgumentException()
+  {
+    Assert.Throws<ArgumentException>(() => Randomizer.Shared.RandomEnumValue(default(NoValues)));
+  }
+
+  [Fact]
+  public void GivenOneValue_ItReturnsOnlyItem()
+  {
+    var expected = OneValue.OnlyOne;
+
+    var actual = Randomizer.Shared.RandomEnumValue<OneValue>();
+
+    actual.Should().Be(expected);
+  }
+
   [Fact]
   public void GivenValues_ItReturnsRandomItem()
   {
@@ -28,44 +65,6 @@ public class RandomEnumValueTests
 
     filteredItems.Should().Contain(actual);
     actual.Should().NotBe(except);
-  }
-
-  [Fact]
-  public void GivenExclusionsReducingToOneAvailableValue_ItReturnsRandomExpectedItem()
-  {
-    const HasValues expected = HasValues.Second;
-
-    var actual = Randomizer.Shared.RandomEnumValue(HasValues.First, HasValues.Third);
-
-    actual.Should().Be(expected);
-  }
-
-  [Fact]
-  public void GivenOneValue_ItReturnsOnlyItem()
-  {
-    var expected = OneValue.OnlyOne;
-
-    var actual = Randomizer.Shared.RandomEnumValue<OneValue>();
-
-    actual.Should().Be(expected);
-  }
-
-  [Fact]
-  public void GivenNoValues_ItThrowsArgumentException()
-  {
-    Assert.Throws<ArgumentException>(() => Randomizer.Shared.RandomEnumValue<NoValues>());
-  }
-
-  [Fact]
-  public void GivenNoValuesAndExcept_ItThrowsArgumentException()
-  {
-    Assert.Throws<ArgumentException>(() => Randomizer.Shared.RandomEnumValue(default(NoValues)));
-  }
-
-  [Fact]
-  public void GivenAllValuesExcluded_ItThrowsInvalidOperationException()
-  {
-    Assert.Throws<InvalidOperationException>(() => Randomizer.Shared.RandomEnumValue(OneValue.OnlyOne));
   }
 
   private enum HasValues { First = 1, Second = 2, Third = 3 }

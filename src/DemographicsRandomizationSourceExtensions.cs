@@ -2,22 +2,8 @@ namespace Jds.TestingUtils.Randomization;
 
 public static class DemographicsRandomizationSourceExtensions
 {
-  private const int SurnameCharacterChainLength = 3;
-
   private const int ForenameCharacterChainLength = 3;
-
-  private static
-    Lazy<IReadOnlyDictionary<IReadOnlyList<char>, MarkovStringRandomizationSourceExtensions.MarkovResult<char>>>
-    SurnameUsaMarkovModel
-  {
-    get;
-  } = new(() =>
-    MarkovStringRandomizationSourceExtensions.GetMarkovProbability(
-      sources: MarkovSourceHelpers.ParseIntoWords(DemographicsSources.SurnameUsa)
-        .Select(source => source.ToCharArray())
-        .ToArray(),
-      SurnameCharacterChainLength
-    ));
+  private const int SurnameCharacterChainLength = 3;
 
   private static
     Lazy<IReadOnlyDictionary<IReadOnlyList<char>, MarkovStringRandomizationSourceExtensions.MarkovResult<char>>>
@@ -26,10 +12,23 @@ public static class DemographicsRandomizationSourceExtensions
     get;
   } = new(() =>
     MarkovStringRandomizationSourceExtensions.GetMarkovProbability(
-      sources: MarkovSourceHelpers.ParseIntoWords(DemographicsSources.ForenameUsa)
+      MarkovSourceHelpers.ParseIntoWords(DemographicsSources.ForenameUsa)
         .Select(source => source.ToCharArray())
         .ToArray(),
       ForenameCharacterChainLength
+    ));
+
+  private static
+    Lazy<IReadOnlyDictionary<IReadOnlyList<char>, MarkovStringRandomizationSourceExtensions.MarkovResult<char>>>
+    SurnameUsaMarkovModel
+  {
+    get;
+  } = new(() =>
+    MarkovStringRandomizationSourceExtensions.GetMarkovProbability(
+      MarkovSourceHelpers.ParseIntoWords(DemographicsSources.SurnameUsa)
+        .Select(source => source.ToCharArray())
+        .ToArray(),
+      SurnameCharacterChainLength
     ));
 
   /// <summary>
@@ -46,8 +45,8 @@ public static class DemographicsRandomizationSourceExtensions
     var (minAgeInYears, maxAgeInYears) = ageRange;
     if (minAgeInYears <= 0 || maxAgeInYears <= 0)
     {
-      throw new ArgumentOutOfRangeException(paramName: nameof(ageRange),
-        message: $"Both {nameof(ageRange.MinAgeInYears)} and {nameof(ageRange.MaxAgeInYearsExclusive)} must be > 0."
+      throw new ArgumentOutOfRangeException(nameof(ageRange),
+        $"Both {nameof(ageRange.MinAgeInYears)} and {nameof(ageRange.MaxAgeInYearsExclusive)} must be > 0."
       );
     }
 
@@ -56,7 +55,7 @@ public static class DemographicsRandomizationSourceExtensions
     var maxAge = Math.Max(minAgeInYears, maxAgeInYears);
     var ageValue = minAge + randomizationSource.NextDouble() * (maxAge - minAge);
 
-    return referenceDate.Subtract(value: TimeSpan.FromDays(value: ageValue * 365.25));
+    return referenceDate.Subtract(TimeSpan.FromDays(ageValue * 365.25));
   }
 
   /// <summary>
@@ -69,7 +68,7 @@ public static class DemographicsRandomizationSourceExtensions
     DateTime? relativeTo = null)
   {
     return randomizationSource.DemographicsBirthDateTime(
-      ageRange: (MinAgeInYears: 18, MaxAgeInYearsExclusive: 96),
+      (MinAgeInYears: 18, MaxAgeInYearsExclusive: 96),
       relativeTo
     );
   }
@@ -85,10 +84,10 @@ public static class DemographicsRandomizationSourceExtensions
   {
     if (maxLength <= 0)
     {
-      throw new ArgumentOutOfRangeException(paramName: nameof(maxLength));
+      throw new ArgumentOutOfRangeException(nameof(maxLength));
     }
 
-    return string.Concat(values: randomizationSource.GenerateRandomMarkov(ForenameUsaMarkovModel.Value, maxLength)
+    return string.Concat(randomizationSource.GenerateRandomMarkov(ForenameUsaMarkovModel.Value, maxLength)
       .Take(maxLength)
       .Select((character, index) => index == 0 ? char.ToUpperInvariant(character) : character));
   }
@@ -104,10 +103,10 @@ public static class DemographicsRandomizationSourceExtensions
   {
     if (maxLength <= 0)
     {
-      throw new ArgumentOutOfRangeException(paramName: nameof(maxLength));
+      throw new ArgumentOutOfRangeException(nameof(maxLength));
     }
 
-    return string.Concat(values: randomizationSource.GenerateRandomMarkov(SurnameUsaMarkovModel.Value, maxLength)
+    return string.Concat(randomizationSource.GenerateRandomMarkov(SurnameUsaMarkovModel.Value, maxLength)
       .Take(maxLength)
       .Select((character, index) => index == 0 ? char.ToUpperInvariant(character) : character));
   }

@@ -41,24 +41,6 @@ public static class DateTimeRandomizationSourceExtensions
   }
 
   /// <summary>
-  ///   Generate a pseudo-random <see cref="System.TimeOnly" />.
-  /// </summary>
-  /// <param name="randomizationSource">This randomization source.</param>
-  /// <param name="hour">The hour (<c>0</c> through <c>23</c>). Default: Pseudo-random hour.</param>
-  /// <param name="minute">The minutes (<c>0</c> through <c>59</c>). Default: Pseudo-random minutes.</param>
-  /// <param name="second">The seconds (<c>0</c> through <c>59</c>). Default: Pseudo-random seconds.</param>
-  public static TimeOnly TimeOnly(
-    this IRandomizationSource randomizationSource,
-    int? hour = null,
-    int? minute = null,
-    int? second = null
-  )
-  {
-    return new TimeOnly(hour ?? randomizationSource.Hour(), minute ?? randomizationSource.Minute(),
-      second ?? randomizationSource.Second());
-  }
-
-  /// <summary>
   ///   Generate a pseudo-random <see cref="System.DateTime" /> in UTC.
   /// </summary>
   /// <param name="randomizationSource">This randomization source.</param>
@@ -85,6 +67,47 @@ public static class DateTimeRandomizationSourceExtensions
   )
   {
     return randomizationSource.DateTime(DateTimeKind.Utc, year, month, day, hour, minute, second);
+  }
+
+  /// <summary>
+  ///   Generate a pseudo-random <see cref="System.TimeOnly" />.
+  /// </summary>
+  /// <param name="randomizationSource">This randomization source.</param>
+  /// <param name="hour">The hour (<c>0</c> through <c>23</c>). Default: Pseudo-random hour.</param>
+  /// <param name="minute">The minutes (<c>0</c> through <c>59</c>). Default: Pseudo-random minutes.</param>
+  /// <param name="second">The seconds (<c>0</c> through <c>59</c>). Default: Pseudo-random seconds.</param>
+  public static TimeOnly TimeOnly(
+    this IRandomizationSource randomizationSource,
+    int? hour = null,
+    int? minute = null,
+    int? second = null
+  )
+  {
+    return new TimeOnly(hour ?? randomizationSource.Hour(), minute ?? randomizationSource.Minute(),
+      second ?? randomizationSource.Second());
+  }
+
+  internal static int GetExclusiveMaxDaysInMonth(int month)
+  {
+    const int ex28 = 29;
+    const int ex30 = 31;
+    const int ex31 = 32;
+    return month switch
+    {
+      1 => ex31,
+      2 => ex28,
+      3 => ex31,
+      4 => ex30,
+      5 => ex31,
+      6 => ex30,
+      7 => ex31,
+      8 => ex31,
+      9 => ex30,
+      10 => ex31,
+      11 => ex30,
+      12 => ex31,
+      _ => ex28
+    };
   }
 
   private static DateTime DateTime(
@@ -130,6 +153,11 @@ public static class DateTimeRandomizationSourceExtensions
     }
   }
 
+  private static int Day(this IRandomizationSource randomizationSource, int month)
+  {
+    return randomizationSource.IntInRange(1, GetExclusiveMaxDaysInMonth(month));
+  }
+
   private static int Hour(this IRandomizationSource randomizationSource)
   {
     return randomizationSource.IntInRange(0, 24);
@@ -140,6 +168,11 @@ public static class DateTimeRandomizationSourceExtensions
     return randomizationSource.IntInRange(0, 60);
   }
 
+  private static int Month(this IRandomizationSource randomizationSource)
+  {
+    return randomizationSource.IntInRange(1, 13);
+  }
+
   private static int Second(this IRandomizationSource randomizationSource)
   {
     return randomizationSource.IntInRange(0, 60);
@@ -148,38 +181,5 @@ public static class DateTimeRandomizationSourceExtensions
   private static int Year(this IRandomizationSource randomizationSource)
   {
     return System.DateTime.Today.Year + randomizationSource.IntInRange(-20, 0);
-  }
-
-  private static int Month(this IRandomizationSource randomizationSource)
-  {
-    return randomizationSource.IntInRange(1, 13);
-  }
-
-  private static int Day(this IRandomizationSource randomizationSource, int month)
-  {
-    return randomizationSource.IntInRange(1, GetExclusiveMaxDaysInMonth(month));
-  }
-
-  internal static int GetExclusiveMaxDaysInMonth(int month)
-  {
-    const int ex28 = 29;
-    const int ex30 = 31;
-    const int ex31 = 32;
-    return month switch
-    {
-      1 => ex31,
-      2 => ex28,
-      3 => ex31,
-      4 => ex30,
-      5 => ex31,
-      6 => ex30,
-      7 => ex31,
-      8 => ex31,
-      9 => ex30,
-      10 => ex31,
-      11 => ex30,
-      12 => ex31,
-      _ => ex28
-    };
   }
 }

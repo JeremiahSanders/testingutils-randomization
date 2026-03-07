@@ -39,7 +39,7 @@ public class DeterministicRandomizationSource : IRandomizationSource
   public double NextDouble()
   {
     return !_doubleEnumerator.Value.MoveNext()
-      ? throw new InvalidOperationException(message: "Provided doubles failed to return next value")
+      ? throw new InvalidOperationException("Provided doubles failed to return next value")
       : _doubleEnumerator.Value.Current;
   }
 
@@ -47,7 +47,7 @@ public class DeterministicRandomizationSource : IRandomizationSource
   public float NextFloat()
   {
     return !_floatEnumerator.Value.MoveNext()
-      ? throw new InvalidOperationException(message: "Provided floats failed to return next value")
+      ? throw new InvalidOperationException("Provided floats failed to return next value")
       : _floatEnumerator.Value.Current;
   }
 
@@ -59,7 +59,7 @@ public class DeterministicRandomizationSource : IRandomizationSource
     {
       if (!_intEnumerator.Value.MoveNext())
       {
-        throw new InvalidOperationException(message: "Provided ints failed to return next value");
+        throw new InvalidOperationException("Provided ints failed to return next value");
       }
 
       if (_intEnumerator.Value.Current >= minInclusive && _intEnumerator.Value.Current < maxExclusive)
@@ -77,7 +77,7 @@ public class DeterministicRandomizationSource : IRandomizationSource
     {
       if (!_longEnumerator.Value.MoveNext())
       {
-        throw new InvalidOperationException(message: "Provided longs failed to return next value");
+        throw new InvalidOperationException("Provided longs failed to return next value");
       }
 
       if (_longEnumerator.Value.Current >= minInclusive && _longEnumerator.Value.Current < maxExclusive)
